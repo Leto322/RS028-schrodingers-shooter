@@ -1,20 +1,23 @@
 #include <iostream>
 #include <GL/glut.h>
 #include "../header/image.h"
+#include "../header/player.h"
 #include <string>
 #include <vector>
 
 std::vector<std::string> textureLocations = {
-	"textures/wall.bmp"
+	"textures/Map.bmp"
 	};
 
 #define TIMER_ID 0
-#define TIMER_INTERVAL 20
+#define TIMER_INTERVAL 15
 
 static GLuint textureNames[1];
 
 static int animation_ongoing;
 static void on_keyboard(unsigned char key, int x, int y);
+static void keyboard_up(unsigned char key, int x, int y);
+static void keyboard_down(unsigned char key, int x, int y);
 static void on_mouse_move(int x, int y);
 static void on_mouse_move_active(int x, int y);
 static void on_mouse_pressed_released(int button, int state, int x, int y);
@@ -30,7 +33,6 @@ void LoadTextures(){
 	for (int i=0; i<textureLocations.size(); i++){
 		char *cstr = &textureLocations[i][0u];
 		image_read(image, cstr);
-		std::cout << "width " << image->width << std::endl; 
 		glBindTexture(GL_TEXTURE_2D, textureNames[0]);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -42,6 +44,9 @@ void LoadTextures(){
 
 	image_done(image);
 }
+
+Player* players[1];
+Player* myPlayer;
 
 int main(int argc, char **argv)
 {
@@ -59,8 +64,12 @@ int main(int argc, char **argv)
 	glutMotionFunc(on_mouse_move_active);
 	glutPassiveMotionFunc(on_mouse_move);
 	glutMouseFunc(on_mouse_pressed_released);
-	glutReshapeFunc(on_reshape);
-
+    glutKeyboardUpFunc(keyboard_up);
+    glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
+    
+    glutReshapeFunc(on_reshape);
+    myPlayer = new Player();
+    players[0] = myPlayer;
 	//glutSetCursor(GLUT_CURSOR_NONE);
 
 	/* Obavlja se OpenGL inicijalizacija. */
@@ -116,6 +125,38 @@ static void on_keyboard(unsigned char key, int x, int y)
 		/* Zavrsava se program. */
 		exit(0);
 		break;
+    case 'a':
+        myPlayer->input.horizontal -= 1;
+        break;
+    case 'd':
+        myPlayer->input.horizontal += 1;
+        break;
+    case 'w':
+        myPlayer->input.vertical += 1;
+        break;
+    case 's':
+        myPlayer->input.vertical -= 1;
+        break;
+    
+	}
+	//std::cout << "vertical " << myPlayer.input.vertical  << "horizontal " << myPlayer.input.horizontal << std::endl;
+}
+
+static void keyboard_up(unsigned char key, int x, int y){
+    switch (key) {
+    case 'a':
+        myPlayer->input.horizontal += 1;
+        break;
+    case 'd':
+        myPlayer->input.horizontal -= 1;
+        break;
+    case 'w':
+        myPlayer->input.vertical -= 1;
+        break;
+    case 's':
+        myPlayer->input.vertical += 1;
+        break;
+    
 	}
 }
 
@@ -145,6 +186,9 @@ static void on_timer(int value)
 		return;
 	}
 
+    for (int i=0; i<1; i++){
+        players[i]->Update();
+    }
 	/* Po potrebi se ponovo postavlja tajmer. */
 	if (animation_ongoing) {
 		glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
@@ -160,15 +204,21 @@ void DrawMap(){
 	glBindTexture(GL_TEXTURE_2D, textureNames[0]);
 	glNormal3f(0, 0, 1);
 	glTexCoord2f(0, 0);
-	glVertex3f(-6.4, -3.6, 0);
+	glVertex3f(-9, -9.2, 0);
 	glTexCoord2f(0, 1);
-	glVertex3f(-6.4, 3.6, 0);
+	glVertex3f(-9, 9.2, 0);
 	glTexCoord2f(1, 0);
-	glVertex3f(6.4, -3.6, 0);
+	glVertex3f(9, -9.2, 0);
 	glTexCoord2f(1, 1);
-	glVertex3f(6.4, 3.6, 0);
+	glVertex3f(9, 9.2, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glEnd();
+}
+
+static void DrawPlayers(){
+    for (int i=0; i<1; i++){
+        players[i]->Draw();
+    }
 }
 
 static void on_display(void)
@@ -179,12 +229,12 @@ static void on_display(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	gluLookAt(0, 0, 6.5,
-		0, 0, 0,
-		0, 1, 0);
+	gluLookAt  (myPlayer->position.x, myPlayer->position.y, 4,
+                myPlayer->position.x, myPlayer->position.y, 0,
+                0, 1, 0);
 	
 	DrawMap();
-	//DrawPlayers();
+	DrawPlayers();
 
 	/* Nova slika se salje na ekran. */
 	glutSwapBuffers();
