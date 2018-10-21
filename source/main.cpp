@@ -184,7 +184,7 @@ static void on_display(void)
 		0, 1, 0);
 	
 	DrawMap();
-	DrawPlayers();
+	//DrawPlayers();
 
 	/* Nova slika se salje na ekran. */
 	glutSwapBuffers();

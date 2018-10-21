@@ -7,11 +7,11 @@ all: SchShooter
 SchShooter: main.o image.o
 	$(CC) main.o image.o -o SchShooter $(GLFLAGS) $(CFLAGS)
 	
-main.o: source/main.c
-	$(CC) -c source/main.c $(GLFLAGS) $(CFLAGS)
+main.o: source/main.cpp
+	$(CC) -c source/main.cpp $(GLFLAGS) $(CFLAGS)
 	
-image.o: source/image.c
-	$(CC) -c source/image.c $(CFLAGS)
+image.o: source/image.cpp
+	$(CC) -c source/image.cpp $(CFLAGS)
 	
 clean:
-	rm -rf *.o bilijar
+	rm -rf *.o SchShooter
