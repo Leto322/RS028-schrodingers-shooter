@@ -2,6 +2,7 @@
 #include <GL/glut.h>
 #include "../header/image.h"
 #include "../header/player.h"
+#include "../header/geometry.h"
 #include <string>
 #include <vector>
 
