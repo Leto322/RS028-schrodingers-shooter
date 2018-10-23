@@ -5,7 +5,7 @@ CFLAGS=-lm
 all: SchShooter
 
 SchShooter: main.o image.o player.o geometry.o items.o
-	$(CC) main.o image.o player.o geometry.o -o SchShooter $(GLFLAGS) $(CFLAGS)
+	$(CC) main.o image.o player.o geometry.o items.o -o SchShooter $(GLFLAGS) $(CFLAGS)
 	
 main.o: source/main.cpp
 	$(CC) -c source/main.cpp $(GLFLAGS) $(CFLAGS)
