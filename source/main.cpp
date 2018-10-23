@@ -3,6 +3,7 @@
 #include "../header/image.h"
 #include "../header/player.h"
 #include "../header/geometry.h"
+#include "../header/items.h"
 #include <string>
 #include <vector>
 
@@ -138,6 +139,9 @@ static void on_keyboard(unsigned char key, int x, int y)
     case 's':
         myPlayer->input.vertical -= 1;
         break;
+    case 'r':
+    	myPlayer->equiped_weapon->reload();
+    	break;
     
 	}
 	//std::cout << "vertical " << myPlayer.input.vertical  << "horizontal " << myPlayer.input.horizontal << std::endl;
@@ -163,7 +167,14 @@ static void keyboard_up(unsigned char key, int x, int y){
 
 
 static void on_mouse_pressed_released(int button, int state, int x, int y) {
-	
+	switch(button) {
+		case GLUT_LEFT_BUTTON:
+			if(state == GLUT_DOWN)
+				myPlayer->input.shoot = true;
+			else if(state == GLUT_UP)
+				myPlayer->input.shoot = false;
+			break;
+	}
 
 }
 
@@ -189,6 +200,7 @@ static void on_timer(int value)
 
     for (int i=0; i<1; i++){
         players[i]->Update();
+        players[i]->equiped_weapon->Update(players[i]->input.shoot);
     }
 	/* Po potrebi se ponovo postavlja tajmer. */
 	if (animation_ongoing) {

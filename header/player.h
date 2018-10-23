@@ -1,5 +1,8 @@
 #ifndef PLAYER_DEF
 #define PLAYER_DEF
+
+#include "../header/items.h"
+
 typedef struct _Point{
     float x, y;
 } Point;
@@ -21,6 +24,7 @@ public:
     Input input;
     int health;
     Point position;
+    Weapon* equiped_weapon;
 private:
     float rotation, r;
     float speed;

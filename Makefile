@@ -4,7 +4,7 @@ CFLAGS=-lm
 
 all: SchShooter
 
-SchShooter: main.o image.o player.o geometry.o
+SchShooter: main.o image.o player.o geometry.o items.o
 	$(CC) main.o image.o player.o geometry.o -o SchShooter $(GLFLAGS) $(CFLAGS)
 	
 main.o: source/main.cpp
@@ -18,6 +18,9 @@ player.o: source/player.cpp header/player.h
 
 geometry.o: source/geometry.cpp header/geometry.h
 	$(CC) -c source/geometry.cpp $(CFLAGS)
+
+items.o: source/items.cpp header/items.h
+	$(CC) -c source/items.cpp $(CFLAGS)
 	
 clean:
 	rm -rf *.o SchShooter

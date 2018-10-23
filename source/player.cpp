@@ -1,4 +1,5 @@
 #include "../header/player.h"
+#include "../header/items.h"
 #include <GL/glut.h>
 #include <iostream>
 #include <math.h>
@@ -13,7 +14,9 @@ Player::Player(){
     health = 100;
     input.vertical = 0;
     input.horizontal = 0;
+    input.shoot = false;
     rotation = 90;
+    equiped_weapon = new Weapon();
 };
 
 void Player::Draw(){
