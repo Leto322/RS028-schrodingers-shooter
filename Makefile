@@ -1,11 +1,11 @@
 CC=g++
-GLFLAGS= -std=c++17 -lGL -lglut -lGLU
+GLFLAGS= -std=c++17 -lBox2D -lGL -lglut -lGLU
 CFLAGS=-lm
 
 all: SchShooter
 
 SchShooter: main.o image.o player.o geometry.o items.o
-	$(CC) main.o image.o player.o geometry.o items.o -o SchShooter $(GLFLAGS) $(CFLAGS)
+	$(CC) main.o image.o player.o geometry.o items.o -o SchShooter.out $(GLFLAGS) $(CFLAGS)
 	
 main.o: source/main.cpp
 	$(CC) -c source/main.cpp $(GLFLAGS) $(CFLAGS)
@@ -23,4 +23,4 @@ items.o: source/items.cpp header/items.h
 	$(CC) -c source/items.cpp $(CFLAGS)
 	
 clean:
-	rm -rf *.o SchShooter
+	rm -rf *.o *.out

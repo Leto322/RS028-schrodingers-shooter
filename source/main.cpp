@@ -6,6 +6,7 @@
 #include "../header/items.h"
 #include <string>
 #include <vector>
+#include <Box2D/Box2D.h>
 
 std::vector<std::string> textureLocations = {
 	"textures/Map.bmp"
@@ -50,6 +51,7 @@ void LoadTextures(){
 Player* players[1];
 Player* myPlayer;
 
+
 int main(int argc, char **argv)
 {
 	/* Inicijalizuje se GLUT. */
@@ -93,7 +95,7 @@ int main(int argc, char **argv)
 
 
 	LoadTextures();
-
+    
 	//GLfloat lightPos0[] = { 0, 0, -2, 1};
 	//glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 
