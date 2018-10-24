@@ -2,6 +2,7 @@
 #define PLAYER_DEF
 
 #include "../header/items.h"
+#include <Box2D/Box2D.h>
 
 typedef struct _Point{
     float x, y;
@@ -23,8 +24,8 @@ public:
     bool team;
     Input input;
     int health;
-    Point position;
     Weapon* equiped_weapon;
+    b2Body* body;
 private:
     float rotation, r;
     float speed;

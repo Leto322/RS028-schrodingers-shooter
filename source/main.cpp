@@ -50,10 +50,29 @@ void LoadTextures(){
 
 Player* players[1];
 Player* myPlayer;
+b2World* world;
 
+void AddWall(float x, float y, float w, float h){
+    b2BodyDef groundBodyDef;
+    groundBodyDef.position.Set(x, y);
+    b2Body* groundBody = world->CreateBody(&groundBodyDef);
+    b2PolygonShape groundBox;
+    groundBox.SetAsBox(w, h);
+    groundBody->CreateFixture(&groundBox, 0.0f);
+}
+
+void AddOuterWalls(){
+    AddWall(0, 10.2, 9, 1);
+    AddWall(0, -10.2, 9, 1);
+    AddWall(10, 0, 1, 9);
+    AddWall(-10, 0, 1, 9);
+}
 
 int main(int argc, char **argv)
 {
+    
+    B2_NOT_USED(argc);
+    B2_NOT_USED(argv);
 	/* Inicijalizuje se GLUT. */
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE | GLUT_MULTISAMPLE);
@@ -72,10 +91,6 @@ int main(int argc, char **argv)
     glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
     
     glutReshapeFunc(on_reshape);
-    myPlayer = new Player();
-    players[0] = myPlayer;
-	//glutSetCursor(GLUT_CURSOR_NONE);
-
 	/* Obavlja se OpenGL inicijalizacija. */
 	glClearColor(0, 0, 0, 0);
 	glEnable(GL_DEPTH_TEST);
@@ -93,7 +108,6 @@ int main(int argc, char **argv)
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,
               GL_MODULATE);
 
-
 	LoadTextures();
     
 	//GLfloat lightPos0[] = { 0, 0, -2, 1};
@@ -102,6 +116,17 @@ int main(int argc, char **argv)
     /* Ulazi se u glavnu petlju. */
 	glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
   	animation_ongoing = 1;
+	//glutSetCursor(GLUT_CURSOR_NONE);
+    
+    
+    b2Vec2 gravity(0.0f, 0.0f);
+    world = new b2World(gravity);
+
+    
+    myPlayer = new Player();
+    players[0] = myPlayer;
+    AddOuterWalls();
+
 
 	glutMainLoop();
 
@@ -200,6 +225,8 @@ static void on_timer(int value)
 		return;
 	}
 
+    world->Step(TIMER_INTERVAL*0.001, 6, 2);
+    
     for (int i=0; i<1; i++){
         players[i]->Update();
         players[i]->equiped_weapon->Update(players[i]->input.shoot);
@@ -244,8 +271,8 @@ static void on_display(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	gluLookAt  (myPlayer->position.x, myPlayer->position.y, 4,
-                myPlayer->position.x, myPlayer->position.y, 0,
+	gluLookAt  (myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 4,
+                myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0,
                 0, 1, 0);
 	
 	DrawMap();
