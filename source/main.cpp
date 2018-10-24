@@ -32,7 +32,7 @@ void LoadTextures(){
 	glGenTextures(textureLocations.size(), textureNames);
 	Image* image;
 	image = image_init(0, 0);
-	
+
 	for (int i=0; i<textureLocations.size(); i++){
 		char *cstr = &textureLocations[i][0u];
 		image_read(image, cstr);
@@ -51,26 +51,12 @@ void LoadTextures(){
 Player* players[1];
 Player* myPlayer;
 b2World* world;
+std::vector<Line> walls;
 
-void AddWall(float x, float y, float w, float h){
-    b2BodyDef groundBodyDef;
-    groundBodyDef.position.Set(x, y);
-    b2Body* groundBody = world->CreateBody(&groundBodyDef);
-    b2PolygonShape groundBox;
-    groundBox.SetAsBox(w, h);
-    groundBody->CreateFixture(&groundBox, 0.0f);
-}
-
-void AddOuterWalls(){
-    AddWall(0, 10.2, 9, 1);
-    AddWall(0, -10.2, 9, 1);
-    AddWall(10, 0, 1, 9);
-    AddWall(-10, 0, 1, 9);
-}
 
 int main(int argc, char **argv)
 {
-    
+
     B2_NOT_USED(argc);
     B2_NOT_USED(argv);
 	/* Inicijalizuje se GLUT. */
@@ -89,7 +75,7 @@ int main(int argc, char **argv)
 	glutMouseFunc(on_mouse_pressed_released);
     glutKeyboardUpFunc(keyboard_up);
     glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
-    
+
     glutReshapeFunc(on_reshape);
 	/* Obavlja se OpenGL inicijalizacija. */
 	glClearColor(0, 0, 0, 0);
@@ -97,7 +83,7 @@ int main(int argc, char **argv)
 	glEnable(GL_NORMALIZE);
 	glEnable(GLUT_MULTISAMPLE);
 	glEnable(GL_TEXTURE_2D);
-	
+
 	//glShadeModel (GL_SMOOTH);
 	//glEnable(GL_LIGHTING);
 	//glEnable(GL_LIGHT0);
@@ -109,7 +95,7 @@ int main(int argc, char **argv)
               GL_MODULATE);
 
 	LoadTextures();
-    
+
 	//GLfloat lightPos0[] = { 0, 0, -2, 1};
 	//glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 
@@ -117,15 +103,15 @@ int main(int argc, char **argv)
 	glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
   	animation_ongoing = 1;
 	//glutSetCursor(GLUT_CURSOR_NONE);
-    
-    
+
+
     b2Vec2 gravity(0.0f, 0.0f);
     world = new b2World(gravity);
+	LoadWalls();
 
-    
     myPlayer = new Player();
     players[0] = myPlayer;
-    AddOuterWalls();
+
 
 
 	glutMainLoop();
@@ -169,7 +155,7 @@ static void on_keyboard(unsigned char key, int x, int y)
     case 'r':
     	myPlayer->equiped_weapon->reload();
     	break;
-    
+
 	}
 	//std::cout << "vertical " << myPlayer.input.vertical  << "horizontal " << myPlayer.input.horizontal << std::endl;
 }
@@ -188,7 +174,7 @@ static void keyboard_up(unsigned char key, int x, int y){
     case 's':
         myPlayer->input.vertical += 1;
         break;
-    
+
 	}
 }
 
@@ -206,12 +192,12 @@ static void on_mouse_pressed_released(int button, int state, int x, int y) {
 }
 
 static void on_mouse_move_active(int x, int y) {
-	
+
 }
 
 
 static void on_mouse_move(int x, int y){
-	
+
 }
 
 
@@ -226,7 +212,7 @@ static void on_timer(int value)
 	}
 
     world->Step(TIMER_INTERVAL*0.001, 6, 2);
-    
+
     for (int i=0; i<1; i++){
         players[i]->Update();
         players[i]->equiped_weapon->Update(players[i]->input.shoot);
@@ -246,13 +232,13 @@ void DrawMap(){
 	glBindTexture(GL_TEXTURE_2D, textureNames[0]);
 	glNormal3f(0, 0, 1);
 	glTexCoord2f(0, 0);
-	glVertex3f(-9, -9.2, 0);
+	glVertex3f(-9.2, -9.2, 0);
 	glTexCoord2f(0, 1);
-	glVertex3f(-9, 9.2, 0);
+	glVertex3f(-9.2, 9.2, 0);
 	glTexCoord2f(1, 0);
-	glVertex3f(9, -9.2, 0);
+	glVertex3f(9.2, -9.2, 0);
 	glTexCoord2f(1, 1);
-	glVertex3f(9, 9.2, 0);
+	glVertex3f(9.2, 9.2, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glEnd();
 }
@@ -274,13 +260,11 @@ static void on_display(void)
 	gluLookAt  (myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 4,
                 myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0,
                 0, 1, 0);
-	
+
 	DrawMap();
 	DrawPlayers();
 
 	/* Nova slika se salje na ekran. */
 	glutSwapBuffers();
-	
+
 }
-
-
