@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 #include <Box2D/Box2D.h>
+#include <chrono>
+
 
 std::vector<std::string> textureLocations = {
 	"textures/Map.bmp"
@@ -52,6 +54,9 @@ Player* players[1];
 Player* myPlayer;
 b2World* world;
 std::vector<Line> walls;
+std::chrono::high_resolution_clock::time_point lastFrameTime = std::chrono::high_resolution_clock::now();
+double accumulator = 0;
+double phisycsUpdateInterval = 0.02;
 
 
 int main(int argc, char **argv)
@@ -113,7 +118,7 @@ int main(int argc, char **argv)
     players[0] = myPlayer;
 
 
-
+    lastFrameTime = std::chrono::high_resolution_clock::now();
 	glutMainLoop();
 
     return 0;
@@ -211,18 +216,29 @@ static void on_timer(int value)
 		return;
 	}
 
-    world->Step(TIMER_INTERVAL*0.001, 6, 2);
+    auto now = std::chrono::high_resolution_clock::now();;
+	std::chrono::duration<double>  deltaTime = now - lastFrameTime;
+    accumulator += deltaTime.count();
+    lastFrameTime = now;
+    //std::cout << "dt " << deltaTime.count() << std::endl;
+    while (accumulator > phisycsUpdateInterval){
+        world->Step(phisycsUpdateInterval, 6, 2);
 
-    for (int i=0; i<1; i++){
-        players[i]->Update();
-        players[i]->equiped_weapon->Update(players[i]->input.shoot);
+        for (int i=0; i<1; i++){
+            players[i]->Update();
+            players[i]->equiped_weapon->Update(players[i]->input.shoot);
+        }
+        
+        accumulator -= phisycsUpdateInterval;
     }
+    
+	glutPostRedisplay();
 	/* Po potrebi se ponovo postavlja tajmer. */
+    
 	if (animation_ongoing) {
 		glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
 	}
 
-	glutPostRedisplay();
 }
 
 void DrawMap(){

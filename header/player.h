@@ -4,10 +4,6 @@
 #include "../header/items.h"
 #include <Box2D/Box2D.h>
 
-typedef struct _Point{
-    float x, y;
-} Point;
-
 typedef struct _Input{
     float horizontal, vertical;
     bool shoot;
