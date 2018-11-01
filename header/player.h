@@ -5,7 +5,7 @@
 #include <Box2D/Box2D.h>
 
 typedef struct _Input{
-    float horizontal, vertical;
+    float horizontal, vertical, angle;
     bool shoot;
 } Input;
 
@@ -22,8 +22,8 @@ public:
     int health;
     Weapon* equiped_weapon;
     b2Body* body;
+    float r;
 private:
-    float rotation, r;
     float speed;
 protected:
 

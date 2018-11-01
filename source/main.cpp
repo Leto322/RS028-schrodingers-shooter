@@ -50,7 +50,7 @@ void LoadTextures(){
 	image_done(image);
 }
 
-Player* players[1];
+Player* players[2];
 Player* myPlayer;
 b2World* world;
 std::vector<Line> walls;
@@ -116,6 +116,10 @@ int main(int argc, char **argv)
 
     myPlayer = new Player();
     players[0] = myPlayer;
+	players[1] = new Player();
+	players[1]->team = !myPlayer->team;
+	players[1]->body->SetTransform(b2Vec2(-1, 0), 1);
+
 
 
     lastFrameTime = std::chrono::high_resolution_clock::now();
@@ -197,12 +201,16 @@ static void on_mouse_pressed_released(int button, int state, int x, int y) {
 }
 
 static void on_mouse_move_active(int x, int y) {
-
+	on_mouse_move(x, y);
 }
 
 
 static void on_mouse_move(int x, int y){
+	float dx = x - windowWidth/2;
+	float dy = y - windowHeight/2;
 
+	float angle = atan2(dy, dx);
+	myPlayer->input.angle = -angle;
 }
 
 
@@ -224,7 +232,7 @@ static void on_timer(int value)
     while (accumulator > phisycsUpdateInterval){
         world->Step(phisycsUpdateInterval, 6, 2);
 
-        for (int i=0; i<1; i++){
+		for (int i = 0; i < 1; i++) {
             players[i]->Update();
             players[i]->equiped_weapon->Update(players[i]->input.shoot);
         }
@@ -260,7 +268,7 @@ void DrawMap(){
 }
 
 static void DrawPlayers(){
-    for (int i=0; i<1; i++){
+    for (int i=0; i<2; i++){
         players[i]->Draw();
     }
 }

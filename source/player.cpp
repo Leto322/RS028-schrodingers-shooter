@@ -21,12 +21,13 @@ Player::Player(){
     input.vertical = 0;
     input.horizontal = 0;
     input.shoot = false;
-    rotation = 90;
+	input.angle= M_PI/2;
     equiped_weapon = new Weapon();
     team = false;
     
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
+	bodyDef.linearDamping = 2.0f;
     bodyDef.position.Set(0.0f, 0.0f);
     body = world->CreateBody(&bodyDef);
     
@@ -53,9 +54,9 @@ void Player::Draw(){
         glColor3f(0.3, 0.3, 1);
     }
     glPushMatrix();
-    glTranslatef(body->GetPosition().x, body->GetPosition().y, 0);
+    glTranslatef(body->GetPosition().x, body->GetPosition().y, r);
     glutSolidSphere(r, 20, 20);
-    glRotatef(rotation, 0, 0, 1);
+    glRotatef(input.angle*180/M_PI, 0, 0, 1);
     glTranslatef(r, 0, 0);
     glColor3f(0, 0, 0); 
     glutSolidSphere(r/4, 20, 20);
