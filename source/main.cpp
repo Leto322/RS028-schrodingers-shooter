@@ -89,20 +89,20 @@ int main(int argc, char **argv)
 	glEnable(GLUT_MULTISAMPLE);
 	glEnable(GL_TEXTURE_2D);
 
-	//glShadeModel (GL_SMOOTH);
-	//glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
+	glShadeModel (GL_SMOOTH);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 	//glEnable(GL_LIGHT1);
 	//glEnable(GL_LIGHT2);
-	//glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_COLOR_MATERIAL);
 
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,
               GL_MODULATE);
 
 	LoadTextures();
 
-	//GLfloat lightPos0[] = { 0, 0, -2, 1};
-	//glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
+	GLfloat lightPos0[] = { -1, 1, 1, 0};
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 
     /* Ulazi se u glavnu petlju. */
 	glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
@@ -251,9 +251,9 @@ static void on_timer(int value)
 
 void DrawMap(){
 	glColor3f(1, 1, 1);
+	glBindTexture(GL_TEXTURE_2D, textureNames[0]);
 	glBegin(GL_TRIANGLE_STRIP);
 
-	glBindTexture(GL_TEXTURE_2D, textureNames[0]);
 	glNormal3f(0, 0, 1);
 	glTexCoord2f(0, 0);
 	glVertex3f(-9.2, -9.2, 0);
@@ -263,14 +263,17 @@ void DrawMap(){
 	glVertex3f(9.2, -9.2, 0);
 	glTexCoord2f(1, 1);
 	glVertex3f(9.2, 9.2, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
 	glEnd();
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 static void DrawPlayers(){
     for (int i=0; i<2; i++){
-        players[i]->Draw();
+        players[i]->DrawShadow();
     }
+	for (int i = 0; i < 2; i++) {
+		players[i]->Draw();
+	}
 }
 
 static void on_display(void)
