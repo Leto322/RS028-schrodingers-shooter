@@ -11,13 +11,15 @@
 #include <chrono>
 
 std::vector<std::string> textureLocations = {
-	"textures/Map.bmp"
+	"textures/sand.bmp",
+    "textures/wall3.bmp"
 	};
+
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 15
 
-static GLuint textureNames[1];
+GLuint textureNames[2];
 
 static int animation_ongoing;
 static void on_keyboard(unsigned char key, int x, int y);
@@ -38,22 +40,28 @@ void LoadTextures(){
 	for (int i=0; i<textureLocations.size(); i++){
 		char *cstr = &textureLocations[i][0u];
 		image_read(image, cstr);
-		glBindTexture(GL_TEXTURE_2D, textureNames[0]);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+            glBindTexture(GL_TEXTURE_2D, textureNames[i]);
+            glTexParameteri(GL_TEXTURE_2D,
+                    GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D,
+                    GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+                 image->width, image->height, 0,
+                 GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
 		delete [] cstr;
 	}
 
 	image_done(image);
 }
 
+
 Player* players[2];
 Player* myPlayer;
 b2World* world;
-std::vector<Line> walls;
+std::vector<Block> walls;
+std::vector<Block> ground;
 std::chrono::high_resolution_clock::time_point lastFrameTime = std::chrono::high_resolution_clock::now();
 double accumulator = 0;
 double phisycsUpdateInterval = 0.02;
@@ -251,23 +259,23 @@ static void on_timer(int value)
 }
 
 void DrawMap(){
-	glColor3f(1, 1, 1);
+    glPushMatrix();
+    glColor3f(1,1,1);
 	glBindTexture(GL_TEXTURE_2D, textureNames[0]);
-	glBegin(GL_TRIANGLE_STRIP);
-
-	glNormal3f(0, 0, 1);
-	glTexCoord2f(0, 0);
-	glVertex3f(-9.2, -9.2, 0);
-	glTexCoord2f(0, 1);
-	glVertex3f(-9.2, 9.2, 0);
-	glTexCoord2f(1, 0);
-	glVertex3f(9.2, -9.2, 0);
-	glTexCoord2f(1, 1);
-	glVertex3f(9.2, 9.2, 0);
-	glEnd();
+    glNormal3f(0, 0, 1);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0);
+        glVertex3f(-9, -9, 0);
+        glTexCoord2f(20, 0);
+        glVertex3f(9, -9, 0);
+        glTexCoord2f(20,20);
+        glVertex3f(9, 9, 0);
+        glTexCoord2f(0, 20);
+        glVertex3f(-9, 9, 0);
+    glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
+    glPopMatrix();
 }
-
 static void DrawPlayers(){
     for (int i=0; i<2; i++){
         players[i]->DrawShadow();
@@ -284,8 +292,7 @@ static void DrawBullets(){
 }
 
 static void on_display(void)
-{
-	/* Postavlja se boja svih piksela na zadatu boju pozadine. */
+{	/* Postavlja se boja svih piksela na zadatu boju pozadine. */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -295,6 +302,7 @@ static void on_display(void)
                 myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0,
                 0, 1, 0);
 
+    DrawWalls();
 	DrawMap();
 	DrawBullets();
 	DrawPlayers();
