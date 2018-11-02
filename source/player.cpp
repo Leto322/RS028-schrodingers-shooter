@@ -22,7 +22,7 @@ Player::Player(){
     input.horizontal = 0;
     input.shoot = false;
 	input.angle= M_PI/2;
-    equiped_weapon = new Weapon();
+    equiped_weapon = new Weapon(0.0f, 0.0f, input.angle);
     team = false;
     
     b2BodyDef bodyDef;
@@ -65,6 +65,7 @@ void Player::Draw(){
 
 void Player::Update(){
     Move();
+    equiped_weapon->SetPositionAndAngle(body->GetPosition().x, body->GetPosition().y, input.angle);
     //std::cout << "vertical " << input.vertical  << "horizontal " << input.horizontal << std::endl;
 };
 

@@ -4,6 +4,7 @@
 #include "../header/player.h"
 #include "../header/geometry.h"
 #include "../header/items.h"
+#include "../header/bullet.h"
 #include <string>
 #include <vector>
 #include <Box2D/Box2D.h>
@@ -57,6 +58,7 @@ std::vector<Line> walls;
 std::chrono::high_resolution_clock::time_point lastFrameTime = std::chrono::high_resolution_clock::now();
 double accumulator = 0;
 double phisycsUpdateInterval = 0.02;
+std::vector<Bullet*> bullets;
 
 
 int main(int argc, char **argv)
@@ -273,6 +275,12 @@ static void DrawPlayers(){
     }
 }
 
+static void DrawBullets(){
+	for (int i=0; i<bullets.size(); i++){
+        bullets[i]->Draw();
+    }
+}
+
 static void on_display(void)
 {
 	/* Postavlja se boja svih piksela na zadatu boju pozadine. */
@@ -286,6 +294,7 @@ static void on_display(void)
                 0, 1, 0);
 
 	DrawMap();
+	DrawBullets();
 	DrawPlayers();
 
 	/* Nova slika se salje na ekran. */

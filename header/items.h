@@ -3,11 +3,12 @@
 
 class Weapon {
 public:
-	Weapon();
+	Weapon(float x, float y, float angle);
 	void Update(bool shoot);
 	void UpdateTimers();
 	void fire();
 	void reload();
+	void SetPositionAndAngle(float x, float y, float angle);
 	bool allowed_fire;
 	
 private:
@@ -19,6 +20,9 @@ private:
 	double reload_delay;
 	double fire_timer;
 	double reload_timer;
+	float pos_x;
+	float pos_y;
+	float angle;
 };
 
 #endif
