@@ -4,28 +4,22 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <sstream>
 #include <vector>
 #include <Box2D/Box2D.h>
 #include <cmath>
+#include <GL/glut.h>
+
 
 
 // Klasa Duz
-struct Line{
-// public:
-    Line(b2Vec2 A, b2Vec2 B);
-
-    // Vector2D A() const;
-    // void setA(const Vector2D & A);
-    //
-    // Vector2D B() const;
-    // void setB(const Vector2D & B);
-
-    double len;
-// private:
+struct Block{
+    Block(b2Vec2 A,double edge);
     b2Vec2 m_A;
-    b2Vec2 m_B;
+    double m_edge;
+    b2Vec2 m_vertexes[4];
 };
+
+
 
 
 extern b2World* world;
@@ -34,7 +28,7 @@ extern b2World* world;
 void LoadWalls();
 b2Vec2 ScaleVec(const b2Vec2 & A);
 void AddWall(float x, float y, float w, float h);
-
+void DrawWalls();
 
 
 
