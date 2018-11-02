@@ -14,7 +14,8 @@ class Player{
 public:
     Player(float x, float y, float r);
     Player();
-    void Draw();
+	void Draw();
+	void DrawShadow();
     void Update();
     void Move();
     bool team;

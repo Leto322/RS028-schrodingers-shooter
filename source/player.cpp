@@ -47,21 +47,37 @@ Player::Player(){
 };
 
 void Player::Draw(){
-    if (team){
-        glColor3f(1, 0.3, 0.3);
-    }
-    else{
-        glColor3f(0.3, 0.3, 1);
-    }
     glPushMatrix();
-    glTranslatef(body->GetPosition().x, body->GetPosition().y, r);
-    glutSolidSphere(r, 20, 20);
-    glRotatef(input.angle*180/M_PI, 0, 0, 1);
-    glTranslatef(r, 0, 0);
-    glColor3f(0, 0, 0); 
-    glutSolidSphere(r/4, 20, 20);
+		if (team){
+			glColor3f(1, 0.3, 0.3);
+		}
+		else{
+			glColor3f(0.3, 0.3, 1);
+		}
+		glTranslatef(body->GetPosition().x, body->GetPosition().y, r);
+		glutSolidSphere(r, 15, 5);
+		glRotatef(input.angle*180/M_PI, 0, 0, 1);
+		glTranslatef(r, 0, 0);
+		glColor3f(0, 0, 0);
+		glutSolidSphere(r/4, 10, 2);
     glPopMatrix();
 };
+
+void Player::DrawShadow() {
+	//DRAWING PLAYER SHADOW
+	glPushMatrix();
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glTranslatef(body->GetPosition().x + r / 2, body->GetPosition().y - r / 2, 0);
+	glRotatef(45, 0, 0, 1);
+	glScalef(1, 1.5, 0.1);
+	glColor4f(0, 0, 0, 0.2);
+	glutSolidSphere(r, 20, 2);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+	glPopMatrix();
+}
 
 void Player::Update(){
     Move();
