@@ -10,7 +10,6 @@
 #include <Box2D/Box2D.h>
 #include <chrono>
 
-
 std::vector<std::string> textureLocations = {
 	"textures/Map.bmp"
 	};

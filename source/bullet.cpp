@@ -7,8 +7,8 @@ extern b2World* world;
 
 /*Bullet constructor: takes a point from which a bullet is being fired and a trajectory angle*/
 Bullet::Bullet(float x, float y, float angle){
-	r = 0.03;
-	speed = 0.05;
+	r = 0.022;
+	speed = 0.058;
 
 	/*Creating Bullet Body*/
 	b2BodyDef bodyDef;

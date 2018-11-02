@@ -81,7 +81,11 @@ void Player::DrawShadow() {
 
 void Player::Update(){
     Move();
-    equiped_weapon->SetPositionAndAngle(body->GetPosition().x, body->GetPosition().y, input.angle);
+
+    float vx = cos(input.angle);
+    float vy =  sin(input.angle);
+    float n = 0.5;
+    equiped_weapon->SetPositionAndAngle(body->GetPosition().x + vx*n, body->GetPosition().y + vy*n, input.angle);
     //std::cout << "vertical " << input.vertical  << "horizontal " << input.horizontal << std::endl;
 };
 
