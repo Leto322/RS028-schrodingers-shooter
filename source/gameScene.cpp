@@ -16,7 +16,8 @@ extern GLuint textureNames[];
 Player* players[2];
 Player* myPlayer;
 b2World* world;
-std::vector<Line> walls;
+std::vector<Block> walls;
+std::vector<Block> ground;
 std::chrono::high_resolution_clock::time_point lastFrameTime;
 double accumulator = 0;
 double phisycsUpdateInterval = 0.02;
@@ -133,21 +134,22 @@ void on_timer_game()
 }
 
 void DrawMap() {
+	glPushMatrix();
 	glColor3f(1, 1, 1);
 	glBindTexture(GL_TEXTURE_2D, textureNames[0]);
-	glBegin(GL_TRIANGLE_STRIP);
-
 	glNormal3f(0, 0, 1);
-	glTexCoord2f(0, 0);
-	glVertex3f(-9.2, -9.2, 0);
-	glTexCoord2f(0, 1);
-	glVertex3f(-9.2, 9.2, 0);
-	glTexCoord2f(1, 0);
-	glVertex3f(9.2, -9.2, 0);
-	glTexCoord2f(1, 1);
-	glVertex3f(9.2, 9.2, 0);
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);
+		glVertex3f(-9, -9, 0);
+		glTexCoord2f(20, 0);
+		glVertex3f(9, -9, 0);
+		glTexCoord2f(20, 20);
+		glVertex3f(9, 9, 0);
+		glTexCoord2f(0, 20);
+		glVertex3f(-9, 9, 0);
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glPopMatrix();
 }
 
 void DrawPlayers() {
@@ -174,6 +176,7 @@ void on_display_game(void)
 		myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0,
 		0, 1, 0);
 
+	DrawWalls();
 	DrawMap();
 	DrawBullets();
 	DrawPlayers();

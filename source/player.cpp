@@ -84,7 +84,7 @@ void Player::Update(){
 
     float vx = cos(input.angle);
     float vy =  sin(input.angle);
-    float n = 0.5;
+    float n = 0.15;
     equiped_weapon->SetPositionAndAngle(body->GetPosition().x + vx*n, body->GetPosition().y + vy*n, input.angle);
     //std::cout << "vertical " << input.vertical  << "horizontal " << input.horizontal << std::endl;
 };
