@@ -1,3 +1,6 @@
+# RS028-schrodingers-shooter
+Schrodingers Shooter
+
 Schrodinger's shooter is a shooter game that has every and no feature all at once.
 2D/3D, good/bad graphics, bots/no bots. 
 No one will know until the project is presented when all the possible states collapse into one.
