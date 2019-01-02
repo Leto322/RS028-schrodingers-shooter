@@ -6,19 +6,27 @@ Schrodinger's shooter is a shooter game that has every and no feature all at onc
 No one will know until the project is presented when all the possible states collapse into one.
 
 TODO:
+
 Gameplay
-- [] Basic player movement
-- [] Map design
-- [] Player/wall collisions
-- [] Basic shooting mechanics with random mooving bots
+
+- [x] Basic player movement
+- [ ] Map design
+- [x] Player/wall collisions
+- [ ] Basic shooting mechanics with random moving bots
+
 More advanced shooting mechanics
-- [] Reload time
-- [] Fire rate
-- [] Recoil
+
+- [x] Reload time
+- [x] Fire rate
+- [ ] Recoil
+
 AI
-- [] Basic neural network implementation
-- [] Player sensors
-- [] Neural network training with reinforcement learning (genetic algorithm)
+
+- [ ] Basic neural network implementation
+- [ ] Player sensors
+- [ ] Neural network training with reinforcement learning (genetic algorithm)
+
 Visuals
-- [] 3D
-- [] Particle effects
+
+- [ ] 3D
+- [ ] Particle effects
