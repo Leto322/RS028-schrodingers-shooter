@@ -1,6 +1,6 @@
 #include "../header/geometry.h"
 
-std::vector<std::vector<char>> map;
+extern std::vector<std::vector<char>> map;
 extern std::vector<Block> walls;
 extern std::vector<Block> ground;
 extern GLuint textureNames[2];
@@ -47,7 +47,6 @@ void ScaleVec(b2Vec2 * A){
 
 void LoadWalls()
 {
-
     std::string lineFile;
     b2Vec2 A;
     std::ifstream myfile ("walls.txt");
