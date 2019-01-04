@@ -179,7 +179,8 @@ void DrawPlayers() {
 void DrawBullets() {
 	for (int i = 0; i < bullets.size(); i++) {
         if(abs(bullets[i]->body->GetLinearVelocity().x) <= 0.1 && abs(bullets[i]->body->GetLinearVelocity().y) <= 0.1){
-            bullets.erase(bullets.begin() + i);
+			world->DestroyBody(bullets[i]->body);
+			bullets.erase(bullets.begin() + i);
             i--;
             continue;
         }

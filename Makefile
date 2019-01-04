@@ -4,9 +4,8 @@ CFLAGS=-lm
 
 all: SchShooter
 
-SchShooter: main.o image.o player.o geometry.o weapon.o item.o bullet.o gameScene.o
-	$(CC) main.o image.o player.o geometry.o weapon.o item.o bullet.o gameScene.o -o SchShooter.out $(GLFLAGS) $(CFLAGS)
-	
+SchShooter: main.o image.o player.o geometry.o collision.o weapon.o item.o bullet.o gameScene.o
+	$(CC) main.o image.o player.o geometry.o collision.o weapon.o item.o bullet.o gameScene.o -o SchShooter.out $(GLFLAGS) $(CFLAGS)
 
 main.o: source/main.cpp
 	$(CC) -c source/main.cpp $(GLFLAGS) $(CFLAGS)

@@ -102,7 +102,7 @@ void playerBrain::Update(){
     
     vx = cos(Brain::m_player->input.angle);
     vy =  sin(Brain::m_player->input.angle);
-    float n = 0.15;
+    float n = 0.3;
     Brain::m_player->equiped_weapon->SetPositionAndAngle(Brain::m_player->body->GetPosition().x + vx*n, Brain::m_player->body->GetPosition().y + vy*n, Brain::m_player->input.angle);
 }
 
