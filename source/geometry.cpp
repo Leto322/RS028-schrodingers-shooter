@@ -26,7 +26,7 @@ extern GLuint textureNames[2];
 
 
 
-//Definicije konstruktora i metoda za klasu Line
+//Definicije konstruktora i metoda za klasu Block
 Block::Block(b2Vec2 A, double edge)
 {
     m_A = A;
@@ -35,6 +35,12 @@ Block::Block(b2Vec2 A, double edge)
     m_vertexes[1] = b2Vec2(m_A.x+edge/2,m_A.y-edge/2);
     m_vertexes[2] = b2Vec2(m_A.x+edge/2,m_A.y+edge/2);
     m_vertexes[3] = b2Vec2(m_A.x-edge/2,m_A.y+edge/2);
+    b2BodyDef groundBodyDef;
+    groundBodyDef.position.Set(m_A.x, m_A.y);
+    m_body = world->CreateBody(&groundBodyDef);
+    b2PolygonShape groundBox;
+    groundBox.SetAsBox(m_edge/2, m_edge/2);
+    m_body->CreateFixture(&groundBox, 0.0f);
 }
 
 
@@ -83,20 +89,21 @@ void LoadWalls()
                     ScaleVec(&A);
                     walls.push_back(Block(A, edge));
                 }
-                else{
-                    A.x = j*edge+edge/2;
-                    A.y = i*edge+edge/2;
-                    ScaleVec(&A);
-                    ground.push_back(Block(A, edge));
-                }
+//                 else{
+//                     A.x = j*edge+edge/2;
+//                     A.y = i*edge+edge/2;
+//                     ScaleVec(&A);
+//                     ground.push_back(Block(A, edge));
+//                 }
             }
     }
     
     myfile.close();
-    n=walls.size();
-    for (i=0;i<n;i++){
-        AddWall(walls[i].m_A.x, walls[i].m_A.y, walls[i].m_edge/2, walls[i].m_edge/2);
-    }
+//     n=walls.size();
+//     for (i=0;i<n;i++){
+// //         AddWall(walls[i].m_A.x, walls[i].m_A.y, walls[i].m_edge/2, walls[i].m_edge/2);
+//         AddWall(walls[i]);
+//     }
 }
 
 
@@ -179,38 +186,13 @@ void DrawWalls(){
     }
 }
 
-void AddWall(float x, float y, float w, float h){
-    b2BodyDef groundBodyDef;
-    groundBodyDef.position.Set(x, y);
-    b2Body* groundBody = world->CreateBody(&groundBodyDef);
-    b2PolygonShape groundBox;
-    groundBox.SetAsBox(w, h);
-    groundBody->CreateFixture(&groundBox, 0.0f);
-}
-
-// void AddOuterWalls(){
-//     AddWall(0, 10.2, 9, 1);
-//     AddWall(0, -10.2, 9, 1);
-//     AddWall(10, 0, 1, 9);
-//     AddWall(-10, 0, 1, 9);
+// void AddWall(float x, float y, float w, float h){
+//     b2BodyDef groundBodyDef;
+//     groundBodyDef.position.Set(x, y);
+//     b2Body* groundBody = world->CreateBody(&groundBodyDef);
+//     b2PolygonShape groundBox;
+//     groundBox.SetAsBox(w, h);
+//     groundBody->CreateFixture(&groundBox, 0.0f);
 // }
 
 
-// int main(int argc, const char *argv[])
-// {
-// 
-//     LoadWalls();
-//     int n = walls.size();
-//     int i;
-//     for(i=0;i<n;i++){
-//        std::cout << "(" << walls[i].m_A.x << ","<< walls[i].m_A.y << ") " << walls[i].m_edge <<std::endl; 
-//     }
-//     n= ground.size();
-//     for(i=0;i<n;i++){
-//        std::cout << "(" << ground[i].m_A.x << ","<< ground[i].m_A.y << ") " << ground[i].m_edge <<std::endl; 
-//     }
-// 
-// 
-// 
-//     return 0;
-// }
