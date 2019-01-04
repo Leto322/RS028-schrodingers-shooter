@@ -6,8 +6,10 @@
 #include "../header/items.h"
 #include "../header/bullet.h"
 #include "../header/gameScene.h"
+#include "../header/collision.h"
 #include <string>
 #include <vector>
+#include <chrono>
 #include <Box2D/Box2D.h>
 
 extern float windowWidth, windowHeight;
@@ -16,6 +18,7 @@ extern GLuint textureNames[];
 Player* players[2];
 Player* myPlayer;
 b2World* world;
+MyContactListener* contactListener;
 std::vector<Block> walls;
 std::vector<Block> ground;
 std::chrono::high_resolution_clock::time_point lastFrameTime;
@@ -27,13 +30,15 @@ void InitGame() {
 
 	b2Vec2 gravity(0.0f, 0.0f);
 	world = new b2World(gravity);
+
+	contactListener = new MyContactListener();
+	world->SetContactListener(contactListener);
+
 	LoadWalls();
 
 	myPlayer = new Player();
-    myPlayer->SetBrain(new playerBrain(*myPlayer));
 	players[0] = myPlayer;
 	players[1] = new Player();
-    players[1]->SetBrain(new botBrain(*players[1]));
 	players[1]->team = !myPlayer->team;
 	players[1]->body->SetTransform(b2Vec2(-1, 0), 1);
 
@@ -126,7 +131,7 @@ void on_timer_game()
 		world->Step(phisycsUpdateInterval, 6, 2);
 
 		for (int i = 0; i < 1; i++) {
-			players[i]->m_brain->Update();
+			players[i]->Update();
 			players[i]->equiped_weapon->Update(players[i]->input.shoot);
 		}
 
@@ -165,11 +170,6 @@ void DrawPlayers() {
 
 void DrawBullets() {
 	for (int i = 0; i < bullets.size(); i++) {
-        if(abs(bullets[i]->body->GetLinearVelocity().x) <= 0.1 && abs(bullets[i]->body->GetLinearVelocity().y) <= 0.1){
-            bullets.erase(bullets.begin() + i);
-            i--;
-            continue;
-        }
 		bullets[i]->Draw();
 	}
 }

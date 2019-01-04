@@ -1,6 +1,7 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
+#include "../header/util.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -12,12 +13,14 @@
 
 
 // Struktura Block
-struct Block{
+struct Block : public Colider{
     Block(b2Vec2 A,double edge);
     b2Vec2 m_A;
     double m_edge;
     b2Vec2 m_vertexes[4];
     b2Body* m_body;
+
+    //virtual ClassID getClassID();
 };
 
 

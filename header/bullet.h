@@ -1,15 +1,18 @@
 #ifndef BULLET_DEF
 #define BULLET_DEF
 
+#include "../header/util.h"
 #include <Box2D/Box2D.h>
 
-class Bullet {
+class Bullet : public Colider {
 public:
-	Bullet(float x, float y, float angle);
+	Bullet(float x, float y, float angle, int dmg);
 	void Draw();
-	
+	virtual ClassID getClassID();
+
 	b2Body* body;
-	
+	int m_dmg;
+
 private:
 	float r;
 	float speed;

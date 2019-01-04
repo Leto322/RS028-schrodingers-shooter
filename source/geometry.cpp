@@ -1,6 +1,7 @@
 #include "../header/geometry.h"
+#include "../header/util.h"
 
-extern std::vector<std::vector<char>> map;
+std::vector< std::vector<char> > map;
 extern std::vector<Block> walls;
 extern std::vector<Block> ground;
 extern GLuint textureNames[2];
@@ -19,9 +20,9 @@ extern GLuint textureNames[2];
  *         # 3 #  #   # 2
  *         # #    # #
  *         ########
- *        0       1 
- * 
- * 
+ *        0       1
+ *
+ *
  */
 
 
@@ -38,6 +39,8 @@ Block::Block(b2Vec2 A, double edge)
     b2BodyDef groundBodyDef;
     groundBodyDef.position.Set(m_A.x, m_A.y);
     m_body = world->CreateBody(&groundBodyDef);
+    //m_body->SetUserData(this);
+
     b2PolygonShape groundBox;
     groundBox.SetAsBox(m_edge/2, m_edge/2);
     m_body->CreateFixture(&groundBox, 0.0f);
@@ -69,7 +72,7 @@ void LoadWalls()
             }
             map.push_back(line);
             line.clear();
-            
+
         }
     }
     edge = 18.0/n;
@@ -80,7 +83,7 @@ void LoadWalls()
             }
             std::cout << std::endl;
     }
-    
+
      for(i=0;i<n;i++){
             for(j=0;j<n;j++){
                 if(map[i][j] == '#'){
@@ -97,7 +100,7 @@ void LoadWalls()
 //                 }
             }
     }
-    
+
     myfile.close();
 //     n=walls.size();
 //     for (i=0;i<n;i++){
@@ -116,9 +119,9 @@ void LoadWalls()
  *         # 3 #  #   # 2
  *         # #    # #
  *         ########
- *        0       1 
- * 
- * 
+ *        0       1
+ *
+ *
  */
 
 
@@ -195,4 +198,4 @@ void DrawWalls(){
 //     groundBody->CreateFixture(&groundBox, 0.0f);
 // }
 
-
+//ClassID Block::getClassID(){return BLOCK;}
