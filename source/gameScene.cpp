@@ -6,8 +6,10 @@
 #include "../header/weapon.h"
 #include "../header/bullet.h"
 #include "../header/gameScene.h"
+#include "../header/collision.h"
 #include <string>
 #include <vector>
+#include <chrono>
 #include <Box2D/Box2D.h>
 
 extern float windowWidth, windowHeight;
@@ -16,6 +18,7 @@ extern GLuint textureNames[];
 Player* players[2];
 Player* myPlayer;
 b2World* world;
+MyContactListener* contactListener;
 std::vector<Block> walls;
 std::vector<Block> ground;
 std::chrono::high_resolution_clock::time_point lastFrameTime;
@@ -28,6 +31,10 @@ void InitGame() {
 
 	b2Vec2 gravity(0.0f, 0.0f);
 	world = new b2World(gravity);
+
+	contactListener = new MyContactListener();
+	world->SetContactListener(contactListener);
+
 	LoadWalls();
 
 	myPlayer = new Player();

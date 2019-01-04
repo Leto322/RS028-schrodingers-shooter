@@ -2,6 +2,7 @@
 #define PLAYER_DEF
 
 #include "weapon.h"
+#include "../header/util.h"
 #include <Box2D/Box2D.h>
 
 typedef struct _Input{
@@ -11,27 +12,27 @@ typedef struct _Input{
 
 class Brain;
 
-class Player{
+class Player : public Colider{
 public:
     Player(float x, float y, float r);
     Player();
-	void Draw();
-	void DrawShadow();
-//     void Update();
-//     void Move();   
-    
-    void SetBrain(Brain* brain);
+    void Draw();
+    void DrawShadow();
 
+    void takeDmg(int dmg);
+    virtual ClassID getClassID();
+    void SetBrain(Brain* brain);
+    Brain* m_brain;
     bool team;
     Input input;
-    int health;
-    
-    Brain* m_brain;
     Weapon* equiped_weapon;
     b2Body* body;
     float r;
+
 private:
     float speed;
+    int health;
+    void die();
 protected:
 
 };

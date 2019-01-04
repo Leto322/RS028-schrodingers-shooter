@@ -17,7 +17,7 @@ float randomNumber(float start, float end){
 }
 
 Weapon::Weapon(float x, float y, float angle, float pickupDistance) : Item(x, y, pickupDistance){
-    dmg = 1;
+    dmg = 10;
 	ammo = 100;
 	ammo_cap = 100;
 	spread = 0.15;
@@ -35,7 +35,7 @@ void Weapon::fire(){
 	if(fire_timer <= 0 && reload_timer <= 0 && this->ammo != 0){
 		//Calculating new angle from random spread
 		float firing_angle = angle + spread*randomNumber(-1,1);
-		Bullet* firedBullet = new Bullet(pos_x, pos_y, firing_angle);
+		Bullet* firedBullet = new Bullet(pos_x, pos_y, firing_angle, dmg);
 		//Adding bullet to the list of fired bullets
 		bullets.push_back(firedBullet);
 

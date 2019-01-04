@@ -7,12 +7,13 @@ all: SchShooter
 SchShooter: main.o image.o player.o geometry.o weapon.o item.o bullet.o gameScene.o
 	$(CC) main.o image.o player.o geometry.o weapon.o item.o bullet.o gameScene.o -o SchShooter.out $(GLFLAGS) $(CFLAGS)
 	
+
 main.o: source/main.cpp
 	$(CC) -c source/main.cpp $(GLFLAGS) $(CFLAGS)
-	
+
 image.o: source/image.cpp header/image.h
 	$(CC) -c source/image.cpp $(CFLAGS)
-	
+
 player.o: source/player.cpp header/player.h
 	$(CC) -c source/player.cpp $(CFLAGS)
 
@@ -28,8 +29,11 @@ item.o: source/item.cpp header/item.h
 bullet.o: source/bullet.cpp header/bullet.h
 	$(CC) -c source/bullet.cpp $(CFLAGS)
 
+collision.o: source/collision.cpp header/collision.h
+	$(CC) -c source/collision.cpp $(GLFLAGS) $(CFLAGS)
+
 gameScene.o: source/gameScene.cpp header/gameScene.h
-	$(CC) -c source/gameScene.cpp $(CFLAGS)
-	
+	$(CC) -c source/gameScene.cpp  $(GLFLAGS) $(CFLAGS)
+
 clean:
 	rm -rf *.o *.out
