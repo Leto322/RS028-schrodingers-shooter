@@ -1,5 +1,5 @@
 #include "../header/player.h"
-#include "../header/items.h"
+#include "../header/weapon.h"
 #include <GL/glut.h>
 #include <iostream>
 #include <math.h>
@@ -24,7 +24,7 @@ Player::Player(){
     input.horizontal = 0;
     input.shoot = false;
 	input.angle= M_PI/2;
-    equiped_weapon = new Weapon(0.0f, 0.0f, input.angle);
+    equiped_weapon = new Weapon(0.0f, 0.0f, input.angle, 0.1);
     team = false;
     
     b2BodyDef bodyDef;

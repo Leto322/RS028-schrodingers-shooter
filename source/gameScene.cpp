@@ -3,7 +3,7 @@
 #include "../header/image.h"
 #include "../header/player.h"
 #include "../header/geometry.h"
-#include "../header/items.h"
+#include "../header/weapon.h"
 #include "../header/bullet.h"
 #include "../header/gameScene.h"
 #include <string>
@@ -22,6 +22,7 @@ std::chrono::high_resolution_clock::time_point lastFrameTime;
 double accumulator = 0;
 double phisycsUpdateInterval = 0.02;
 std::vector<Bullet*> bullets;
+ItemPool itemPool;
 
 void InitGame() {
 
@@ -37,7 +38,11 @@ void InitGame() {
 	players[1]->team = !myPlayer->team;
 	players[1]->body->SetTransform(b2Vec2(-1, 0), 1);
 
+	itemPool = ItemPool();
 
+	//Test for the items
+	itemPool.Add(new Weapon(-2, 0, 0, 0.1));
+	itemPool.Add(new Weapon(-4, 0, 0, 0.3));
 
 	lastFrameTime = std::chrono::high_resolution_clock::now();
 }
@@ -126,6 +131,7 @@ void on_timer_game()
 		world->Step(phisycsUpdateInterval, 6, 2);
 
 		for (int i = 0; i < 1; i++) {
+			itemPool.CheckPickups(players[i]);
 			players[i]->m_brain->Update();
 			players[i]->equiped_weapon->Update(players[i]->input.shoot);
 		}
@@ -183,6 +189,7 @@ void on_display_game(void)
 		myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0,
 		0, 1, 0);
 
+	itemPool.DrawItems();
 	DrawWalls();
 	DrawMap();
 	DrawBullets();

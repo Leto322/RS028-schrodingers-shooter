@@ -1,9 +1,12 @@
-#include "../header/items.h"
+#include "../header/weapon.h"
 #include "../header/bullet.h"
+#include "../header/player.h"
 #include <iostream>
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <GL/glut.h>
+
 
 extern double phisycsUpdateInterval;
 extern std::vector<Bullet*> bullets;
@@ -13,7 +16,7 @@ float randomNumber(float start, float end){
 	return ( float(rand())/float(RAND_MAX) )*(end - start) + start;
 }
 
-Weapon::Weapon(float x, float y, float angle){
+Weapon::Weapon(float x, float y, float angle, float pickupDistance) : Item(x, y, pickupDistance){
     dmg = 1;
 	ammo = 100;
 	ammo_cap = 100;
@@ -69,4 +72,15 @@ void Weapon::SetPositionAndAngle(float x, float y, float angle){
 	this->pos_x = x;
 	this->pos_y = y;
 	this->angle = angle;
+}
+
+void Weapon::Pickup(Player* picker) {
+	std::cout << "Weapon picked up" << std::endl;
+}
+
+void Weapon::Draw() {
+	glPushMatrix();
+	glTranslatef(itemPosition.x, itemPosition.y, 0);
+	glutSolidSphere(0.1, 10, 10);
+	glPopMatrix();
 }

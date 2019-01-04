@@ -1,7 +1,7 @@
 #ifndef PLAYER_DEF
 #define PLAYER_DEF
 
-#include "../header/items.h"
+#include "weapon.h"
 #include <Box2D/Box2D.h>
 
 typedef struct _Input{

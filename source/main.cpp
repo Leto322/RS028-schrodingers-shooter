@@ -3,7 +3,7 @@
 #include "../header/image.h"
 #include "../header/player.h"
 #include "../header/geometry.h"
-#include "../header/items.h"
+#include "../header/weapon.h"
 #include "../header/bullet.h"
 #include "../header/gameScene.h"
 #include <string>

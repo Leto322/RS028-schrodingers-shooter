@@ -1,9 +1,13 @@
-#ifndef ITEMS_DEF
-#define ITEMS_DEF
+#ifndef WEAPON_DEF
+#define WEAPON_DEF
 
-class Weapon {
+#include "item.h"
+
+class Weapon : public Item{
 public:
-	Weapon(float x, float y, float angle);
+	Weapon(float x, float y, float angle, float pickupDistance);
+	void Pickup(Player* picker) override;
+	void Draw() override;
 	void Update(bool shoot);
 	void UpdateTimers();
 	void fire();
