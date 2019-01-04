@@ -37,8 +37,10 @@ void InitGame() {
 	LoadWalls();
 
 	myPlayer = new Player();
+    myPlayer->SetBrain(new playerBrain(*myPlayer));
 	players[0] = myPlayer;
 	players[1] = new Player();
+    players[1]->SetBrain(new botBrain(*players[1]));
 	players[1]->team = !myPlayer->team;
 	players[1]->body->SetTransform(b2Vec2(-1, 0), 1);
 
@@ -131,7 +133,7 @@ void on_timer_game()
 		world->Step(phisycsUpdateInterval, 6, 2);
 
 		for (int i = 0; i < 1; i++) {
-			players[i]->Update();
+			players[i]->m_brain->Update();
 			players[i]->equiped_weapon->Update(players[i]->input.shoot);
 		}
 
@@ -170,6 +172,11 @@ void DrawPlayers() {
 
 void DrawBullets() {
 	for (int i = 0; i < bullets.size(); i++) {
+        if(abs(bullets[i]->body->GetLinearVelocity().x) <= 0.1 && abs(bullets[i]->body->GetLinearVelocity().y) <= 0.1){
+            bullets.erase(bullets.begin() + i);
+            i--;
+            continue;
+        }
 		bullets[i]->Draw();
 	}
 }

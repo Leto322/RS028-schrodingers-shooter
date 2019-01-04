@@ -48,6 +48,10 @@ Player::Player(){
     body->CreateFixture(&fixtureDef);
 };
 
+void Player::SetBrain(Brain* brain){
+    m_brain = brain;
+}
+
 void Player::Draw(){
     glPushMatrix();
 		if (team){
@@ -81,33 +85,43 @@ void Player::DrawShadow() {
 	glPopMatrix();
 }
 
-void Player::Update(){
-    Move();
-
-    float vx = cos(input.angle);
-    float vy =  sin(input.angle);
-    float n = 0.18;
-    equiped_weapon->SetPositionAndAngle(body->GetPosition().x + vx*n, body->GetPosition().y + vy*n, input.angle);
-    //std::cout << "vertical " << input.vertical  << "horizontal " << input.horizontal << std::endl;
-};
-
-void Player::Move(){
-    /*float rcos = cos(rotation*M_PI/180);
-    float rsin = sin(rotation*M_PI/180);
-    float vx = -rcos*input.vertical + rsin*input.horizontal;
-    float vy = rsin*input.vertical - rcos*input.horizontal;*/
-    float vx = input.horizontal;
-    float vy = input.vertical;
-
+Brain::Brain(Player& player)
+    : m_player(&player) {}
+    
+    
+playerBrain::playerBrain(Player& player)
+    : Brain(player) {}
+    
+void playerBrain::Update(){
+    float vx = Brain::m_player->input.horizontal;
+    float vy = Brain::m_player->input.vertical;
+    
     b2Vec2 vel(vx, vy);
+    
+    Brain::m_player->body->SetLinearVelocity(vel);
+    
+    vx = cos(Brain::m_player->input.angle);
+    vy =  sin(Brain::m_player->input.angle);
+    float n = 0.15;
+    Brain::m_player->equiped_weapon->SetPositionAndAngle(Brain::m_player->body->GetPosition().x + vx*n, Brain::m_player->body->GetPosition().y + vy*n, Brain::m_player->input.angle);
+}
 
-    body->SetLinearVelocity(vel);
-    //position.x += vx*speed;
-    //position.y += vy*speed;
-
-    //std::cout << "pos " << speed << " " << position.y<< std::endl;
-};
-
+botBrain::botBrain(Player& player)
+    : Brain(player) {}
+    
+void botBrain::Update(){
+    float vx = Brain::m_player->input.horizontal;
+    float vy = Brain::m_player->input.vertical;
+    
+    b2Vec2 vel(vx, vy);
+    
+    Brain::m_player->body->SetLinearVelocity(vel);
+    
+    vx = cos(Brain::m_player->input.angle);
+    vy =  sin(Brain::m_player->input.angle);
+    float n = 0.15;
+    Brain::m_player->equiped_weapon->SetPositionAndAngle(Brain::m_player->body->GetPosition().x + vx*n, Brain::m_player->body->GetPosition().y + vy*n, Brain::m_player->input.angle);
+}
 void Player::die(){
   std::cout << "Player is dead!" << std::endl;
 }
