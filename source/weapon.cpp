@@ -8,6 +8,8 @@
 #include <GL/glut.h>
 
 
+const float RE_AMM_MAX = 1, RE_AMM_MIN = 0, RE_AMM_UP = 0.15, RE_AMM_DOWN = 0.005;
+
 extern double phisycsUpdateInterval;
 extern std::vector<Bullet*> bullets;
 
@@ -17,29 +19,34 @@ float randomNumber(float start, float end){
 
 Weapon::Weapon(float x, float y, float angle, float pickupDistance) : Item(x, y, pickupDistance){
     dmg = 10;
-	ammo = 100;
-	ammo_cap = 100;
-	spread = 0.15;
-	fire_delay= 0.15;
-	reload_delay = 2;
-	fire_timer = 0;
+		ammo = 100;
+		ammo_cap = 100;
+		spread = 0.15;
+		fire_delay= 0.15;
+		reload_delay = 2;
+		fire_timer = 0;
     reload_timer= 0;
     pos_x = x;
     pos_y = y;
     angle = angle;
+		recoilAmount = 0;
 };
 
 //Function for firing a bullet, it sends the bullet its position and angle
 void Weapon::fire(){
 	if(fire_timer <= 0 && reload_timer <= 0 && this->ammo != 0){
 		//Calculating new angle from random spread
-		float firing_angle = angle + spread*randomNumber(-1,1);
+		float firing_angle = angle + spread*randomNumber(-1,1)*recoilAmount;
 		Bullet* firedBullet = new Bullet(pos_x, pos_y, firing_angle, dmg);
 		//Adding bullet to the list of fired bullets
 		bullets.push_back(firedBullet);
 
 		this->ammo--;
 		fire_timer = fire_delay;
+		if(recoilAmount < RE_AMM_MAX)
+			recoilAmount+=RE_AMM_UP;
+		else if(recoilAmount > RE_AMM_MAX)
+			recoilAmount = RE_AMM_MAX;
 	}
 }
 
@@ -59,6 +66,10 @@ void Weapon::Update(bool shoot){
 	if(shoot){
 		this->fire();
 	}
+	if(recoilAmount > RE_AMM_MIN)
+		recoilAmount -= RE_AMM_DOWN;
+	else if(recoilAmount < RE_AMM_MIN)
+		recoilAmount = RE_AMM_MIN;
 }
 
 void Weapon::UpdateTimers(){

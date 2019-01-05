@@ -14,7 +14,7 @@ public:
 	void reload();
 	void SetPositionAndAngle(float x, float y, float angle);
 	bool allowed_fire;
-	
+
 private:
 	int dmg;
 	int ammo;
@@ -27,6 +27,7 @@ private:
 	float pos_x;
 	float pos_y;
 	float angle;
+	float recoilAmount;
 };
 
 #endif
