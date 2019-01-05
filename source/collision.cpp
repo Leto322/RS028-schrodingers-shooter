@@ -27,12 +27,16 @@ void MyContactListener::BeginContact(b2Contact* contact){
     c2 = static_cast<Colider*>(o2);
 
     if(c1->getClassID() == PLAYER && c2->getClassID() == BULLET){
-      int dmg = static_cast<Bullet*>(c2)->m_dmg;
+      Bullet* bullet = static_cast<Bullet*>(c2);
+      bullet->toDelete = 1; // Mark bullet for deletion because it hit a player.
+      int dmg = bullet->m_dmg;
       static_cast<Player*>(c1)->takeDmg(dmg);
     }
 
     if(c2->getClassID() == PLAYER && c1->getClassID() == BULLET){
-      int dmg = static_cast<Bullet*>(c1)->m_dmg;
+      Bullet* bullet = static_cast<Bullet*>(c1);
+      bullet->toDelete = 1; // Mark bullet for deletion because it hit a player.
+      int dmg = bullet->m_dmg;
       static_cast<Player*>(c2)->takeDmg(dmg);
     }
 
@@ -41,6 +45,15 @@ void MyContactListener::BeginContact(b2Contact* contact){
 
   }
 
-
-
+  //if one contact has user data and the other doesnt, the other is a wall
+  if(o1 && !o2){
+    c1 = static_cast<Colider*>(o1);
+    if(c1->getClassID() == BULLET)
+      static_cast<Bullet*>(c1)->toDelete = 1;
+  }
+  if(!o1 && o2){
+    c1 = static_cast<Colider*>(o2);
+    if(c1->getClassID() == BULLET)
+      static_cast<Bullet*>(c1)->toDelete = 1;
+  }
 }

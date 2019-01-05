@@ -12,6 +12,7 @@ public:
 
 	b2Body* body;
 	int m_dmg;
+	int toDelete;
 
 private:
 	float r;

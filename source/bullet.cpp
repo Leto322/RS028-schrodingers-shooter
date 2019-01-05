@@ -11,6 +11,7 @@ Bullet::Bullet(float x, float y, float angle, int dmg){
 	r = 0.022;
 	speed = 0.058;
 	m_dmg = dmg;
+	toDelete = 0;
 
 	/*Creating Bullet Body*/
 	b2BodyDef bodyDef;
