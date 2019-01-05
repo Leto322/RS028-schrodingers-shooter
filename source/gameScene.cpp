@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <cstdlib>
+#include <ctime>
 #include <Box2D/Box2D.h>
 
 extern float windowWidth, windowHeight;
@@ -28,6 +30,8 @@ std::vector<Bullet*> bullets;
 ItemPool itemPool;
 
 void InitGame() {
+
+	srand(clock());
 
 	b2Vec2 gravity(0.0f, 0.0f);
 	world = new b2World(gravity);
@@ -179,7 +183,7 @@ void DrawPlayers() {
 void DrawBullets() {
 	for (int i = 0; i < bullets.size(); i++) {
         if( (abs(bullets[i]->body->GetLinearVelocity().x) <= 0.1 && abs(bullets[i]->body->GetLinearVelocity().y) <= 0.1)
-					|| bullets[i]->toDelete == 1 
+					|| bullets[i]->toDelete == 1
 				){
 						world->DestroyBody(bullets[i]->body);
 						bullets.erase(bullets.begin() + i);

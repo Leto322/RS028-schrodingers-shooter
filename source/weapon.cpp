@@ -12,7 +12,6 @@ extern double phisycsUpdateInterval;
 extern std::vector<Bullet*> bullets;
 
 float randomNumber(float start, float end){
-	srand(clock());
 	return ( float(rand())/float(RAND_MAX) )*(end - start) + start;
 }
 
