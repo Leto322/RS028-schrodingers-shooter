@@ -11,6 +11,7 @@ public:
 	void Update(bool shoot);
 	void UpdateTimers();
 	void fire();
+    int GetAmmo() const;
 	void reload();
 	void SetPositionAndAngle(float x, float y, float angle);
 	bool allowed_fire;

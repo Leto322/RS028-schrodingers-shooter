@@ -64,4 +64,8 @@ public:
     void Update();
 };
 
+void BotMoves();
+void BotAim();
+void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap);
+
 #endif

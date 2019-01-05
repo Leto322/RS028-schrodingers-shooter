@@ -5,8 +5,16 @@
 #include <iostream>
 #include <math.h>
 #include <Box2D/Box2D.h>
+#include <queue>
 
 extern b2World* world;
+extern std::vector< std::vector<char> > map;
+extern std::vector<Player*> players;
+extern float windowWidth, windowHeight;
+
+
+//Number of players that we havent reached in the BFS search
+int num;
 
 /*Player::Player(float x, float y, float r)
 :   position({x, y}), r(r)
@@ -148,3 +156,117 @@ void Player::takeDmg(int dmg){
 }
 
 ClassID Player::getClassID() {return PLAYER;}
+
+//Function that finds the player we found in the search and adjusts his vertical/horizontal movement
+void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
+    int i,j;
+    for(int k=1;k<players.size();++k){
+        i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
+        j = floor((players[k]->body->GetPosition().x + 9.0)/18*map.size());
+        if(i == ip && j == jp){
+            if(pathMap[i-1][j] == pathMap[ip][jp]-1 && pathMap[ip][jp]-1 != 0){
+                players[k]->input.vertical+=1;
+                
+            }else if(pathMap[i+1][j] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0){
+                players[k]->input.vertical-=1;
+                
+            }else if(pathMap[i][j+1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0){
+                players[k]->input.horizontal+=1;
+                
+            }else if(pathMap[i][j-1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0){
+                players[k]->input.horizontal-=1;
+
+            }
+            
+            //Removing the player marker from the map and reducing the number of players that werent reached
+            map[i][j] = ' ';
+            num--;
+        }
+
+    }
+}
+
+
+//BFS search of the map starting from player to all of the bots and calls BotAim function
+void BotMoves(){
+    BotAim();
+    int i, j, ip, jp;
+    num = 0;
+    
+    //Matrix that contains the number of fields on the shortest path from each field to the player
+    std::vector<std::vector<int>> pathMap(map.size());
+    std::queue<std::pair<int,int>> queue;
+    for(i=0;i<map.size();i++){
+        pathMap[i] = std::vector<int>(map.size());
+        for(j=0;j<map.size();j++){
+          pathMap[i][j] = -1;
+        }
+    }
+    
+    //Player position based on coordinates
+    ip = map.size()-1-(floor((players[0]->body->GetPosition().y + 9.0)/18*map.size()));
+    jp = floor((players[0]->body->GetPosition().x + 9.0)/18*map.size());
+    pathMap[ip][jp] = 0;
+    
+    //Bot positions based on coordinates
+    for(int k=1;k<players.size();++k){
+        i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
+        j = floor((players[k]->body->GetPosition().x + 9.0)/18*map.size());
+        players[k]->input.horizontal=0;
+        players[k]->input.vertical=0;
+
+        if(i == ip && j == jp)
+            continue;
+        map[i][j] = 'B';
+        num++;
+    }
+    queue.push(std::pair<int,int>{ip,jp});
+
+    //BFS
+    while(!queue.empty() && num > 0){
+        i = queue.front().first;
+        j = queue.front().second;
+        queue.pop();
+        if(map[i][j] == 'B'){
+            Move(i, j, pathMap);
+        }
+        
+        if(i - 1 >= 0 && map[i-1][j] != '#' && pathMap[i-1][j] == -1){
+            queue.push(std::pair<int,int>{i-1, j});
+            pathMap[i-1][j] = pathMap[i][j]+1;
+        }
+        if(i + 1 < map.size() && map[i+1][j] != '#' && pathMap[i+1][j] == -1){
+            queue.push(std::pair<int,int>{i+1, j});
+            pathMap[i+1][j] = pathMap[i][j]+1;
+        }
+        if(j - 1 >= 0 && map[i][j-1] != '#' && pathMap[i][j-1] == -1){
+            queue.push(std::pair<int,int>{i, j-1});
+            pathMap[i][j-1] = pathMap[i][j]+1;
+        }
+        if(j + 1 < map.size() && map[i][j+1] != '#' && pathMap[i][j+1] == -1){
+            queue.push(std::pair<int,int>{i, j+1});
+            pathMap[i][j+1] = pathMap[i][j]+1;
+        }
+        
+    }
+    
+    while(!queue.empty())
+        queue.pop();
+}
+
+//Adjusting bot aiming
+void BotAim(){
+    float x1, x2;
+    float y1, y2;
+    x1 = players[0]->body->GetPosition().x;
+    y1 = players[0]->body->GetPosition().y;
+    float angle;
+    for(int k = 1; k < players.size(); ++k){
+        if(players[k]->equiped_weapon->GetAmmo() == 0)
+            players[k]->equiped_weapon->reload();
+        x2 = players[k]->body->GetPosition().x;
+        y2 = players[k]->body->GetPosition().y;
+        angle = atan2(y1-y2, x1-x2);
+        players[k]->input.angle = angle;
+    }
+}

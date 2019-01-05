@@ -17,7 +17,6 @@
 extern float windowWidth, windowHeight;
 extern GLuint textureNames[];
 
-Player* players[2];
 Player* myPlayer;
 b2World* world;
 MyContactListener* contactListener;
@@ -27,6 +26,7 @@ std::chrono::high_resolution_clock::time_point lastFrameTime;
 double accumulator = 0;
 double phisycsUpdateInterval = 0.02;
 std::vector<Bullet*> bullets;
+std::vector<Player*> players;
 ItemPool itemPool;
 
 void InitGame() {
@@ -43,11 +43,12 @@ void InitGame() {
 
 	myPlayer = new Player();
     myPlayer->SetBrain(new playerBrain(*myPlayer));
-	players[0] = myPlayer;
-	players[1] = new Player();
+	players.push_back(myPlayer);
+	players.push_back(new Player());
     players[1]->SetBrain(new botBrain(*players[1]));
 	players[1]->team = !myPlayer->team;
 	players[1]->body->SetTransform(b2Vec2(-1, 0), 1);
+    players[1]->input.shoot = true;
 
 	itemPool = ItemPool();
 
@@ -141,7 +142,8 @@ void on_timer_game()
 	while (accumulator > phisycsUpdateInterval) {
 		world->Step(phisycsUpdateInterval, 6, 2);
 
-		for (int i = 0; i < 1; i++) {
+        BotMoves();
+		for (int i = 0; i < players.size(); i++) {
 			itemPool.CheckPickups(players[i]);
 			players[i]->m_brain->Update();
 			players[i]->equiped_weapon->Update(players[i]->input.shoot);
@@ -172,10 +174,10 @@ void DrawMap() {
 }
 
 void DrawPlayers() {
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < players.size(); i++) {
 		players[i]->DrawShadow();
 	}
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < players.size(); i++) {
 		players[i]->Draw();
 	}
 }

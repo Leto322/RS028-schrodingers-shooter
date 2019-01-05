@@ -72,6 +72,10 @@ void Weapon::Update(bool shoot){
 		recoilAmount = RE_AMM_MIN;
 }
 
+int Weapon::GetAmmo() const{
+    return ammo;
+}
+
 void Weapon::UpdateTimers(){
     fire_timer -= phisycsUpdateInterval;
     reload_timer -= phisycsUpdateInterval;
