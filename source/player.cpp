@@ -60,12 +60,25 @@ void Player::Draw(){
 		else{
 			glColor3f(0.3, 0.3, 1);
 		}
-		glTranslatef(body->GetPosition().x, body->GetPosition().y, r);
+		b2Vec2 pos = body->GetPosition();
+		glTranslatef(pos.x, pos.y, r);
 		glutSolidSphere(r, 15, 5);
-		glRotatef(input.angle*180/M_PI, 0, 0, 1);
-		glTranslatef(r, 0, 0);
+		glPushMatrix();
+			glRotatef(input.angle*180/M_PI, 0, 0, 1);
+			glTranslatef(r, 0, 0);
+			glColor3f(0, 0, 0);
+			glutSolidSphere(r/4, 10, 2);
+		glPopMatrix();
+		//Draw health bar
 		glColor3f(0, 0, 0);
-		glutSolidSphere(r/4, 10, 2);
+		glTranslatef(0, 0.3, 0.4);
+		glScalef(0.3, 0.1, 0.1);
+		glutWireCube(1);
+		float percentage = health / 100.0;
+		glTranslatef(-0.5*(1-percentage), 0, 0);
+		glScalef(percentage, 1, 1);
+		glColor3f(1 - percentage, percentage, 0);
+		glutSolidCube(1);
     glPopMatrix();
 };
 
@@ -102,7 +115,7 @@ void playerBrain::Update(){
     
     vx = cos(Brain::m_player->input.angle);
     vy =  sin(Brain::m_player->input.angle);
-    float n = 0.3;
+    float n = 0.18;
     Brain::m_player->equiped_weapon->SetPositionAndAngle(Brain::m_player->body->GetPosition().x + vx*n, Brain::m_player->body->GetPosition().y + vy*n, Brain::m_player->input.angle);
 }
 
@@ -119,17 +132,19 @@ void botBrain::Update(){
     
     vx = cos(Brain::m_player->input.angle);
     vy =  sin(Brain::m_player->input.angle);
-    float n = 0.15;
+    float n = 0.18;
     Brain::m_player->equiped_weapon->SetPositionAndAngle(Brain::m_player->body->GetPosition().x + vx*n, Brain::m_player->body->GetPosition().y + vy*n, Brain::m_player->input.angle);
 }
 void Player::die(){
-  std::cout << "Player is dead!" << std::endl;
+	std::cout << "Player is dead!" << std::endl;
 }
 
 void Player::takeDmg(int dmg){
-  health -= dmg;
-  if(health <= 0)
-    die();
+	health -= dmg;
+	if (health <= 0) {
+		health = 0;
+		die();
+	}
 }
 
 ClassID Player::getClassID() {return PLAYER;}

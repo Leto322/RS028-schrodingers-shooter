@@ -80,6 +80,7 @@ void Weapon::Pickup(Player* picker) {
 
 void Weapon::Draw() {
 	glPushMatrix();
+	glColor3f(0.2, 0.2, 0.2);
 	glTranslatef(itemPosition.x, itemPosition.y, 0);
 	glutSolidSphere(0.1, 10, 10);
 	glPopMatrix();
