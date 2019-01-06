@@ -9,7 +9,7 @@ extern b2World* world;
 /*Bullet constructor: takes a point from which a bullet is being fired and a trajectory angle*/
 Bullet::Bullet(float x, float y, float angle, int dmg){
 	r = 0.022;
-	speed = 0.005;
+	speed = 0.01;
 	m_dmg = dmg;
 	toDelete = 0;
 

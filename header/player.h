@@ -30,6 +30,7 @@ public:
     Weapon* equiped_weapon;
     b2Body* body;
     float r;
+    bool see_player;
 
 private:
     float speed;
@@ -44,7 +45,7 @@ protected:
     Brain(Player& player);
     Player* m_player;
     ~Brain();
-    
+
 public:
     virtual void Update() = 0;
 };
@@ -53,7 +54,7 @@ public:
 class playerBrain: public Brain{
 public:
     playerBrain(Player& player);
-    
+
 public:
     void Update();
 };
@@ -61,7 +62,7 @@ public:
 class botBrain: public Brain{
 public:
     botBrain(Player& player);
-    
+
 public:
     void Update();
 };
