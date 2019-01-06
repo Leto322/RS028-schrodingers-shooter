@@ -4,7 +4,7 @@
 std::vector< std::vector<char> > map;
 extern std::vector<Block> walls;
 extern std::vector<Block> ground;
-extern GLuint textureNames[2];
+extern GLuint textureIDs[2];
 // extern std::vector<Line> walls
 // m_x = m_x/855*18-9;
 // m_y = -m_y/855*18.4+9.2;
@@ -131,7 +131,7 @@ void DrawWalls(){
     for(i=0;i<n;i++){
         glPushMatrix();
             glColor3f(1,1,1);
-            glBindTexture(GL_TEXTURE_2D, textureNames[1]);
+            glBindTexture(GL_TEXTURE_2D, textureIDs[1]);
             glBegin(GL_QUADS);
                 //front quad
                 glNormal3f(0, -1, 0);

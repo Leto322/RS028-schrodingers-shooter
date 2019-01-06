@@ -9,13 +9,15 @@ class Player;
 
 class Item {
 public:
-	Item(float x, float y, float pickupDistance);
-	Item();
+	Item(float x, float y, float pickupDistance, std::string icon);
 	virtual void Pickup(Player *picker) = 0;
-	virtual void Draw() = 0;
+	void Draw();
+	std::string  Name();
 	bool IsColliding(Player *picker);
 	b2Vec2 itemPosition;
+private:
 	float pickupDistance;
+	std::string icon;
 };
 
 class ItemPool {

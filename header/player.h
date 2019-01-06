@@ -18,8 +18,10 @@ public:
     Player();
     void Draw();
     void DrawShadow();
+	void SwapWeapon(Weapon* newWeapon);
+	void takeDmg(int dmg);
+	void IncreaseHealth(int amount);
 
-    void takeDmg(int dmg);
     virtual ClassID getClassID();
     void SetBrain(Brain* brain);
     Brain* m_brain;

@@ -7,6 +7,7 @@
 #include "../header/bullet.h"
 #include "../header/gameScene.h"
 #include "../header/collision.h"
+#include "../header/basicItems.h"
 #include <string>
 #include <vector>
 #include <chrono>
@@ -15,7 +16,7 @@
 #include <Box2D/Box2D.h>
 
 extern float windowWidth, windowHeight;
-extern GLuint textureNames[];
+extern GLuint textureIDs[];
 
 Player* myPlayer;
 b2World* world;
@@ -47,14 +48,16 @@ void InitGame() {
 	players.push_back(new Player());
     players[1]->SetBrain(new botBrain(*players[1]));
 	players[1]->team = !myPlayer->team;
-	players[1]->body->SetTransform(b2Vec2(-1, 0), 1);
+	players[1]->body->SetTransform(b2Vec2(5, 5), 1);
     players[1]->input.shoot = true;
 
 	itemPool = ItemPool();
 
 	//Test for the items
-	itemPool.Add(new Weapon(-2, 0, 0, 0.1));
-	itemPool.Add(new Weapon(-4, 0, 0, 0.3));
+	itemPool.Add(new Pistol(-1, 0, 0));
+	itemPool.Add(new Rifle(-2, 0, 0));
+	itemPool.Add(new HealthPotion(-3, 0, 20));
+
 
 	lastFrameTime = std::chrono::high_resolution_clock::now();
 }
@@ -157,7 +160,7 @@ void on_timer_game()
 void DrawMap() {
 	glPushMatrix();
 	glColor3f(1, 1, 1);
-	glBindTexture(GL_TEXTURE_2D, textureNames[0]);
+	glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
 	glNormal3f(0, 0, 1);
 	glBegin(GL_QUADS);
 		glTexCoord2f(0, 0);

@@ -5,18 +5,17 @@
 
 class Weapon : public Item{
 public:
-	Weapon(float x, float y, float angle, float pickupDistance);
+	Weapon(float x, float y, float angle, float pickupDistance, std::string icon);
 	void Pickup(Player* picker) override;
-	void Draw() override;
 	void Update(bool shoot);
 	void UpdateTimers();
-	void fire();
+	virtual void fire();
     int GetAmmo() const;
 	void reload();
 	void SetPositionAndAngle(float x, float y, float angle);
 	bool allowed_fire;
 
-private:
+protected:
 	int dmg;
 	int ammo;
 	int ammo_cap;
@@ -31,4 +30,27 @@ private:
 	float recoilAmount;
 };
 
+class Pistol : public Weapon {
+public:
+	Pistol(float x, float y, float angle) : Weapon(x, y, angle, 0.2, std::string("pistol")) {
+		dmg = 5;
+		ammo = 15;
+		ammo_cap = 15;
+		spread = 0.1;
+		fire_delay = 0.25;
+		reload_delay = 1.5;
+	};
+};
+
+class Rifle : public Weapon {
+public:
+	Rifle(float x, float y, float angle) : Weapon(x, y, angle, 0.4, std::string("rifle")) {
+		dmg = 10;
+		ammo = 30;
+		ammo_cap = 30;
+		spread = 0.2;
+		fire_delay = 0.15;
+		reload_delay = 2;
+	};
+};
 #endif

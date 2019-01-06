@@ -31,7 +31,7 @@ Player::Player(){
     input.horizontal = 0;
     input.shoot = false;
 	input.angle= M_PI/2;
-    equiped_weapon = new Weapon(0.0f, 0.0f, input.angle, 0.1);
+    equiped_weapon = new Pistol(0.0f, 0.0f, input.angle);
     team = false;
 
     b2BodyDef bodyDef;
@@ -153,6 +153,16 @@ void Player::takeDmg(int dmg){
 		health = 0;
 		die();
 	}
+}
+void Player::IncreaseHealth(int amount) {
+	health += amount;
+	health = health > 100 ? 100 : health;
+}
+
+void Player::SwapWeapon(Weapon* newWeapon) {
+	Weapon* old = equiped_weapon;
+	equiped_weapon = newWeapon;
+	//delete(old);
 }
 
 ClassID Player::getClassID() {return PLAYER;}

@@ -2,16 +2,12 @@
 #include "../header/player.h"
 #include <vector>
 #include <GL/glut.h>
+#include <map>
 
+extern std::map<std::string, int> textures;
 
-Item::Item(float x, float y, float pickupDistance) {
+Item::Item(float x, float y, float pickupDistance, std::string icon): icon(icon), pickupDistance(pickupDistance) {
 	itemPosition.Set(x, y);
-	this->pickupDistance = pickupDistance;
-}
-
-Item::Item() {
-	itemPosition.Set(0, 0);
-	pickupDistance = 0.1;
 }
 
 bool Item::IsColliding(Player *picker){
@@ -22,6 +18,32 @@ bool Item::IsColliding(Player *picker){
 	return false;
 };
 
+void Item::Draw() {
+	glPushMatrix();
+	glColor3f(1, 1, 1);
+	glNormal3f(0, 0, 1);
+	glTranslatef(itemPosition.x, itemPosition.y, 0.3);
+
+	glBindTexture(GL_TEXTURE_2D, textures[icon]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0);
+	glVertex3f(-0.2, -0.2, 0);
+	glTexCoord2f(1, 0);
+	glVertex3f(.2, -.2, 0);
+	glTexCoord2f(1, 1);
+	glVertex3f(.2, .2, 0);
+	glTexCoord2f(0, 1);
+	glVertex3f(-.2, .2, 0);
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glPopMatrix();
+};
+
+std::string Item::Name() {
+	return icon;
+};
+
 ItemPool::ItemPool() {
 	m_items = std::vector<Item*>();
 }
@@ -30,8 +52,8 @@ void ItemPool::CheckPickups(Player *picker) {
 	int n = m_items.size();
 	for (int i = 0; i < n; i++) {
 		if (m_items[i]->IsColliding(picker)) {
-			Remove(i);
 			m_items[i]->Pickup(picker);
+			Remove(i);
 		}
 	}
 }

@@ -17,19 +17,20 @@ float randomNumber(float start, float end){
 	return ( float(rand())/float(RAND_MAX) )*(end - start) + start;
 }
 
-Weapon::Weapon(float x, float y, float angle, float pickupDistance) : Item(x, y, pickupDistance){
-    dmg = 10;
-		ammo = 100;
-		ammo_cap = 100;
-		spread = 0.15;
-		fire_delay= 0.15;
-		reload_delay = 2;
-		fire_timer = 0;
-    reload_timer= 0;
-    pos_x = x;
-    pos_y = y;
-    angle = angle;
-		recoilAmount = 0;
+Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string icon) : Item(x, y, pickupDistance, icon){
+	std::cout << "Weapon created " << icon << std::endl;
+	dmg = 10;
+	ammo = 30;
+	ammo_cap = 30;
+	spread = 0.15;
+	fire_delay= 0.15;
+	reload_delay = 2;
+	fire_timer = 0;
+	reload_timer= 0;
+	pos_x = x;
+	pos_y = y;
+	angle = angle;
+	recoilAmount = 0;
 };
 
 //Function for firing a bullet, it sends the bullet its position and angle
@@ -89,13 +90,6 @@ void Weapon::SetPositionAndAngle(float x, float y, float angle){
 }
 
 void Weapon::Pickup(Player* picker) {
-	std::cout << "Weapon picked up" << std::endl;
-}
-
-void Weapon::Draw() {
-	glPushMatrix();
-	glColor3f(0.2, 0.2, 0.2);
-	glTranslatef(itemPosition.x, itemPosition.y, 0);
-	glutSolidSphere(0.1, 10, 10);
-	glPopMatrix();
+	std::cout << "Weapon picked up " << this->Name() << std::endl;
+	picker->SwapWeapon(this);
 }

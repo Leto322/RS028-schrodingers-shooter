@@ -9,7 +9,7 @@ extern b2World* world;
 /*Bullet constructor: takes a point from which a bullet is being fired and a trajectory angle*/
 Bullet::Bullet(float x, float y, float angle, int dmg){
 	r = 0.022;
-	speed = 0.058;
+	speed = 0.005;
 	m_dmg = dmg;
 	toDelete = 0;
 
@@ -17,7 +17,7 @@ Bullet::Bullet(float x, float y, float angle, int dmg){
 	b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.bullet = true;
-	bodyDef.linearDamping = 2.0f;
+	bodyDef.linearDamping = 0;
     bodyDef.position.Set(x, y);
     body = world->CreateBody(&bodyDef);
 		body->SetUserData(this);
@@ -31,7 +31,7 @@ Bullet::Bullet(float x, float y, float angle, int dmg){
 
     fixtureDef.density = 1.0f;
 
-    fixtureDef.friction = 0.01f;
+    fixtureDef.friction = 0;
 
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);

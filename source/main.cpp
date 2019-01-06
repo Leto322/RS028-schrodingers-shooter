@@ -10,12 +10,21 @@
 #include <vector>
 #include <Box2D/Box2D.h>
 #include <chrono>
+#include <map>
 
-std::vector<std::string> textureLocations = {
-	"textures/sand.bmp",
-    "textures/wall3.bmp"
-	};
+std::vector<std::string> textureNames = {
+	"sand",
+	"wall3",
+	"pistol",
+	"rifle",
+	"healthPotion"
+};
 
+std::vector<std::string> textureLocations;
+
+std::map<std::string, int> textures;
+
+GLuint textureIDs[4];
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 15
@@ -27,7 +36,6 @@ enum scene {
 };
 enum scene currentScene;
 
-GLuint textureNames[2];
 
 static int animation_ongoing;
 static void on_keyboard(unsigned char key, int x, int y);
@@ -41,14 +49,23 @@ static void on_display(void);
 static void on_reshape(int width, int height);
 
 void LoadTextures(){
-	glGenTextures(textureLocations.size(), textureNames);
+	textureLocations = std::vector<std::string>();
+	for (int i = 0; i < textureNames.size(); i++) {
+		textureLocations.push_back("textures/"+textureNames[i]+".bmp");
+	}
+
+	glGenTextures(textureLocations.size(), textureIDs);
+	for (int i = 0; i < textureNames.size(); i++) {
+		textures[textureNames[i]] = textureIDs[i];
+	}
+
 	Image* image;
 	image = image_init(0, 0);
 
 	for (int i=0; i<textureLocations.size(); i++){
 		char *cstr = &textureLocations[i][0u];
 		image_read(image, cstr);
-            glBindTexture(GL_TEXTURE_2D, textureNames[i]);
+            glBindTexture(GL_TEXTURE_2D, textureIDs[i]);
             glTexParameteri(GL_TEXTURE_2D,
                     GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D,
