@@ -273,6 +273,7 @@ void BotMoves(){
 void BotAim(){
     float x1, x2;
     float y1, y2;
+    float h, w;
     x1 = players[0]->body->GetPosition().x;
     y1 = players[0]->body->GetPosition().y;
     float angle;
@@ -281,6 +282,12 @@ void BotAim(){
             players[k]->equiped_weapon->reload();
         x2 = players[k]->body->GetPosition().x;
         y2 = players[k]->body->GetPosition().y;
+        h = tan(30*M_PI/180)*4;
+        w = h*windowWidth/windowHeight;
+        if(x2 > x1 + w || x2 < x1 - w || y2 > y1 + h || y2 < y1 - h)
+            players[k]->input.shoot = false;
+        else
+            players[k]->input.shoot = true;
         angle = atan2(y1-y2, x1-x2);
         players[k]->input.angle = angle;
 
