@@ -209,9 +209,9 @@ void on_display_game(void)
 		myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0,
 		0, 1, 0);
 
-	itemPool.DrawItems();
-	DrawWalls();
 	DrawMap();
 	DrawBullets();
 	DrawPlayers();
+	DrawWalls();
+	itemPool.DrawItems();
 }

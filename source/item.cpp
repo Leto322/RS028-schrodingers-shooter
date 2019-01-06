@@ -19,25 +19,34 @@ bool Item::IsColliding(Player *picker){
 };
 
 void Item::Draw() {
+	glColor4f(1, 1, 1, 1);
+	
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
 	glPushMatrix();
-	glColor3f(1, 1, 1);
 	glNormal3f(0, 0, 1);
 	glTranslatef(itemPosition.x, itemPosition.y, 0.3);
 
 	glBindTexture(GL_TEXTURE_2D, textures[icon]);
+	glScalef(pickupDistance, pickupDistance, 1);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0, 0);
-	glVertex3f(-0.2, -0.2, 0);
+	glVertex3f(-1, -1, 0);
 	glTexCoord2f(1, 0);
-	glVertex3f(.2, -.2, 0);
+	glVertex3f(1, -1, 0);
 	glTexCoord2f(1, 1);
-	glVertex3f(.2, .2, 0);
+	glVertex3f(1, 1, 0);
 	glTexCoord2f(0, 1);
-	glVertex3f(-.2, .2, 0);
+	glVertex3f(-1, 1, 0);
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glPopMatrix();
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+
 };
 
 std::string Item::Name() {
