@@ -185,23 +185,97 @@ ClassID Player::getClassID() {return PLAYER;}
 //Function that finds the player we found in the search and adjusts his vertical/horizontal movement
 void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
     int i,j;
+    int minu,mind,minl,minr;
+    int minimum;
+    float edge = 18.0/map.size();
+
+    
     for(int k=1;k<players.size();++k){
         i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
         j = floor((players[k]->body->GetPosition().x + 9.0)/18*map.size());
         if(i == ip && j == jp){
             if(pathMap[i-1][j] == pathMap[ip][jp]-1 && pathMap[ip][jp]-1 != 0){
                 players[k]->input.vertical+=1;
-
-            }else if(pathMap[i+1][j] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0){
+                std::cout << "u" << std::endl;
+    
+            }else if(pathMap[i+1][j] == pathMap[ip][jp]-1 && pathMap[ip][jp]-1 != 0){
                 players[k]->input.vertical-=1;
 
-            }else if(pathMap[i][j+1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0){
+            }else if(pathMap[i][j+1] == pathMap[ip][jp]-1 && pathMap[ip][jp]-1 != 0){
                 players[k]->input.horizontal+=1;
 
-            }else if(pathMap[i][j-1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0){
+            }else if(pathMap[i][j-1] == pathMap[ip][jp]-1 && pathMap[ip][jp]-1 != 0){
                 players[k]->input.horizontal-=1;
 
             }
+            else if(pathMap[i-1][j-1] == pathMap[ip][jp]-1 && pathMap[ip][jp]-1 != 0 && map[i-1][j] != '#' && map[i][j-1] != '#'){
+                players[k]->input.vertical+=1;
+                players[k]->input.horizontal-=1;
+               
+            }
+            else if(pathMap[i+1][j-1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0 && map[i+1][j] != '#' && map[i][j-1] != '#'){
+                players[k]->input.vertical-=1;
+                players[k]->input.horizontal-=1;
+                
+            }
+            else if(pathMap[i+1][j+1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0 && map[i+1][j] != '#' && map[i][j+1] != '#'){
+                players[k]->input.horizontal+=1;
+                players[k]->input.vertical-=1;
+//                 std::cout << "dr" << std::endl;
+            }
+            else if(pathMap[i-1][j+1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0 && map[i-1][j] != '#' && map[i][j+1] != '#'){
+                players[k]->input.horizontal+=1;
+                players[k]->input.vertical+=1;
+//                 std::cout << "ur" << std::endl;
+            }
+            
+            //Backup in case block is up/down/right/left during diagonal moving
+            else if (players[k]->input.vertical == 0 && players[k]->input.horizontal == 0){
+                minu = pathMap[i-1][j];
+                mind = pathMap[i+1][j];
+                minl = pathMap[i][j-1];
+                minr = pathMap[i][j+1];
+                
+                if(minu == -1)
+                    minu = map.size()*map.size();
+                if(mind == -1)
+                    mind = map.size()*map.size();
+                if(minl == -1)
+                    minl = map.size()*map.size();
+                if(minr == -1)
+                    minr = map.size()*map.size();
+                
+                minimum = std::min(minu, std::min(mind, std::min(minl,minr)));
+                
+                if(minu == 0 || mind == 0 || minl == 0 || minr == 0){
+                    
+                }else if(minimum == minu){
+                    players[k]->input.vertical+=1;
+                }else if(minimum == mind){
+                    players[k]->input.vertical-=1;
+                }else if(minimum == minl){
+                    players[k]->input.horizontal-=1;
+                }else{
+                    players[k]->input.horizontal+=1;
+                }
+            }
+            
+            //Moves the bot towards the middle of the block if he is too close to the edge
+            if(-(i+1) * edge > (players[k]->body->GetPosition().y - 9.0 - (players[k]->r + 0.05)) && players[k]->input.vertical!=1 && players[k]->input.vertical!=-1){
+                players[k]->input.vertical+=1;
+            
+            }else if(-i * edge < (players[k]->body->GetPosition().y - 9.0 + (players[k]->r + 0.05))  && players[k]->input.vertical!=-1 && players[k]->input.vertical!=1){
+                players[k]->input.vertical-=1;
+                
+            }
+            if((j+1) * edge < (players[k]->body->GetPosition().x + 9.0 + (players[k]->r + 0.05)) && players[k]->input.horizontal!=-1 && players[k]->input.horizontal !=1){
+                players[k]->input.horizontal-=1;
+            
+                
+            }else if(j * edge > (players[k]->body->GetPosition().x + 9.0 - (players[k]->r + 0.05)) && players[k]->input.horizontal!=1  && players[k]->input.horizontal != -1){
+                players[k]->input.horizontal+=1;
+            }
+        
 
             //Removing the player marker from the map and reducing the number of players that werent reached
             map[i][j] = ' ';
@@ -217,7 +291,7 @@ void BotMoves(){
     BotAim();
     int i, j, ip, jp;
     num = 0;
-
+    
     //Matrix that contains the number of fields on the shortest path from each field to the player
     std::vector<std::vector<int>> pathMap(map.size());
     std::queue<std::pair<int,int>> queue;
@@ -227,6 +301,9 @@ void BotMoves(){
           pathMap[i][j] = -1;
         }
     }
+    
+    
+
 
     //Player position based on coordinates
     ip = map.size()-1-(floor((players[0]->body->GetPosition().y + 9.0)/18*map.size()));
@@ -237,9 +314,11 @@ void BotMoves(){
     for(int k=1;k<players.size();++k){
         i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
         j = floor((players[k]->body->GetPosition().x + 9.0)/18*map.size());
+        
         players[k]->input.horizontal=0;
         players[k]->input.vertical=0;
-
+        
+        
         if(i == ip && j == jp)
             continue;
         map[i][j] = 'B';
@@ -272,9 +351,25 @@ void BotMoves(){
             queue.push(std::pair<int,int>{i, j+1});
             pathMap[i][j+1] = pathMap[i][j]+1;
         }
+        if(i - 1 >= 0 && j - 1 >= 0 && map[i-1][j-1] != '#' && pathMap[i-1][j-1] == -1){
+            queue.push(std::pair<int,int>{i-1, j-1});
+            pathMap[i-1][j-1] = pathMap[i][j]+1;
+        }
+        if(i - 1 >= 0 && j + 1 < map.size()  && map[i-1][j+1] != '#' && pathMap[i-1][j+1] == -1){
+            queue.push(std::pair<int,int>{i-1, j+1});
+            pathMap[i-1][j+1] = pathMap[i][j]+1;
+        }
+        if(i + 1 < map.size() && j - 1 >= 0 && map[i+1][j-1] != '#' && pathMap[i+1][j-1] == -1){
+            queue.push(std::pair<int,int>{i+1, j-1});
+            pathMap[i+1][j-1] = pathMap[i][j]+1;
+        }
+        if(i + 1 < map.size() && j + 1 < map.size() && map[i+1][j+1] != '#' && pathMap[i+1][j+1] == -1){
+            queue.push(std::pair<int,int>{i+1, j+1});
+            pathMap[i+1][j+1] = pathMap[i][j]+1;
+        }
 
     }
-
+    pathMap.clear();
     while(!queue.empty())
         queue.pop();
 }
