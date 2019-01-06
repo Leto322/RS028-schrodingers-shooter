@@ -30,9 +30,10 @@ Player::Player(){
     input.vertical = 0;
     input.horizontal = 0;
     input.shoot = false;
-	input.angle= M_PI/2;
+	  input.angle= M_PI/2;
     equiped_weapon = new Weapon(0.0f, 0.0f, input.angle, 0.1);
     team = false;
+    see_player = false;
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
@@ -108,19 +109,19 @@ void Player::DrawShadow() {
 
 Brain::Brain(Player& player)
     : m_player(&player) {}
-    
-    
+
+
 playerBrain::playerBrain(Player& player)
     : Brain(player) {}
-    
+
 void playerBrain::Update(){
     float vx = Brain::m_player->input.horizontal;
     float vy = Brain::m_player->input.vertical;
-    
+
     b2Vec2 vel(vx, vy);
-    
+
     Brain::m_player->body->SetLinearVelocity(vel);
-    
+
     vx = cos(Brain::m_player->input.angle);
     vy =  sin(Brain::m_player->input.angle);
     float n = 0.18;
@@ -129,20 +130,34 @@ void playerBrain::Update(){
 
 botBrain::botBrain(Player& player)
     : Brain(player) {}
-    
+
 void botBrain::Update(){
     float vx = Brain::m_player->input.horizontal;
     float vy = Brain::m_player->input.vertical;
-    
+
     b2Vec2 vel(vx, vy);
-    
+
     Brain::m_player->body->SetLinearVelocity(vel);
-    
+
     vx = cos(Brain::m_player->input.angle);
     vy =  sin(Brain::m_player->input.angle);
     float n = 0.18;
     Brain::m_player->equiped_weapon->SetPositionAndAngle(Brain::m_player->body->GetPosition().x + vx*n, Brain::m_player->body->GetPosition().y + vy*n, Brain::m_player->input.angle);
+
+    RayCastCallback ray_callback;
+    b2Vec2 bot_pos(Brain::m_player->body->GetPosition().x, Brain::m_player->body->GetPosition().y);
+    b2Vec2 player_pos(players[0]->body->GetPosition().x, players[0]->body->GetPosition().y);
+
+    //std::cout<<bot_pos.y << " ;; " << player_pos.y <<std::endl;
+
+    m_player->see_player = false;
+    world->RayCast(&ray_callback, bot_pos, player_pos);
+    if(ray_callback.m_fixture){
+        if(ray_callback.m_fixture->GetBody() == players[0]->body)
+          m_player->see_player = true;
+    }
 }
+
 void Player::die(){
 	std::cout << "Player is dead!" << std::endl;
 }
@@ -166,18 +181,18 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
         if(i == ip && j == jp){
             if(pathMap[i-1][j] == pathMap[ip][jp]-1 && pathMap[ip][jp]-1 != 0){
                 players[k]->input.vertical+=1;
-                
+
             }else if(pathMap[i+1][j] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0){
                 players[k]->input.vertical-=1;
-                
+
             }else if(pathMap[i][j+1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0){
                 players[k]->input.horizontal+=1;
-                
+
             }else if(pathMap[i][j-1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0){
                 players[k]->input.horizontal-=1;
 
             }
-            
+
             //Removing the player marker from the map and reducing the number of players that werent reached
             map[i][j] = ' ';
             num--;
@@ -192,7 +207,7 @@ void BotMoves(){
     BotAim();
     int i, j, ip, jp;
     num = 0;
-    
+
     //Matrix that contains the number of fields on the shortest path from each field to the player
     std::vector<std::vector<int>> pathMap(map.size());
     std::queue<std::pair<int,int>> queue;
@@ -202,12 +217,12 @@ void BotMoves(){
           pathMap[i][j] = -1;
         }
     }
-    
+
     //Player position based on coordinates
     ip = map.size()-1-(floor((players[0]->body->GetPosition().y + 9.0)/18*map.size()));
     jp = floor((players[0]->body->GetPosition().x + 9.0)/18*map.size());
     pathMap[ip][jp] = 0;
-    
+
     //Bot positions based on coordinates
     for(int k=1;k<players.size();++k){
         i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
@@ -230,7 +245,7 @@ void BotMoves(){
         if(map[i][j] == 'B'){
             Move(i, j, pathMap);
         }
-        
+
         if(i - 1 >= 0 && map[i-1][j] != '#' && pathMap[i-1][j] == -1){
             queue.push(std::pair<int,int>{i-1, j});
             pathMap[i-1][j] = pathMap[i][j]+1;
@@ -247,9 +262,9 @@ void BotMoves(){
             queue.push(std::pair<int,int>{i, j+1});
             pathMap[i][j+1] = pathMap[i][j]+1;
         }
-        
+
     }
-    
+
     while(!queue.empty())
         queue.pop();
 }
@@ -268,5 +283,10 @@ void BotAim(){
         y2 = players[k]->body->GetPosition().y;
         angle = atan2(y1-y2, x1-x2);
         players[k]->input.angle = angle;
+
+        if(players[k]->see_player)
+          players[k]->input.shoot = true;
+        else
+          players[k]->input.shoot = false;
     }
 }

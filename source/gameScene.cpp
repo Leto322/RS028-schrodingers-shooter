@@ -48,7 +48,7 @@ void InitGame() {
     players[1]->SetBrain(new botBrain(*players[1]));
 	players[1]->team = !myPlayer->team;
 	players[1]->body->SetTransform(b2Vec2(-1, 0), 1);
-    players[1]->input.shoot = true;
+    //players[1]->see_player = true;
 
 	itemPool = ItemPool();
 
