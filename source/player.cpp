@@ -284,16 +284,14 @@ void BotAim(){
         y2 = players[k]->body->GetPosition().y;
         h = tan(30*M_PI/180)*4;
         w = h*windowWidth/windowHeight;
+        
         if(x2 > x1 + w || x2 < x1 - w || y2 > y1 + h || y2 < y1 - h)
             players[k]->input.shoot = false;
-        else
+        else if(players[k]->see_player)
             players[k]->input.shoot = true;
+
         angle = atan2(y1-y2, x1-x2);
         players[k]->input.angle = angle;
 
-        if(players[k]->see_player)
-          players[k]->input.shoot = true;
-        else
-          players[k]->input.shoot = false;
     }
 }
