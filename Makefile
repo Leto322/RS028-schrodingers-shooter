@@ -1,5 +1,5 @@
 CC=g++
-GLFLAGS= -std=c++17 -lBox2D -lGL -lglut -lGLU
+GLFLAGS= -std=c++17 -lBox2D -lGL -lglut -lGLU -lopenal -lalut
 CFLAGS=-lm
 
 all: SchShooter

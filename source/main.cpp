@@ -11,6 +11,7 @@
 #include <Box2D/Box2D.h>
 #include <chrono>
 #include <map>
+#include <AL/alut.h>
 
 std::vector<std::string> textureNames = {
 	"sand",
@@ -20,11 +21,21 @@ std::vector<std::string> textureNames = {
 	"healthPotion"
 };
 
+std::vector<std::string> soundNames = {
+	"pistol",
+	"rifle",
+	"reload",
+	"death"
+};
+
 std::vector<std::string> textureLocations;
+std::vector<std::string> soundLocations;
 
 std::map<std::string, int> textures;
+std::map<std::string, int> sounds;
 
 GLuint textureIDs[4];
+ALuint soundIDs[4];
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 15
@@ -47,6 +58,24 @@ static void on_mouse_pressed_released(int button, int state, int x, int y);
 static void on_timer(int value);
 static void on_display(void);
 static void on_reshape(int width, int height);
+
+void LoadSounds(){
+	ALuint buffer;
+	for (int i = 0; i < soundNames.size(); i++) {
+		buffer = alutCreateBufferFromFile(("sound/"+soundNames[i]+".wav").c_str());
+
+		if ( alutGetError() != ALUT_ERROR_NO_ERROR ){
+   		// TODO: handle the error
+			std::cerr<<"Failed to Load Sounds!" <<std::endl;
+   		return;
+		}
+		soundIDs[i] = buffer;
+	}
+
+	for (int i = 0; i < soundNames.size(); i++) {
+		sounds[soundNames[i]] = soundIDs[i];
+	}
+}
 
 void LoadTextures(){
 	textureLocations = std::vector<std::string>();
@@ -89,6 +118,7 @@ int main(int argc, char **argv)
     B2_NOT_USED(argv);
 	/* Inicijalizuje se GLUT. */
 	glutInit(&argc, argv);
+	alutInit(NULL,NULL);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE | GLUT_MULTISAMPLE);
 	/* Kreira se prozor. */
 	glutInitWindowSize(1280, 720);
@@ -123,6 +153,7 @@ int main(int argc, char **argv)
               GL_MODULATE);
 
 	LoadTextures();
+	LoadSounds();
 
 	GLfloat lightPos0[] = { -1, 1, 1, 0};
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
@@ -215,10 +246,10 @@ static void on_timer(int value)
 		on_timer_game();
 		break;
 	}
-    
+
 	glutPostRedisplay();
 	/* Po potrebi se ponovo postavlja tajmer. */
-    
+
 	if (animation_ongoing) {
 		glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
 	}

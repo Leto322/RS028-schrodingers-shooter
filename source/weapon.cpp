@@ -3,6 +3,7 @@
 #include "../header/player.h"
 #include <iostream>
 #include <vector>
+#include <map>
 #include <cstdlib>
 #include <ctime>
 #include <GL/glut.h>
@@ -12,6 +13,7 @@ const float RE_AMM_MAX = 1, RE_AMM_MIN = 0, RE_AMM_UP = 0.15, RE_AMM_DOWN = 0.00
 
 extern double phisycsUpdateInterval;
 extern std::vector<Bullet*> bullets;
+extern std::map<std::string, int> sounds;
 
 float randomNumber(float start, float end){
 	return ( float(rand())/float(RAND_MAX) )*(end - start) + start;
@@ -31,6 +33,12 @@ Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string 
 	pos_y = y;
 	angle = angle;
 	recoilAmount = 0;
+
+	alGenSources(2, soundSource);
+	alSourcei(soundSource[0], AL_BUFFER, sounds[icon]);
+	alSourcei(soundSource[1], AL_BUFFER, sounds["reload"]);
+	alSourcef(soundSource[0], AL_GAIN, 0.1);
+	alSourcef(soundSource[0], AL_PITCH, 1);
 };
 
 //Function for firing a bullet, it sends the bullet its position and angle
@@ -41,6 +49,8 @@ void Weapon::fire(){
 		Bullet* firedBullet = new Bullet(pos_x, pos_y, firing_angle, dmg);
 		//Adding bullet to the list of fired bullets
 		bullets.push_back(firedBullet);
+
+		alSourcePlay(soundSource[0]);
 
 		this->ammo--;
 		fire_timer = fire_delay;
@@ -55,6 +65,7 @@ void Weapon::reload(){
 	//std::cout << ammo << std::endl;
 	if(ammo < ammo_cap){
 		std::cout << "Reloadin!" << std::endl;
+		alSourcePlay(soundSource[1]);
 		this->ammo = this->ammo_cap;
 	}
 	if (reload_timer <= 0){
@@ -64,6 +75,10 @@ void Weapon::reload(){
 
 void Weapon::Update(bool shoot){
     UpdateTimers();
+
+		alSource3f(soundSource[0], AL_POSITION, pos_x, pos_y, 0);
+		alSource3f(soundSource[1], AL_POSITION, pos_x, pos_y, 0);
+
 	if(shoot){
 		this->fire();
 	}

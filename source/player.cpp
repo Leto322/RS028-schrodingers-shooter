@@ -3,6 +3,8 @@
 #include "../header/util.h"
 #include <GL/glut.h>
 #include <iostream>
+#include <vector>
+#include <map>
 #include <math.h>
 #include <Box2D/Box2D.h>
 #include <queue>
@@ -11,6 +13,7 @@ extern b2World* world;
 extern std::vector< std::vector<char> > map;
 extern std::vector<Player*> players;
 extern float windowWidth, windowHeight;
+extern std::map<std::string, int> sounds;
 
 
 //Number of players that we havent reached in the BFS search
@@ -55,6 +58,12 @@ Player::Player(){
     fixtureDef.friction = 0.01f;
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
+
+    alGenSources(1, soundSource);
+  	alSourcei(soundSource[0], AL_BUFFER, sounds["death"]);
+    alSourcef(soundSource[0], AL_GAIN, 0.1);
+  	alSourcef(soundSource[0], AL_PITCH, 1);
+
 };
 
 void Player::SetBrain(Brain* brain){
@@ -126,6 +135,9 @@ void playerBrain::Update(){
     vy =  sin(Brain::m_player->input.angle);
     float n = 0.18;
     Brain::m_player->equiped_weapon->SetPositionAndAngle(Brain::m_player->body->GetPosition().x + vx*n, Brain::m_player->body->GetPosition().y + vy*n, Brain::m_player->input.angle);
+
+    //Sound source is protected, need to fix
+    //alSource3f(Brain::m_player->soundSource[0], AL_POSITION, Brain::m_player->body->GetPosition().x, Brain::m_player->body->GetPosition().y, 0);
 }
 
 botBrain::botBrain(Player& player)
@@ -159,6 +171,7 @@ void botBrain::Update(){
 }
 
 void Player::die(){
+  alSourcePlay(soundSource[0]);
 	std::cout << "Player is dead!" << std::endl;
 }
 
@@ -189,7 +202,7 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
     int minimum;
     float edge = 18.0/map.size();
 
-    
+
     for(int k=1;k<players.size();++k){
         i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
         j = floor((players[k]->body->GetPosition().x + 9.0)/18*map.size());
@@ -197,7 +210,7 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
             if(pathMap[i-1][j] == pathMap[ip][jp]-1 && pathMap[ip][jp]-1 != 0){
                 players[k]->input.vertical+=1;
                 std::cout << "u" << std::endl;
-    
+
             }else if(pathMap[i+1][j] == pathMap[ip][jp]-1 && pathMap[ip][jp]-1 != 0){
                 players[k]->input.vertical-=1;
 
@@ -211,12 +224,12 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
             else if(pathMap[i-1][j-1] == pathMap[ip][jp]-1 && pathMap[ip][jp]-1 != 0 && map[i-1][j] != '#' && map[i][j-1] != '#'){
                 players[k]->input.vertical+=1;
                 players[k]->input.horizontal-=1;
-               
+
             }
             else if(pathMap[i+1][j-1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0 && map[i+1][j] != '#' && map[i][j-1] != '#'){
                 players[k]->input.vertical-=1;
                 players[k]->input.horizontal-=1;
-                
+
             }
             else if(pathMap[i+1][j+1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0 && map[i+1][j] != '#' && map[i][j+1] != '#'){
                 players[k]->input.horizontal+=1;
@@ -228,14 +241,14 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
                 players[k]->input.vertical+=1;
 //                 std::cout << "ur" << std::endl;
             }
-            
+
             //Backup in case block is up/down/right/left during diagonal moving
             else if (players[k]->input.vertical == 0 && players[k]->input.horizontal == 0){
                 minu = pathMap[i-1][j];
                 mind = pathMap[i+1][j];
                 minl = pathMap[i][j-1];
                 minr = pathMap[i][j+1];
-                
+
                 if(minu == -1)
                     minu = map.size()*map.size();
                 if(mind == -1)
@@ -244,11 +257,11 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
                     minl = map.size()*map.size();
                 if(minr == -1)
                     minr = map.size()*map.size();
-                
+
                 minimum = std::min(minu, std::min(mind, std::min(minl,minr)));
-                
+
                 if(minu == 0 || mind == 0 || minl == 0 || minr == 0){
-                    
+
                 }else if(minimum == minu){
                     players[k]->input.vertical+=1;
                 }else if(minimum == mind){
@@ -259,23 +272,23 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
                     players[k]->input.horizontal+=1;
                 }
             }
-            
+
             //Moves the bot towards the middle of the block if he is too close to the edge
             if(-(i+1) * edge > (players[k]->body->GetPosition().y - 9.0 - (players[k]->r + 0.05)) && players[k]->input.vertical!=1 && players[k]->input.vertical!=-1){
                 players[k]->input.vertical+=1;
-            
+
             }else if(-i * edge < (players[k]->body->GetPosition().y - 9.0 + (players[k]->r + 0.05))  && players[k]->input.vertical!=-1 && players[k]->input.vertical!=1){
                 players[k]->input.vertical-=1;
-                
+
             }
             if((j+1) * edge < (players[k]->body->GetPosition().x + 9.0 + (players[k]->r + 0.05)) && players[k]->input.horizontal!=-1 && players[k]->input.horizontal !=1){
                 players[k]->input.horizontal-=1;
-            
-                
+
+
             }else if(j * edge > (players[k]->body->GetPosition().x + 9.0 - (players[k]->r + 0.05)) && players[k]->input.horizontal!=1  && players[k]->input.horizontal != -1){
                 players[k]->input.horizontal+=1;
             }
-        
+
 
             //Removing the player marker from the map and reducing the number of players that werent reached
             map[i][j] = ' ';
@@ -291,7 +304,7 @@ void BotMoves(){
     BotAim();
     int i, j, ip, jp;
     num = 0;
-    
+
     //Matrix that contains the number of fields on the shortest path from each field to the player
     std::vector<std::vector<int>> pathMap(map.size());
     std::queue<std::pair<int,int>> queue;
@@ -301,8 +314,8 @@ void BotMoves(){
           pathMap[i][j] = -1;
         }
     }
-    
-    
+
+
 
 
     //Player position based on coordinates
@@ -314,11 +327,11 @@ void BotMoves(){
     for(int k=1;k<players.size();++k){
         i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
         j = floor((players[k]->body->GetPosition().x + 9.0)/18*map.size());
-        
+
         players[k]->input.horizontal=0;
         players[k]->input.vertical=0;
-        
-        
+
+
         if(i == ip && j == jp)
             continue;
         map[i][j] = 'B';
@@ -389,7 +402,7 @@ void BotAim(){
         y2 = players[k]->body->GetPosition().y;
         h = tan(30*M_PI/180)*4;
         w = h*windowWidth/windowHeight;
-        
+
         if(x2 > x1 + w || x2 < x1 - w || y2 > y1 + h || y2 < y1 - h)
             players[k]->input.shoot = false;
         else if(players[k]->see_player)

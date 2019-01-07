@@ -2,6 +2,7 @@
 #define WEAPON_DEF
 
 #include "item.h"
+#include <AL/alut.h>
 
 class Weapon : public Item{
 public:
@@ -28,6 +29,7 @@ protected:
 	float pos_y;
 	float angle;
 	float recoilAmount;
+	ALuint soundSource[2];
 };
 
 class Pistol : public Weapon {

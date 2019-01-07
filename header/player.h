@@ -4,6 +4,7 @@
 #include "weapon.h"
 #include "../header/util.h"
 #include <Box2D/Box2D.h>
+#include <AL/alut.h>
 
 typedef struct _Input{
     float horizontal, vertical, angle;
@@ -18,9 +19,9 @@ public:
     Player();
     void Draw();
     void DrawShadow();
-	void SwapWeapon(Weapon* newWeapon);
-	void takeDmg(int dmg);
-	void IncreaseHealth(int amount);
+	  void SwapWeapon(Weapon* newWeapon);
+	  void takeDmg(int dmg);
+	  void IncreaseHealth(int amount);
 
     virtual ClassID getClassID();
     void SetBrain(Brain* brain);
@@ -32,11 +33,14 @@ public:
     float r;
     bool see_player;
 
+
+
 private:
     float speed;
     int health;
     void die();
 protected:
+  ALuint soundSource[1];
 
 };
 
