@@ -34,9 +34,10 @@ Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string 
 	angle = angle;
 	recoilAmount = 0;
 
-	alGenSources(2, soundSource);
+	alGenSources(3, soundSource);
 	alSourcei(soundSource[0], AL_BUFFER, sounds[icon]);
 	alSourcei(soundSource[1], AL_BUFFER, sounds["reload"]);
+	alSourcei(soundSource[2], AL_BUFFER, sounds["pickup"]);
 	alSourcef(soundSource[0], AL_GAIN, 0.1);
 	alSourcef(soundSource[0], AL_PITCH, 1);
 };
@@ -78,6 +79,7 @@ void Weapon::Update(bool shoot){
 
 		alSource3f(soundSource[0], AL_POSITION, pos_x, pos_y, 0);
 		alSource3f(soundSource[1], AL_POSITION, pos_x, pos_y, 0);
+		alSource3f(soundSource[2], AL_POSITION, pos_x, pos_y, 0);
 
 	if(shoot){
 		this->fire();
@@ -107,4 +109,5 @@ void Weapon::SetPositionAndAngle(float x, float y, float angle){
 void Weapon::Pickup(Player* picker) {
 	std::cout << "Weapon picked up " << this->Name() << std::endl;
 	picker->SwapWeapon(this);
+	alSourcePlay(soundSource[2]);
 }

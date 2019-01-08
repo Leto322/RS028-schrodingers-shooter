@@ -37,6 +37,7 @@ Player::Player(){
 	equiped_weapon = new Pistol(0.0f, 0.0f, input.angle);
     team = false;
     see_player = false;
+    isDead = false;
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
@@ -173,6 +174,7 @@ void botBrain::Update(){
 void Player::die(){
   alSourcePlay(soundSource[0]);
 	std::cout << "Player is dead!" << std::endl;
+  isDead = true;
 }
 
 void Player::takeDmg(int dmg){

@@ -32,6 +32,7 @@ public:
     b2Body* body;
     float r;
     bool see_player;
+    bool isDead;
 
 
 
