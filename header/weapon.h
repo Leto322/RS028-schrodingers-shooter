@@ -29,7 +29,7 @@ protected:
 	float pos_y;
 	float angle;
 	float recoilAmount;
-	ALuint soundSource[2];
+	ALuint soundSource[3];
 };
 
 class Pistol : public Weapon {
