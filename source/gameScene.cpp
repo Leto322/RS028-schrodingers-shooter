@@ -42,9 +42,11 @@ ALuint ambientSource[1];
 void InitGame() {
 
 	alGenSources(1, ambientSource);
+	//CREDITS:  www.bensound.com
 	alSourcei(ambientSource[0], AL_BUFFER, sounds["music"]);
 	alSourcef(ambientSource[0], AL_GAIN, 0.1);
 	alSourcef(ambientSource[0], AL_PITCH, 1);
+	alSourcei(ambientSource[0], AL_LOOPING, AL_TRUE);
 
 	srand(clock());
 
@@ -190,6 +192,9 @@ void on_timer_game()
 
 		enemySpawner->Update();
 		alSource3f(ambientSource[0], AL_POSITION, myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0);
+
+		if(!myPlayer->alive)
+			alSourceStop(ambientSource[0]);
 
 		accumulator -= phisycsUpdateInterval;
 	}

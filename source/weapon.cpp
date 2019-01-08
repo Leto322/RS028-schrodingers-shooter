@@ -38,7 +38,7 @@ Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string 
 	alSourcei(soundSource[0], AL_BUFFER, sounds[icon]);
 	alSourcei(soundSource[1], AL_BUFFER, sounds["reload"]);
 	alSourcei(soundSource[2], AL_BUFFER, sounds["pickup"]);
-	alSourcef(soundSource[0], AL_GAIN, 0.1);
+	alSourcef(soundSource[0], AL_GAIN, 0.15);
 	alSourcef(soundSource[0], AL_PITCH, 1);
 };
 
@@ -77,9 +77,9 @@ void Weapon::reload(){
 void Weapon::Update(bool shoot){
     UpdateTimers();
 
-		alSource3f(soundSource[0], AL_POSITION, pos_x, pos_y, 0);
-		alSource3f(soundSource[1], AL_POSITION, pos_x, pos_y, 0);
-		alSource3f(soundSource[2], AL_POSITION, pos_x, pos_y, 0);
+		alSource3f(soundSource[0], AL_POSITION, pos_x, pos_y, 0.2);
+		alSource3f(soundSource[1], AL_POSITION, pos_x, pos_y, 0.2);
+		alSource3f(soundSource[2], AL_POSITION, pos_x, pos_y, 0.2);
 
 	if(shoot){
 		this->fire();

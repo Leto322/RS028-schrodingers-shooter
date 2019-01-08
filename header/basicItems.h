@@ -19,6 +19,7 @@ public:
 			alSourcei(soundSource[0], AL_BUFFER, sounds["heal"]);
 			alSourcef(soundSource[0], AL_GAIN, 0.3);
 			alSourcef(soundSource[0], AL_PITCH, 1);
+			alSource3f(soundSource[0], AL_POSITION, x, y, 0.2);
 		}
 	void Pickup(Player *picker) override {
 		picker->IncreaseHealth(m_amount);

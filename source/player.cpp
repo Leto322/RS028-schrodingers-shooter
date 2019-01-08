@@ -144,8 +144,7 @@ void playerBrain::Update(){
     float n = 0.18;
     Brain::m_player->equiped_weapon->SetPositionAndAngle(Brain::m_player->body->GetPosition().x + vx*n, Brain::m_player->body->GetPosition().y + vy*n, Brain::m_player->input.angle);
 
-    //Sound source is protected, need to fix
-    //alSource3f(Brain::m_player->soundSource[0], AL_POSITION, Brain::m_player->body->GetPosition().x, Brain::m_player->body->GetPosition().y, 0);
+		Brain::m_player->moveSoundSource();
 }
 
 botBrain::botBrain(Player& player)
@@ -163,6 +162,8 @@ void botBrain::Update(){
     vy =  sin(Brain::m_player->input.angle);
     float n = 0.18;
     Brain::m_player->equiped_weapon->SetPositionAndAngle(Brain::m_player->body->GetPosition().x + vx*n, Brain::m_player->body->GetPosition().y + vy*n, Brain::m_player->input.angle);
+
+		Brain::m_player->moveSoundSource();
 
     RayCastCallback ray_callback;
     b2Vec2 bot_pos(Brain::m_player->body->GetPosition().x, Brain::m_player->body->GetPosition().y);
@@ -193,7 +194,7 @@ void Player::takeDmg(int dmg){
 		if (tmp > 0) {
 			deathFlag = true;
 		}
-		
+
 	}
 }
 void Player::IncreaseHealth(int amount) {
@@ -211,6 +212,10 @@ void Player::SwapWeapon(Weapon* newWeapon) {
 	Weapon* old = equiped_weapon;
 	equiped_weapon = newWeapon;
 	//delete(old);
+}
+
+void Player::moveSoundSource(){
+	alSource3f(soundSource[0], AL_POSITION, body->GetPosition().x, body->GetPosition().y, 0.2);
 }
 
 ClassID Player::getClassID() {return PLAYER;}
