@@ -11,6 +11,7 @@
 #include "../header/enemySpawner.h"
 #include <string>
 #include <vector>
+#include <map>
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
@@ -19,6 +20,8 @@
 
 extern float windowWidth, windowHeight;
 extern GLuint textureIDs[];
+extern std::map<std::string, int> sounds;
+
 
 Player* myPlayer;
 b2World* world;
@@ -33,8 +36,15 @@ std::vector<Player*> players;
 std::vector<b2Vec2> spawnPositions;
 ItemPool itemPool;
 EnemySpawner* enemySpawner;
+ALuint ambientSource[1];
+
 
 void InitGame() {
+
+	alGenSources(1, ambientSource);
+	alSourcei(ambientSource[0], AL_BUFFER, sounds["music"]);
+	alSourcef(ambientSource[0], AL_GAIN, 0.1);
+	alSourcef(ambientSource[0], AL_PITCH, 1);
 
 	srand(clock());
 
@@ -60,7 +70,7 @@ void InitGame() {
 		players[i]->SetBrain(new botBrain(*players[i]));
 		players[i]->team = !myPlayer->team;
 	}
-	
+
 
 	spawnPositions.push_back(b2Vec2(0, 3));
 
@@ -72,6 +82,7 @@ void InitGame() {
 	itemPool.Add(new Rifle(-2, 0, 0));
 	itemPool.Add(new HealthPotion(-3, 0, 20));
 
+	alSourcePlay(ambientSource[0]);
 
 	lastFrameTime = std::chrono::high_resolution_clock::now();
 }
@@ -174,10 +185,11 @@ void on_timer_game()
 				alListener3f(AL_POSITION, players[i]->body->GetPosition().x, players[i]->body->GetPosition().y, 0);
 			}
 			players[i]->equiped_weapon->Update(players[i]->input.shoot);
-			
+
 		}
 
 		enemySpawner->Update();
+		alSource3f(ambientSource[0], AL_POSITION, myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0);
 
 		accumulator -= phisycsUpdateInterval;
 	}
