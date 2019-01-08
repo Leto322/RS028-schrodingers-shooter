@@ -30,8 +30,8 @@ public:
     void SetBrain(Brain* brain);
     Brain* m_brain;
     bool team;
-	bool alive;
-	bool deathFlag;
+		bool alive;
+		bool deathFlag;
     Input input;
     Weapon* equiped_weapon;
     b2Body* body;
@@ -42,10 +42,10 @@ public:
 private:
     float speed;
     int health;
-	int maxHealth;
+		int maxHealth;
 
 protected:
-  ALuint soundSource[1];
+  ALuint soundSource[2];
 };
 
 class Brain{

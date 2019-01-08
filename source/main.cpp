@@ -28,7 +28,10 @@ std::vector<std::string> soundNames = {
 	"death",
 	"pickup",
 	"heal",
-	"music"
+	"music",
+	"wallImpact1",
+	"bodyImpact1",
+	"bodyImpact2"
 };
 
 std::vector<std::string> textureLocations;
@@ -38,7 +41,7 @@ std::map<std::string, int> textures;
 std::map<std::string, int> sounds;
 
 GLuint textureIDs[4];
-ALuint soundIDs[7];
+ALuint soundIDs[10];
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 15
@@ -122,6 +125,8 @@ int main(int argc, char **argv)
 	/* Inicijalizuje se GLUT. */
 	glutInit(&argc, argv);
 	alutInit(NULL,NULL);
+	alDistanceModel(AL_LINEAR_DISTANCE);
+
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE | GLUT_MULTISAMPLE);
 	/* Kreira se prozor. */
 	glutInitWindowSize(1280, 720);

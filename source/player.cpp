@@ -8,6 +8,7 @@
 #include <math.h>
 #include <Box2D/Box2D.h>
 #include <queue>
+#include <cstdlib>
 
 extern b2World* world;
 extern std::vector< std::vector<char> > map;
@@ -29,21 +30,21 @@ int num;
 Player::Player() {
     r = 0.15;
     speed = 0.03;
-	maxHealth = 100;
+		maxHealth = 100;
     health = maxHealth;
     input.vertical = 0;
     input.horizontal = 0;
-	input.shoot = false;
-	input.angle= M_PI/2;
-	equiped_weapon = new Pistol(0.0f, 0.0f, input.angle);
-	deathFlag = false;
-	alive = false;
+		input.shoot = false;
+		input.angle= M_PI/2;
+		equiped_weapon = new Pistol(0.0f, 0.0f, input.angle);
+		deathFlag = false;
+		alive = false;
     team = false;
     see_player = false;
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
-	bodyDef.linearDamping = 2.0f;
+		bodyDef.linearDamping = 2.0f;
     bodyDef.position.Set(-100.0f, 0.0f);
     body = world->CreateBody(&bodyDef);
     body->SetUserData(this);
@@ -62,10 +63,14 @@ Player::Player() {
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
 
-    alGenSources(1, soundSource);
+    alGenSources(3, soundSource);
   	alSourcei(soundSource[0], AL_BUFFER, sounds["death"]);
-    alSourcef(soundSource[0], AL_GAIN, 0.1);
-  	alSourcef(soundSource[0], AL_PITCH, 1);
+		alSourcei(soundSource[1], AL_BUFFER, sounds["bodyImpact1"]);
+		alSourcei(soundSource[2], AL_BUFFER, sounds["bodyImpact2"]);
+		for(int i = 0; i < 3; i++){
+    	alSourcef(soundSource[i], AL_GAIN, 0.2);
+  		alSourcef(soundSource[i], AL_PITCH, 1);
+		}
 
 };
 
@@ -187,6 +192,12 @@ void Player::die(){
 }
 
 void Player::takeDmg(int dmg){
+	float t = rand();
+	if(t > (RAND_MAX)/2.0)
+		alSourcePlay(soundSource[1]);
+	else
+		alSourcePlay(soundSource[2]);
+
 	int tmp = health;
 	health -= dmg;
 	if (health <= 0) {
@@ -215,7 +226,9 @@ void Player::SwapWeapon(Weapon* newWeapon) {
 }
 
 void Player::moveSoundSource(){
-	alSource3f(soundSource[0], AL_POSITION, body->GetPosition().x, body->GetPosition().y, 0.2);
+	for(int i = 0; i < 3; i++){
+		alSource3f(soundSource[i], AL_POSITION, body->GetPosition().x, body->GetPosition().y, 0.2);
+	}
 }
 
 ClassID Player::getClassID() {return PLAYER;}
