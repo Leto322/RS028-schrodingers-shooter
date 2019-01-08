@@ -1,41 +1,26 @@
-CC=g++
-GLFLAGS= -std=c++17 -lBox2D -lGL -lglut -lGLU -lopenal -lalut
-CFLAGS=-lm
+appname := SchShooter.out
 
-all: SchShooter
+CXX := g++
+CXXFLAGS := -std=c++17 -lBox2D -lGL -lglut -lGLU -lopenal -lalut -lm
 
-SchShooter: main.o image.o player.o geometry.o collision.o weapon.o item.o bullet.o gameScene.o enemySpawner.o
-	$(CC) main.o image.o player.o geometry.o collision.o weapon.o item.o bullet.o gameScene.o enemySpawner.o -o SchShooter.out $(GLFLAGS) $(CFLAGS)
+srcfiles := $(shell find source -maxdepth 1 -name "*.cpp")
+objects  := $(patsubst %.cpp, %.o, $(srcfiles))
 
-main.o: source/main.cpp
-	$(CC) -c source/main.cpp $(GLFLAGS) $(CFLAGS)
+all: $(appname)
 
-image.o: source/image.cpp header/image.h
-	$(CC) -c source/image.cpp $(GLFLAGS) $(CFLAGS)
+$(appname): $(objects)
+	$(CXX) $(LDFLAGS) -o $(appname) $(objects) $(CXXFLAGS)
 
-player.o: source/player.cpp header/player.h
-	$(CC) -c source/player.cpp  $(GLFLAGS) $(CFLAGS)
+depend: .depend
 
-geometry.o: source/geometry.cpp header/geometry.h
-	$(CC) -c source/geometry.cpp $(GLFLAGS) $(CFLAGS)
-
-weapon.o: source/weapon.cpp header/weapon.h
-	$(CC) -c source/weapon.cpp $(GLFLAGS) $(CFLAGS)
-
-item.o: source/item.cpp header/item.h
-	$(CC) -c source/item.cpp  $(GLFLAGS) $(CFLAGS)
-
-bullet.o: source/bullet.cpp header/bullet.h
-	$(CC) -c source/bullet.cpp $(GLFLAGS) $(CFLAGS)
-
-collision.o: source/collision.cpp header/collision.h
-	$(CC) -c source/collision.cpp $(GLFLAGS) $(CFLAGS)
-
-gameScene.o: source/gameScene.cpp header/gameScene.h
-	$(CC) -c source/gameScene.cpp  $(GLFLAGS) $(CFLAGS)
-
-enemySpawner.o: source/enemySpawner.cpp header/enemySpawner.h
-	$(CC) -c source/enemySpawner.cpp  $(GLFLAGS) $(CFLAGS)
+.depend: $(srcfiles)
+	rm -f ./.depend
+	$(CXX) $(CXXFLAGS) -MM $^>>./.depend;
 
 clean:
-	rm -rf *.o *.out
+	rm -f $(objects)
+
+dist-clean: clean
+	rm -f *~ .depend
+
+include .depend
