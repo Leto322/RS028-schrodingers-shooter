@@ -1,7 +1,9 @@
 #include "../header/item.h"
 #include "../header/player.h"
+#include "../header/basicItems.h"
 #include <vector>
 #include <GL/glut.h>
+#include <Box2D/Box2D.h>
 #include <map>
 
 extern std::map<std::string, int> textures;
@@ -70,6 +72,11 @@ void ItemPool::CheckPickups(Player *picker) {
 
 void ItemPool::Add(Item *item) {
 	m_items.push_back(item);
+}
+
+void ItemPool::SpawnRandom(b2Vec2 pos) {
+	Item* item = new HealthPotion(pos.x, pos.y, 20);
+	Add(item);
 }
 
 

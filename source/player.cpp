@@ -26,22 +26,25 @@ int num;
 
 };*/
 
-Player::Player(){
+Player::Player() {
     r = 0.15;
     speed = 0.03;
-    health = 100;
+	maxHealth = 100;
+    health = maxHealth;
     input.vertical = 0;
     input.horizontal = 0;
 	input.shoot = false;
 	input.angle= M_PI/2;
 	equiped_weapon = new Pistol(0.0f, 0.0f, input.angle);
+	deathFlag = false;
+	alive = false;
     team = false;
     see_player = false;
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
 	bodyDef.linearDamping = 2.0f;
-    bodyDef.position.Set(0.0f, 0.0f);
+    bodyDef.position.Set(-100.0f, 0.0f);
     body = world->CreateBody(&bodyDef);
     body->SetUserData(this);
 
@@ -65,6 +68,11 @@ Player::Player(){
   	alSourcef(soundSource[0], AL_PITCH, 1);
 
 };
+
+void Player::SetMaxHealth(int mh) {
+	maxHealth = mh;
+	health = maxHealth;
+}
 
 void Player::SetBrain(Brain* brain){
     m_brain = brain;
@@ -92,7 +100,7 @@ void Player::Draw(){
 		glTranslatef(0, 0.3, 0.4);
 		glScalef(0.3, 0.1, 0.1);
 		glutWireCube(1);
-		float percentage = health / 100.0;
+		float percentage = (float)health / maxHealth;
 		glTranslatef(-0.5*(1-percentage), 0, 0);
 		glScalef(percentage, 1, 1);
 		glColor3f(1 - percentage, percentage, 0);
@@ -171,20 +179,32 @@ void botBrain::Update(){
 }
 
 void Player::die(){
-  alSourcePlay(soundSource[0]);
+	alSourcePlay(soundSource[0]);
+	alive = false;
+	body->SetTransform(b2Vec2(-100, 0), 0);
 	std::cout << "Player is dead!" << std::endl;
 }
 
 void Player::takeDmg(int dmg){
+	int tmp = health;
 	health -= dmg;
 	if (health <= 0) {
 		health = 0;
-		die();
+		if (tmp > 0) {
+			deathFlag = true;
+		}
+		
 	}
 }
 void Player::IncreaseHealth(int amount) {
 	health += amount;
-	health = health > 100 ? 100 : health;
+	health = health > maxHealth ? maxHealth : health;
+}
+
+void Player::Revive() {
+	health = maxHealth;
+	alive = true;
+	equiped_weapon->reload();
 }
 
 void Player::SwapWeapon(Weapon* newWeapon) {
@@ -203,7 +223,7 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
     float edge = 18.0/map.size();
 
 
-    for(int k=1;k<players.size();++k){
+    for(int k=1;k<players.size(); k++){
         i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
         j = floor((players[k]->body->GetPosition().x + 9.0)/18*map.size());
         if(i == ip && j == jp){
