@@ -40,7 +40,6 @@ Player::Player() {
 	alive = false;
     team = false;
     see_player = false;
-    isDead = false;
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
@@ -184,7 +183,6 @@ void Player::die(){
 	alive = false;
 	body->SetTransform(b2Vec2(-100, 0), 0);
 	std::cout << "Player is dead!" << std::endl;
-  isDead = true;
 }
 
 void Player::takeDmg(int dmg){
