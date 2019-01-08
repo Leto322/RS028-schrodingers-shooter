@@ -19,30 +19,32 @@ public:
     Player();
     void Draw();
     void DrawShadow();
-	  void SwapWeapon(Weapon* newWeapon);
-	  void takeDmg(int dmg);
-	  void IncreaseHealth(int amount);
+	void SwapWeapon(Weapon* newWeapon);
+	void takeDmg(int dmg);
+	void IncreaseHealth(int amount);
+	void Revive();
+	void SetMaxHealth(int mh);
 
     virtual ClassID getClassID();
     void SetBrain(Brain* brain);
     Brain* m_brain;
     bool team;
+	bool alive;
+	bool deathFlag;
     Input input;
     Weapon* equiped_weapon;
     b2Body* body;
     float r;
     bool see_player;
-    bool isDead;
-
-
+    void die();
 
 private:
     float speed;
     int health;
-    void die();
+	int maxHealth;
+
 protected:
   ALuint soundSource[1];
-
 };
 
 class Brain{

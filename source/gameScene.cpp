@@ -8,6 +8,7 @@
 #include "../header/gameScene.h"
 #include "../header/collision.h"
 #include "../header/basicItems.h"
+#include "../header/enemySpawner.h"
 #include <string>
 #include <vector>
 #include <chrono>
@@ -29,7 +30,9 @@ double accumulator = 0;
 double phisycsUpdateInterval = 0.02;
 std::vector<Bullet*> bullets;
 std::vector<Player*> players;
+std::vector<b2Vec2> spawnPositions;
 ItemPool itemPool;
+EnemySpawner* enemySpawner;
 
 void InitGame() {
 
@@ -43,17 +46,26 @@ void InitGame() {
 
 	LoadWalls();
 
+
 	myPlayer = new Player();
-  myPlayer->SetBrain(new playerBrain(*myPlayer));
+	myPlayer->SetBrain(new playerBrain(*myPlayer));
+	myPlayer->SetMaxHealth(200);
+	myPlayer->body->SetTransform(b2Vec2(0, 0), 1);
+	myPlayer->Revive();
 	players.push_back(myPlayer);
-	players.push_back(new Player());
-    players[1]->SetBrain(new botBrain(*players[1]));
-	players[1]->team = !myPlayer->team;
-	players[1]->body->SetTransform(b2Vec2(-1, -3), 1);
+
+	for (int i = 1; i < 10; i++) {
+		players.push_back(new Player());
+		players[i]->body->SetTransform(b2Vec2(i*10, 0), 0);
+		players[i]->SetBrain(new botBrain(*players[i]));
+		players[i]->team = !myPlayer->team;
+	}
+	
+
+	spawnPositions.push_back(b2Vec2(0, 3));
+
+	enemySpawner = new EnemySpawner(players, spawnPositions);
 	//players[1]->input.shoot = true;
-
-
-	itemPool = ItemPool();
 
 	//Test for the items
 	itemPool.Add(new Pistol(-1, 0, 0));
@@ -146,16 +158,26 @@ void on_timer_game()
 	//std::cout << "dt " << deltaTime.count() << std::endl;
 	while (accumulator > phisycsUpdateInterval) {
 		world->Step(phisycsUpdateInterval, 6, 2);
-
         BotMoves();
 		for (int i = 0; i < players.size(); i++) {
+			if (players[i]->deathFlag) {
+				players[i]->deathFlag = false;
+				itemPool.SpawnRandom(players[i]->body->GetPosition());
+				players[i]->die();
+			}
+			if (!players[i]->alive) {
+				continue;
+			}
 			itemPool.CheckPickups(players[i]);
 			players[i]->m_brain->Update();
 			if(i == 0){
 				alListener3f(AL_POSITION, players[i]->body->GetPosition().x, players[i]->body->GetPosition().y, 0);
 			}
 			players[i]->equiped_weapon->Update(players[i]->input.shoot);
+			
 		}
+
+		enemySpawner->Update();
 
 		accumulator -= phisycsUpdateInterval;
 	}
@@ -202,9 +224,15 @@ void DrawMap() {
 
 void DrawPlayers() {
 	for (int i = 0; i < players.size(); i++) {
+		if (!players[i]->alive)
+			continue;
+
 		players[i]->DrawShadow();
 	}
 	for (int i = 0; i < players.size(); i++) {
+		if (!players[i]->alive)
+			continue;
+
 		players[i]->Draw();
 	}
 }

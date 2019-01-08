@@ -4,8 +4,8 @@ CFLAGS=-lm
 
 all: SchShooter
 
-SchShooter: main.o image.o player.o geometry.o collision.o weapon.o item.o bullet.o gameScene.o
-	$(CC) main.o image.o player.o geometry.o collision.o weapon.o item.o bullet.o gameScene.o -o SchShooter.out $(GLFLAGS) $(CFLAGS)
+SchShooter: main.o image.o player.o geometry.o collision.o weapon.o item.o bullet.o gameScene.o enemySpawner.o
+	$(CC) main.o image.o player.o geometry.o collision.o weapon.o item.o bullet.o gameScene.o enemySpawner.o -o SchShooter.out $(GLFLAGS) $(CFLAGS)
 
 main.o: source/main.cpp
 	$(CC) -c source/main.cpp $(GLFLAGS) $(CFLAGS)
@@ -33,6 +33,9 @@ collision.o: source/collision.cpp header/collision.h
 
 gameScene.o: source/gameScene.cpp header/gameScene.h
 	$(CC) -c source/gameScene.cpp  $(GLFLAGS) $(CFLAGS)
+
+enemySpawner.o: source/enemySpawner.cpp header/enemySpawner.h
+	$(CC) -c source/enemySpawner.cpp  $(GLFLAGS) $(CFLAGS)
 
 clean:
 	rm -rf *.o *.out

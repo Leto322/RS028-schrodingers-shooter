@@ -28,6 +28,7 @@ public:
 	void Remove(Item *item);
 	void Remove(int index);
 	void DrawItems();
+	void SpawnRandom(b2Vec2 pos);
 private:
 	std::vector<Item*> m_items;
 
