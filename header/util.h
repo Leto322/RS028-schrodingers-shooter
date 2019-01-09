@@ -29,4 +29,6 @@ public:
   b2Fixture* m_fixture;
 };
 
+bool IsOnScreen(b2Vec2 position);
+
 #endif

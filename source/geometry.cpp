@@ -4,6 +4,7 @@
 std::vector< std::vector<char> > map;
 extern std::vector<Block> walls;
 extern std::vector<Block> ground;
+extern std::vector<b2Vec2> spawnPositions;
 extern GLuint textureIDs[2];
 // extern std::vector<Line> walls
 // m_x = m_x/855*18-9;
@@ -86,12 +87,15 @@ void LoadWalls()
 
      for(i=0;i<n;i++){
             for(j=0;j<n;j++){
+                A.x = j*edge+edge/2;
+                A.y = i*edge+edge/2;
+                ScaleVec(&A);
                 if(map[i][j] == '#'){
-                    A.x = j*edge+edge/2;
-                    A.y = i*edge+edge/2;
-                    ScaleVec(&A);
                     walls.push_back(Block(A, edge));
                 }
+				else if (map[i][j] == 'S') {
+					spawnPositions.push_back(A);
+				}
 //                 else{
 //                     A.x = j*edge+edge/2;
 //                     A.y = i*edge+edge/2;

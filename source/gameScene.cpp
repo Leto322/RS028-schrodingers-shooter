@@ -74,7 +74,7 @@ void InitGame() {
 	}
 
 
-	spawnPositions.push_back(b2Vec2(0, 3));
+	//spawnPositions.push_back(b2Vec2(0, 3));
 
 	enemySpawner = new EnemySpawner(players, spawnPositions);
 	//players[1]->input.shoot = true;
@@ -254,6 +254,30 @@ void DrawPlayers() {
 	}
 }
 
+void DrawHUDPlayers() {
+	for (int i = 0; i < players.size(); i++) {
+		if (!players[i]->alive)
+			continue;
+
+		if (players[i]->team) {
+			glColor3f(1, 0, 0);
+		}
+		else {
+			glColor3f(0, 0, 1);
+		}
+
+		glPushMatrix();
+		b2Vec2 pos = players[i]->body->GetPosition();
+
+		glTranslatef(pos.x, pos.y, 0);
+		glScalef(1, 1, 0.1);
+		glutSolidCube(0.5);
+
+		glPopMatrix();
+
+	}
+}
+
 void DrawBullets() {
 	for (int i = 0; i < bullets.size(); i++) {
         if( (abs(bullets[i]->body->GetLinearVelocity().x) <= 0.1 && abs(bullets[i]->body->GetLinearVelocity().y) <= 0.1)
@@ -268,18 +292,47 @@ void DrawBullets() {
 	}
 }
 
+void DrawHUDMap() {
+	glPushMatrix();
+	glColor3f(0.8, 0.65, 0);
+	glNormal3f(0, 0, 1);
+	glBegin(GL_QUADS);
+	glVertex3f(-9, -9, 0);
+	glVertex3f(9, -9, 0);
+	glVertex3f(9, 9, 0);
+	glVertex3f(-9, 9, 0);
+	glEnd();
+	glPopMatrix();
+}
+
 void on_display_game(void)
 {
+	glViewport(0, 0, windowWidth, windowHeight);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
 	gluLookAt(myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 4,
 		myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0,
 		0, 1, 0);
+
 
 	DrawMap();
 	DrawBullets();
 	DrawPlayers();
 	DrawWalls();
 	itemPool.DrawItems();
+
+	//MiniMap
+	glViewport(-120 + windowWidth / 6 + windowWidth - windowWidth/3, 0, windowWidth / 3, windowHeight / 3);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(0, 0, 18,
+		0, 0, 0,
+		0, 1, 0);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	DrawHUDMap();
+	DrawWalls();
+	DrawHUDPlayers();
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
 }

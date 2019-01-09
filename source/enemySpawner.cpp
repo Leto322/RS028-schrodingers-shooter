@@ -5,6 +5,8 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <time.h>
+
 
 extern double phisycsUpdateInterval;
 
@@ -63,9 +65,10 @@ void EnemySpawner::Spawn() {
 }
 
 b2Vec2 EnemySpawner::GetNextSpawnPosition() {
-	for (int i = 0; i < spawnPositions.size(); i++) {
-		if (/*provera da li je off screen*/ true) {
-			return spawnPositions[i];
+	while (true) {
+		int index = rand() % spawnPositions.size();
+		if (!IsOnScreen(spawnPositions[index])) {
+			return spawnPositions[index];
 		}
 	}
 }

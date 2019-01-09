@@ -247,8 +247,6 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
         if(i == ip && j == jp){
             if(pathMap[i-1][j] == pathMap[ip][jp]-1 && pathMap[ip][jp]-1 != 0){
                 players[k]->input.vertical+=1;
-                std::cout << "u" << std::endl;
-
             }else if(pathMap[i+1][j] == pathMap[ip][jp]-1 && pathMap[ip][jp]-1 != 0){
                 players[k]->input.vertical-=1;
 
@@ -429,19 +427,19 @@ void BotMoves(){
 void BotAim(){
     float x1, x2;
     float y1, y2;
-    float h, w;
     x1 = players[0]->body->GetPosition().x;
     y1 = players[0]->body->GetPosition().y;
     float angle;
     for(int k = 1; k < players.size(); ++k){
-        if(players[k]->equiped_weapon->GetAmmo() == 0)
+		if (players[k]->equiped_weapon->GetAmmo() == 0) {
             players[k]->equiped_weapon->reload();
-        x2 = players[k]->body->GetPosition().x;
-        y2 = players[k]->body->GetPosition().y;
-        h = tan(30*M_PI/180)*4;
-        w = h*windowWidth/windowHeight;
+			std::cout<<"Bot reload "<<std::endl;
+		}
 
-        if( !(x2 > x1 + w || x2 < x1 - w || y2 > y1 + h || y2 < y1 - h) && players[k]->see_player )
+		x2 = players[k]->body->GetPosition().x;
+		y2 = players[k]->body->GetPosition().y;
+
+        if( IsOnScreen(players[k]->body->GetPosition()) && players[k]->see_player )
             players[k]->input.shoot = true;
         else
             players[k]->input.shoot = false;
