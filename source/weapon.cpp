@@ -47,7 +47,7 @@ void Weapon::fire(){
 	if(fire_timer <= 0 && reload_timer <= 0 && this->ammo != 0){
 		//Calculating new angle from random spread
 		float firing_angle = angle + spread*randomNumber(-1,1)*recoilAmount;
-		Bullet* firedBullet = new Bullet(pos_x, pos_y, firing_angle, dmg);
+		Bullet* firedBullet = new Bullet(pos_x, pos_y, firing_angle, dmg, bulletSIze);
 		//Adding bullet to the list of fired bullets
 		bullets.push_back(firedBullet);
 
@@ -110,4 +110,25 @@ void Weapon::Pickup(Player* picker) {
 	std::cout << "Weapon picked up " << this->Name() << std::endl;
 	picker->SwapWeapon(this);
 	alSourcePlay(soundSource[2]);
+}
+
+void Shotgun::fire() {
+	if (fire_timer <= 0 && reload_timer <= 0 && this->ammo != 0) {
+		//Calculating new angle from random spread
+			std::cout << "PalletNum " << palletNumber << std::endl;
+		for (int i = 0; i < palletNumber; i++)
+		{
+			float rand = randomNumber(-1, 1);
+			std::cout << "rand " << rand << std::endl;
+			float firing_angle = angle + spread * rand * (i+1)/ (float)palletNumber;
+			Bullet* firedBullet = new Bullet(pos_x, pos_y, firing_angle, dmg, bulletSIze);
+			//Adding bullet to the list of fired bullets
+			bullets.push_back(firedBullet);
+		}
+
+		alSourcePlay(soundSource[0]);
+
+		this->ammo--;
+		fire_timer = fire_delay;
+	}
 }

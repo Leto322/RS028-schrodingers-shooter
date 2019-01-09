@@ -6,7 +6,7 @@
 #include <map>
 
 extern float windowWidth, windowHeight, aspectRatio;
-extern GLuint textureIDs[];
+extern std::map<std::string, int> textures;
 extern std::map<std::string, int> sounds;
 extern ALuint ambientSource[1];
 
@@ -56,7 +56,7 @@ void DrawMenu() {
 	float w = h * aspectRatio;
 	glPushMatrix();
 	glColor3f(1, 1, 1);
-	glBindTexture(GL_TEXTURE_2D, textureIDs[5]);
+	glBindTexture(GL_TEXTURE_2D, textures["menu"]);
 	glNormal3f(0, 0, 1);
 	glBegin(GL_QUADS);
 		glTexCoord2f(0, 0);
