@@ -80,9 +80,9 @@ void InitGame() {
 	//players[1]->input.shoot = true;
 
 	//Test for the items
-	itemPool.Add(new Pistol(-1, 0, 0));
 	itemPool.Add(new Rifle(-2, 0, 0));
-	itemPool.Add(new HealthPotion(-3, 0, 20));
+	itemPool.Add(new Shotgun(-3, 0, 0, 4));
+	itemPool.Add(new HealthPotion(-4, 0, 20));
 
 	alSourcePlay(ambientSource[0]);
 

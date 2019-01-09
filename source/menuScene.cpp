@@ -6,7 +6,6 @@
 #include <map>
 
 extern float windowWidth, windowHeight, aspectRatio;
-extern GLuint textureIDs[];
 extern std::map<std::string, int> textures;
 extern std::map<std::string, int> sounds;
 extern ALuint ambientSource[1];

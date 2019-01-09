@@ -6,7 +6,7 @@
 
 class Bullet : public Colider {
 public:
-	Bullet(float x, float y, float angle, int dmg);
+	Bullet(float x, float y, float angle, int dmg, float bulletSize);
 	void Draw();
 	virtual ClassID getClassID();
 
