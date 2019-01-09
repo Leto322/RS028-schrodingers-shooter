@@ -20,7 +20,7 @@ std::vector<std::string> textureNames = {
 	"pistol",
 	"rifle",
 	"healthPotion",
-    "menu"
+  "menu"
 };
 
 std::vector<std::string> soundNames = {
@@ -114,7 +114,7 @@ void LoadTextures(){
                  GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
 		delete [] cstr;
 	}
-	
+
 
 
 	image_done(image);

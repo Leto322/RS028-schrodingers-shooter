@@ -4,13 +4,18 @@ collision.o: source/collision.cpp source/../header/collision.h \
  source/../header/../header/util.h source/../header/bullet.h
 bullet.o: source/bullet.cpp source/../header/bullet.h \
  source/../header/../header/util.h source/../header/util.h
+menuScene.o: source/menuScene.cpp source/../header/menuScene.h
 geometry.o: source/geometry.cpp source/../header/geometry.h \
  source/../header/../header/util.h source/../header/util.h
+util.o: source/util.cpp source/../header/util.h source/../header/player.h \
+ source/../header/weapon.h source/../header/item.h \
+ source/../header/../header/util.h
 main.o: source/main.cpp source/../header/image.h \
  source/../header/player.h source/../header/weapon.h \
  source/../header/item.h source/../header/../header/util.h \
  source/../header/geometry.h source/../header/weapon.h \
- source/../header/bullet.h source/../header/gameScene.h
+ source/../header/bullet.h source/../header/gameScene.h \
+ source/../header/menuScene.h
 item.o: source/item.cpp source/../header/item.h source/../header/player.h \
  source/../header/weapon.h source/../header/item.h \
  source/../header/../header/util.h source/../header/basicItems.h
