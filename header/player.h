@@ -52,10 +52,11 @@ class Brain{
 protected:
     Brain(Player& player);
     Player* m_player;
-    ~Brain();
+    
 
 public:
     virtual void Update() = 0;
+    virtual ~Brain(){}
 };
 
 

@@ -6,6 +6,7 @@
 #include "../header/weapon.h"
 #include "../header/bullet.h"
 #include "../header/gameScene.h"
+#include "../header/menuScene.h"
 #include <string>
 #include <vector>
 #include <Box2D/Box2D.h>
@@ -18,7 +19,8 @@ std::vector<std::string> textureNames = {
 	"wall3",
 	"pistol",
 	"rifle",
-	"healthPotion"
+	"healthPotion",
+    "menu"
 };
 
 std::vector<std::string> soundNames = {
@@ -112,6 +114,8 @@ void LoadTextures(){
                  GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
 		delete [] cstr;
 	}
+	
+
 
 	image_done(image);
 }
@@ -171,9 +175,9 @@ int main(int argc, char **argv)
   	animation_ongoing = 1;
 	//glutSetCursor(GLUT_CURSOR_NONE);
 
-	currentScene = GAME;
+	currentScene = MENU;
 	InitGame();
-
+    InitMenu();
 	glutMainLoop();
 
     return 0;
@@ -273,6 +277,9 @@ static void on_display(void)
 	case GAME:
 		on_display_game();
 		break;
+    case MENU:
+        on_display_menu();
+        break;
 	}
 
 	/* Nova slika se salje na ekran. */
