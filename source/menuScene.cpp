@@ -4,12 +4,14 @@
 #include <GL/freeglut.h>
 #include <Box2D/Box2D.h>
 #include <AL/alut.h>
+#include <chrono>
 #include <map>
 
 extern float windowWidth, windowHeight, aspectRatio;
 extern std::map<std::string, int> textures;
 extern std::map<std::string, int> sounds;
 extern std::map<std::string, int> textures;
+extern std::chrono::high_resolution_clock::time_point lastFrameTime;
 std::map<std::string, bool> pressedButtons;
 extern ALuint ambientSource[1];
 bool menuActive;
@@ -70,6 +72,7 @@ void releaseButton(int x, int y){
     float y1 = -(y- windowHeight / 2)/windowHeight*2*h;
     
     if(x1>=-w/8 && x1 <= w/8 && y1 <= h/2+h/20 && y1 >= h/2-h/20 && pressedButtons["play"]){
+        lastFrameTime = std::chrono::high_resolution_clock::now();
         currentScene = GAME;
     }
     else if(x1>=-w/8 && x1 <= w/8 && y1 <= h/4+h/20 && y1 >= h/4-h/20 && pressedButtons["controls"]){
@@ -336,7 +339,7 @@ void DrawCredits(){
     unsigned char credits[] = "Branko Djakovic 41/2015\n\nMladen Krcmarevic 119/2015\n\nFilip Kristic 335/2015\n\nSounds from:\n-http://soundbible.com\n-https://www.zapsplat.com\n-www.bensound.com";
 
     
-    glTranslatef(-w/5, h/3, 0);
+    glTranslatef(-w/5, h/2, 0);
     glColor3f(1,1,1);
     glRasterPos3f(0, 0, 0);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,credits);
