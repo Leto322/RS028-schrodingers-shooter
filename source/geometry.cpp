@@ -94,6 +94,7 @@ void LoadWalls()
                     walls.push_back(Block(A, edge));
                 }
 				else if (map[i][j] == 'S') {
+					map[i][j] = ' ';
 					spawnPositions.push_back(A);
 				}
 //                 else{

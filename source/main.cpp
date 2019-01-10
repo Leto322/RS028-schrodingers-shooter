@@ -15,31 +15,31 @@
 #include <AL/alut.h>
 
 std::vector<std::string> textureNames = {
-	"sand",
-	"wall3",
-	"pistol",
-	"rifle",
-	"healthPotion",
-    "menu",
-    "button",
-	"shotgun",
-	"blood",
-	"hudbar"
+	std::string("sand"),
+	std::string("wall3"),
+	std::string("pistol"),
+	std::string("rifle"),
+	std::string("healthPotion"),
+    std::string("menu"),
+    std::string("button"),
+	std::string("shotgun"),
+	std::string("blood"),
+	std::string("hudbar")
 };
 
 std::vector<std::string> soundNames = {
-	"pistol",
-	"rifle",
-	"shotgun",
-	"reload",
-	"reloadShotgun",
-	"death",
-	"pickup",
-	"heal",
-	"music",
-	"wallImpact1",
-	"bodyImpact1",
-	"bodyImpact2"
+	std::string("pistol"),
+	std::string("rifle"),
+	std::string("shotgun"),
+	std::string("reload"),
+	std::string("reloadShotgun"),
+	std::string("death"),
+	std::string("pickup"),
+	std::string("heal"),
+	std::string("music"),
+	std::string("wallImpact1"),
+	std::string("bodyImpact1"),
+	std::string("bodyImpact2")
 };
 
 std::vector<std::string> textureLocations;
@@ -118,7 +118,6 @@ void LoadTextures(){
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                  image->width, image->height, 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
-		delete [] cstr;
 	}
 
 
