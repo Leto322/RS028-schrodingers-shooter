@@ -49,6 +49,7 @@ Player::Player() {
     bodyDef.position.Set(-100.0f, 0.0f);
     body = world->CreateBody(&bodyDef);
     body->SetUserData(this);
+	body->SetActive(false);
 
     // Define another box shape for our dynamic body.
     b2CircleShape circleShape;
@@ -189,6 +190,7 @@ void Player::die(){
 	alSourcePlay(soundSource[0]);
 	alive = false;
 	body->SetTransform(b2Vec2(-100, 0), 0);
+	body->SetActive(false);
 	std::cout << "Player is dead!" << std::endl;
 }
 
@@ -236,6 +238,7 @@ void Player::Revive() {
 	health = maxHealth;
 	alive = true;
 	equiped_weapon->reload();
+	body->SetActive(true);
 }
 
 void Player::SwapWeapon(Weapon* newWeapon) {
@@ -378,8 +381,11 @@ void BotMoves(){
     jp = floor((players[0]->body->GetPosition().x + 9.0)/18*map.size());
     pathMap[ip][jp] = 0;
 
+
     //Bot positions based on coordinates
     for(int k=1;k<players.size();++k){
+		if (!players[k]->alive)
+			continue;
         i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
         j = floor((players[k]->body->GetPosition().x + 9.0)/18*map.size());
 
@@ -450,6 +456,9 @@ void BotAim(){
     y1 = players[0]->body->GetPosition().y;
     float angle;
     for(int k = 1; k < players.size(); ++k){
+		if (!players[k]->alive) {
+			continue;
+		}
 		if (players[k]->equiped_weapon->GetAmmo() == 0) {
             players[k]->equiped_weapon->reload();
 			std::cout<<"Bot reload "<<std::endl;
