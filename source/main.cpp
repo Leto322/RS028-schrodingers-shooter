@@ -20,7 +20,8 @@ std::vector<std::string> textureNames = {
 	"pistol",
 	"rifle",
 	"healthPotion",
-    "menu"
+    "menu",
+    "button"
 };
 
 std::vector<std::string> soundNames = {
@@ -221,7 +222,10 @@ static void on_mouse_pressed_released(int button, int state, int x, int y) {
 	case GAME:
 		on_mouse_pressed_released_game(button, state, x, y);
 		break;
-	}
+    case MENU:
+        on_mouse_pressed_released_menu(button, state, x, y);
+        break;
+    }
 
 }
 

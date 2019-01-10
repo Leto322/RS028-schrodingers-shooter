@@ -39,6 +39,13 @@ EnemySpawner* enemySpawner;
 ALuint ambientSource[1];
 
 
+enum scene {
+	GAME,
+	MENU,
+	EASTER_EGG
+};
+extern enum scene currentScene;
+
 void InitGame() {
 
 	alGenSources(1, ambientSource);
@@ -94,7 +101,7 @@ void on_keyboard_game(unsigned char key, int x, int y)
 	switch (key) {
 	case 27:
 		/* Zavrsava se program. */
-		exit(0);
+		currentScene = MENU;
 		break;
 	case 'a':
 		myPlayer->input.horizontal -= 1;
