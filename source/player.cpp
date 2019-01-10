@@ -33,6 +33,7 @@ Player::Player() {
     speed = 0.03;
 		maxHealth = 100;
     health = maxHealth;
+		grenades = 2;
     input.vertical = 0;
     input.horizontal = 0;
 		input.shoot = false;

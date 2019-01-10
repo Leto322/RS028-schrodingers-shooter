@@ -5,6 +5,7 @@
 #include <Box2D/Box2D.h>
 #include <AL/alut.h>
 #include <chrono>
+#include <string>
 #include <map>
 
 extern float windowWidth, windowHeight, aspectRatio;
@@ -28,11 +29,16 @@ extern enum scene currentScene;
 
 void InitMenu() {
 	alSourcePlay(ambientSource[0]);
-    pressedButtons["play"] = false;
-    pressedButtons["credits"] = false;
-    pressedButtons["controls"] = false;
-    pressedButtons["exit"] = false;
-    pressedButtons["back"] = false;
+		pressedButtons.insert( std::pair<std::string,bool>(std::string("play"),false) );
+    //pressedButtons[std::string("play")] = false;
+		pressedButtons.insert( std::pair<std::string,bool>(std::string("credits"),false) );
+    //pressedButtons[std::string("credits")] = false;
+		pressedButtons.insert( std::pair<std::string,bool>(std::string("controls"),false) );
+    //pressedButtons[std::string("controls")] = false;
+		pressedButtons.insert( std::pair<std::string,bool>(std::string("exit"),false) );
+    //pressedButtons[std::string("exit")] = false;
+		pressedButtons.insert( std::pair<std::string,bool>(std::string("back"),false) );
+    //pressedButtons[std::string("back")] = false;
     menuActive = true;
     creditsActive = false;
     controlsActive = false;
@@ -70,7 +76,7 @@ void releaseButton(int x, int y){
 	float w = h * aspectRatio;
     float x1 = (x- windowWidth / 2)/windowWidth*2*w;
     float y1 = -(y- windowHeight / 2)/windowHeight*2*h;
-    
+
     if(x1>=-w/8 && x1 <= w/8 && y1 <= h/2+h/20 && y1 >= h/2-h/20 && pressedButtons["play"]){
         lastFrameTime = std::chrono::high_resolution_clock::now();
         currentScene = GAME;
@@ -94,7 +100,7 @@ void releaseButton(int x, int y){
        controlsActive = false;
        menuActive = true;
     }
-    
+
     pressedButtons["play"] = false;
     pressedButtons["controls"] = false;
     pressedButtons["credits"] = false;
@@ -110,7 +116,7 @@ void on_mouse_pressed_released_menu(int button, int state, int x, int y) {
 			pressButton(x,y);
 		else if (state == GLUT_UP)
 			releaseButton(x,y);
-           
+
 		break;
 	}
 
@@ -155,7 +161,7 @@ void DrawMenu() {
     float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
 	glPushMatrix();
-    
+
 	glColor3f(1, 1, 1);
 	glBindTexture(GL_TEXTURE_2D, textures["menu"]);
 	glNormal3f(0, 0, 1);
@@ -171,9 +177,9 @@ void DrawMenu() {
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
     glPopMatrix();
-    
+
     glPushMatrix();
-    
+
     //Play button
     if(pressedButtons["play"])
         glColor4f(0.3,0.3,0.3,0.8);
@@ -193,8 +199,8 @@ void DrawMenu() {
 		glVertex3f(-w/8, h/20, 0);
 	glEnd();
 
-    
-    
+
+
     //Controls button
     if(pressedButtons["controls"])
         glColor4f(0.3,0.3,0.3,0.8);
@@ -211,7 +217,7 @@ void DrawMenu() {
 		glTexCoord2f(0, 1);
 		glVertex3f(-w/8, h/20, 0);
 	glEnd();
-	
+
     //Credits button
     if(pressedButtons["credits"])
         glColor4f(0.3,0.3,0.3,0.8);
@@ -228,7 +234,7 @@ void DrawMenu() {
 		glTexCoord2f(0, 1);
 		glVertex3f(-w/8, h/20, 0);
 	glEnd();
-    
+
     //Exit button
     if(pressedButtons["exit"])
         glColor4f(0.3,0.3,0.3,0.8);
@@ -247,7 +253,7 @@ void DrawMenu() {
 	glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glPopMatrix();
-    
+
     unsigned char play[] = "Play";
     unsigned char credits[] = "Credits";
     unsigned char controls[] = "Controls";
@@ -257,15 +263,15 @@ void DrawMenu() {
     glColor3f(1,1,1);
     glRasterPos3f(0, 0, 0);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,play);
-    
+
     glTranslatef(-w/30, -h/4, 0);
     glRasterPos3f(0, 0, 0);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,controls);
-    
+
     glTranslatef(w/60, -h/4, 0);
     glRasterPos3f(0, 0, 0);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,credits);
-    
+
     glTranslatef(w/60, -h/4, 0);
     glRasterPos3f(0, 0, 0);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,exit);
@@ -276,7 +282,7 @@ void DrawControls(){
     float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
 	glPushMatrix();
-    
+
 	glColor3f(1, 1, 1);
 	glBindTexture(GL_TEXTURE_2D, textures["menu"]);
 	glNormal3f(0, 0, 1);
@@ -291,18 +297,18 @@ void DrawControls(){
 		glVertex3f(-w, h, 0);
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
-    
-    
+
+
     unsigned char controls[] = "w - Move up\n\na - Move left\n\ns - Move down\n\nd - Move right\n\nMouse left - Shoot\n\nf - Fullscreen\n\nESC in menu - Windowed mode\n\nESC in game- Main menu";
 
-    
+
     glTranslatef(-w/7, h/1.3, 0);
     glColor3f(1,1,1);
     glRasterPos3f(0, 0, 0);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,controls);
     glPopMatrix();
-    
-    
+
+
     glBindTexture(GL_TEXTURE_2D, textures["button"]);
     if(pressedButtons["back"])
         glColor4f(0.3,0.3,0.3,0.8);
@@ -321,7 +327,7 @@ void DrawControls(){
 	glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glPopMatrix();
-    
+
     glPushMatrix();
     unsigned char back[] = "Back";
     glTranslatef(-w/30, -h/60, 0);
@@ -334,7 +340,7 @@ void DrawCredits(){
     float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
 	glPushMatrix();
-    
+
 	glColor3f(1, 1, 1);
 	glBindTexture(GL_TEXTURE_2D, textures["menu"]);
 	glNormal3f(0, 0, 1);
@@ -349,17 +355,17 @@ void DrawCredits(){
 		glVertex3f(-w, h, 0);
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
-    
-    
+
+
     unsigned char credits[] = "Branko Djakovic 41/2015\n\nMladen Krcmarevic 119/2015\n\nFilip Kristic 335/2015\n\nSounds from:\n-http://soundbible.com\n-https://www.zapsplat.com\n-www.bensound.com";
 
-    
+
     glTranslatef(-w/5, h/2, 0);
     glColor3f(1,1,1);
     glRasterPos3f(0, 0, 0);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,credits);
     glPopMatrix();
-    
+
     glBindTexture(GL_TEXTURE_2D, textures["button"]);
     if(pressedButtons["back"])
         glColor4f(0.3,0.3,0.3,0.8);
@@ -378,7 +384,7 @@ void DrawCredits(){
 	glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glPopMatrix();
-    
+
     glPushMatrix();
     unsigned char back[] = "Back";
     glTranslatef(-w/30, -h/60, 0);
@@ -396,14 +402,14 @@ void on_display_menu(void)
 		0, 0, 0,
 		0, 1, 0);
 
-    
+
     glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
     if(menuActive)
         DrawMenu();
     else if(controlsActive)
         DrawControls();
-    else 
+    else
         DrawCredits();
     glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);

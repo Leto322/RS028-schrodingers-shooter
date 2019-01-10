@@ -37,6 +37,7 @@ public:
     Weapon* equiped_weapon;
     b2Body* body;
     float r;
+		int grenades;
     bool see_player;
     void die();
 
@@ -53,7 +54,7 @@ class Brain{
 protected:
     Brain(Player& player);
     Player* m_player;
-    
+
 
 public:
     virtual void Update() = 0;
