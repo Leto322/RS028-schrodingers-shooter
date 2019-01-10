@@ -136,6 +136,21 @@ void on_mouse_pressed_released_menu(int button, int state, int x, int y) {
 //
 // }
 
+
+void on_keyboard_menu(unsigned char key, int x, int y)
+{
+	switch (key) {
+        case 27:
+            glutPositionWindow(5,30);
+            glutReshapeWindow(1280, 720);
+            break;
+        case 'f':
+            glutFullScreen();
+            break;
+
+	}
+}
+
 void DrawMenu() {
     float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
@@ -278,13 +293,13 @@ void DrawControls(){
 	glBindTexture(GL_TEXTURE_2D, 0);
     
     
-    unsigned char credits[] = "w - Move up\n\na - Move left\n\ns - Move down\n\nd - Move right\n\nMouse left - Shoot\n\nESC - Main menu";
+    unsigned char controls[] = "w - Move up\n\na - Move left\n\ns - Move down\n\nd - Move right\n\nMouse left - Shoot\n\nf - Fullscreen\n\nESC in menu - Windowed mode\n\nESC in game- Main menu";
 
     
-    glTranslatef(-w/7, h/2, 0);
+    glTranslatef(-w/7, h/1.3, 0);
     glColor3f(1,1,1);
     glRasterPos3f(0, 0, 0);
-	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,credits);
+	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,controls);
     glPopMatrix();
     
     

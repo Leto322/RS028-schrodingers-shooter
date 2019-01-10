@@ -13,6 +13,8 @@ void on_mouse_pressed_released_menu(int button, int state, int x, int y);
 // 
 // void on_mouse_move_game(int x, int y);
 
+void on_keyboard_menu(unsigned char key, int x, int y);
+
 void pressButton(int x, int y);
 void releaseButton(int x, int y);
 void on_timer_menu();

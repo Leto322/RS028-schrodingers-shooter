@@ -209,7 +209,11 @@ static void on_keyboard(unsigned char key, int x, int y)
 	case GAME:
 		on_keyboard_game(key, x, y);
 		break;
-	}
+	
+    case MENU:
+        on_keyboard_menu(key,x,y);
+        break;
+    }
 	//std::cout << "vertical " << myPlayer.input.vertical  << "horizontal " << myPlayer.input.horizontal << std::endl;
 }
 

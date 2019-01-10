@@ -118,6 +118,9 @@ void on_keyboard_game(unsigned char key, int x, int y)
 	case 'r':
 		myPlayer->equiped_weapon->reload();
 		break;
+    case 'f':
+        glutFullScreen();
+        break;
 
 	}
 	//std::cout << "vertical " << myPlayer.input.vertical  << "horizontal " << myPlayer.input.horizontal << std::endl;
