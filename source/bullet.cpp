@@ -54,4 +54,9 @@ void Bullet::Draw(){
     glPopMatrix();
 };
 
+Bullet::~Bullet() {	
+	world->DestroyBody(this->body);
+}
+
+
 ClassID Bullet::getClassID(){return BULLET;}

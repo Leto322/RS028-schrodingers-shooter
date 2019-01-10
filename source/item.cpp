@@ -7,6 +7,8 @@
 #include <map>
 
 extern std::map<std::string, int> textures;
+extern int updateCount;
+
 
 Item::Item(float x, float y, float pickupDistance, std::string icon): icon(icon), pickupDistance(pickupDistance) {
 	itemPosition.Set(x, y);
@@ -32,7 +34,8 @@ void Item::Draw() {
 	glTranslatef(itemPosition.x, itemPosition.y, 0.3);
 
 	glBindTexture(GL_TEXTURE_2D, textures[icon]);
-	glScalef(pickupDistance, pickupDistance, 1);
+	float animationScale = 0.05*sin(updateCount / 20.0);
+	glScalef(pickupDistance+animationScale, pickupDistance+animationScale, 1);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0, 0);
 	glVertex3f(-1, -1, 0);

@@ -22,6 +22,7 @@ extern float windowWidth, windowHeight;
 extern GLuint textureIDs[];
 extern std::map<std::string, int> sounds;
 
+int updateCount;
 
 Player* myPlayer;
 b2World* world;
@@ -47,6 +48,7 @@ enum scene {
 extern enum scene currentScene;
 
 void InitGame() {
+	updateCount = 0;
 
 	alGenSources(1, ambientSource);
 	//CREDITS:  www.bensound.com
@@ -180,6 +182,7 @@ void on_timer_game()
 	lastFrameTime = now;
 	//std::cout << "dt " << deltaTime.count() << std::endl;
 	while (accumulator > phisycsUpdateInterval) {
+		updateCount++;
 		world->Step(phisycsUpdateInterval, 6, 2);
         BotMoves();
 		for (int i = 0; i < players.size(); i++) {
@@ -290,11 +293,11 @@ void DrawHUDPlayers() {
 
 void DrawBullets() {
 	for (int i = 0; i < bullets.size(); i++) {
-        if( (abs(bullets[i]->body->GetLinearVelocity().x) <= 0.1 && abs(bullets[i]->body->GetLinearVelocity().y) <= 0.1)
-					|| bullets[i]->toDelete == 1
-				){
-						world->DestroyBody(bullets[i]->body);
-						bullets.erase(bullets.begin() + i);
+        if( (abs(bullets[i]->body->GetLinearVelocity().x) <= 0.1 && abs(bullets[i]->body->GetLinearVelocity().y) <= 0.1) || bullets[i]->toDelete == 1){
+			Bullet* tmp = bullets[i];
+			bullets.erase(bullets.begin() + i);
+			delete tmp;
+
             i--;
             continue;
         }

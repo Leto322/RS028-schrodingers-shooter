@@ -24,6 +24,7 @@ public:
 	void Pickup(Player *picker) override {
 		picker->IncreaseHealth(m_amount);
 		alSourcePlay(soundSource[0]);
+		delete this;
 	}
 private:
 	int m_amount;
