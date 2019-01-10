@@ -36,9 +36,17 @@ Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string 
 
 	alGenSources(3, soundSource);
 	alSourcei(soundSource[0], AL_BUFFER, sounds[icon]);
-	alSourcei(soundSource[1], AL_BUFFER, sounds["reload"]);
+
+	if(icon == "shotgun"){
+		alSourcei(soundSource[1], AL_BUFFER, sounds["reloadShotgun"]);
+		alSourcef(soundSource[0], AL_GAIN, 0.6);
+	}
+	else{
+		alSourcei(soundSource[1], AL_BUFFER, sounds["reload"]);
+		alSourcef(soundSource[0], AL_GAIN, 0.15);
+	}
+
 	alSourcei(soundSource[2], AL_BUFFER, sounds["pickup"]);
-	alSourcef(soundSource[0], AL_GAIN, 0.15);
 	alSourcef(soundSource[0], AL_PITCH, 1);
 };
 
