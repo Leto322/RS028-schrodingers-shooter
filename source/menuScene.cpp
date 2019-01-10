@@ -84,7 +84,7 @@ void releaseButton(int x, int y){
        menuActive = false;
     }
     else if(x1>=-w/8 && x1 <= w/8 && y1 <= -h/4+h/20 && y1 >= -h/4-h/20&& pressedButtons["exit"]){
-        exit(0);
+		glutLeaveMainLoop();
     }
     else if(x1>=-w/8 && x1 <= w/8 && y1 <= -h/1.8+h/20 && y1 >= -h/1.8-h/20 && pressedButtons["back"] && creditsActive ){
        creditsActive = false;
