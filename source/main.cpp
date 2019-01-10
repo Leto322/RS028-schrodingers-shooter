@@ -21,13 +21,16 @@ std::vector<std::string> textureNames = {
 	"rifle",
 	"healthPotion",
     "menu",
-    "button"
+    "button",
+	"shotgun"
 };
 
 std::vector<std::string> soundNames = {
 	"pistol",
 	"rifle",
+	"shotgun",
 	"reload",
+	"reloadShotgun",
 	"death",
 	"pickup",
 	"heal",
@@ -44,7 +47,7 @@ std::map<std::string, int> textures;
 std::map<std::string, int> sounds;
 
 GLuint textureIDs[4];
-ALuint soundIDs[10];
+ALuint soundIDs[12];
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 15
@@ -115,7 +118,7 @@ void LoadTextures(){
                  GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
 		delete [] cstr;
 	}
-	
+
 
 
 	image_done(image);
@@ -145,7 +148,9 @@ int main(int argc, char **argv)
 	glutPassiveMotionFunc(on_mouse_move);
 	glutMouseFunc(on_mouse_pressed_released);
     glutKeyboardUpFunc(keyboard_up);
-    glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
+	glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
+	glutSetCursor(GLUT_CURSOR_CROSSHAIR);
+
 
     glutReshapeFunc(on_reshape);
 	/* Obavlja se OpenGL inicijalizacija. */
@@ -176,9 +181,9 @@ int main(int argc, char **argv)
   	animation_ongoing = 1;
 	//glutSetCursor(GLUT_CURSOR_NONE);
 
-	currentScene = MENU;
+	currentScene = GAME;
 	InitGame();
-    InitMenu();
+    //InitMenu();
 	glutMainLoop();
 
     return 0;

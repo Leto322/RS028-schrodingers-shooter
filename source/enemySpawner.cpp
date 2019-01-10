@@ -15,14 +15,14 @@ players(players), spawnPositions(spawnPositions){
 	Reset();
 }
 
-int enemyWaveIncrement = 5;
+int enemyWaveIncrement = 2;
 
 void EnemySpawner::Reset() {
 	currentWave = 0;
-	enemiesInWave = 10;
+	enemiesInWave = 5;
 	enemiesSpawned = 0;
 	totalEnemiesSpawned = 0;
-	spawnRate = 5;
+	spawnRate = 5; //Seconds
 	spawnTimer = 0;
 }
 
@@ -35,6 +35,7 @@ void EnemySpawner::Update() {
 	}
 
 	if (IsWaveCleared()) {
+		std::cout << "Wave " << currentWave << " cleared!" << std::endl;
 		StartNextWave();
 	}
 

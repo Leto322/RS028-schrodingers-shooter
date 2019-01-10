@@ -7,7 +7,7 @@
 #include <map>
 
 extern float windowWidth, windowHeight, aspectRatio;
-extern GLuint textureIDs[];
+extern std::map<std::string, int> textures;
 extern std::map<std::string, int> sounds;
 extern std::map<std::string, int> textures;
 std::map<std::string, bool> pressedButtons;
@@ -99,6 +99,7 @@ void releaseButton(int x, int y){
     pressedButtons["back"] = false;
 }
 
+
 void on_mouse_pressed_released_menu(int button, int state, int x, int y) {
 	switch (button) {
 	case GLUT_LEFT_BUTTON:
@@ -120,7 +121,7 @@ void on_mouse_pressed_released_menu(int button, int state, int x, int y) {
 // void on_mouse_move_game(int x, int y) {
 // 	float dx = x - windowWidth / 2;
 // 	float dy = y - windowHeight / 2;
-// 
+//
 // 	float angle = atan2(dy, dx);
 // 	myPlayer->input.angle = -angle;
 // }
@@ -129,7 +130,7 @@ void on_mouse_pressed_released_menu(int button, int state, int x, int y) {
 
 // void on_timer_menu()
 // {
-//     
+//
 // }
 
 void DrawMenu() {
