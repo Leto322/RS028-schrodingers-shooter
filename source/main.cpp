@@ -181,9 +181,9 @@ int main(int argc, char **argv)
   	animation_ongoing = 1;
 	//glutSetCursor(GLUT_CURSOR_NONE);
 
-	currentScene = GAME;
+	currentScene = MENU;
 	InitGame();
-    //InitMenu();
+    InitMenu();
 	glutMainLoop();
 
     return 0;
