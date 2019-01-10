@@ -12,6 +12,7 @@ public:
 	void UpdateTimers();
 	virtual void fire();
     int GetAmmo() const;
+	int GetAmmoCap() const;
 	void reload();
 	void SetPositionAndAngle(float x, float y, float angle);
 	bool allowed_fire;

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <GL/glut.h>
+#include <GL/freeglut.h>
 #include "../header/image.h"
 #include "../header/player.h"
 #include "../header/geometry.h"
@@ -19,9 +20,10 @@
 #include <Box2D/Box2D.h>
 #include <AL/alut.h>
 
-extern float windowWidth, windowHeight;
+extern float windowWidth, windowHeight, aspectRatio;
 extern GLuint textureIDs[];
 extern std::map<std::string, int> sounds;
+extern std::map<std::string, int> textures;
 
 int updateCount;
 
@@ -40,6 +42,7 @@ ItemPool itemPool;
 EnemySpawner* enemySpawner;
 ParticleSystem* particleSystem;
 ALuint ambientSource[1];
+char text[100];
 
 
 enum scene {
@@ -325,6 +328,79 @@ void DrawHUDMap() {
 	glPopMatrix();
 }
 
+void DrawHUDBar() {
+    float h = tan(30 * M_PI / 180) * 4;
+	float w = h * aspectRatio;
+	
+	glPushMatrix();
+	glTranslatef(myPlayer->body->GetPosition().x,myPlayer->body->GetPosition().y-h+h/10,0);
+	glBindTexture(GL_TEXTURE_2D, textures["hudbar"]);
+	glNormal3f(0, 0, 1);
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);
+		glVertex3f(-w,-h/10, 0);
+		glTexCoord2f(1, 0);
+		glVertex3f(w, -h/10, 0);
+		glTexCoord2f(1, 1);
+		glVertex3f(w, h/10, 0);
+		glTexCoord2f(0, 1);
+		glVertex3f(-w, h/10, 0);
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	
+	glTranslatef(-w+w/10,0,0);
+	DrawWepon();
+	
+	
+	int numberOfAliveBots = 0;
+	for (int i = 1; i < players.size(); i++) {
+		if (players[i]->alive)
+			numberOfAliveBots++;
+	}
+	int botsLeft = enemySpawner->GetEnemiesInWave() - (enemySpawner->GetEnemiesSpawned() - numberOfAliveBots);
+	sprintf(text, "Ammo: %d/%d\tWave: %d\tLeft: %d", myPlayer->equiped_weapon->GetAmmo(), myPlayer->equiped_weapon->GetAmmoCap(), enemySpawner->GetCurrentWave(), botsLeft);
+	glTranslatef(w/10, -h/40, 0);
+	glColor3f(1,1,1);
+    glRasterPos3f(0, 0, 0);
+	for(int i = 0; i < strlen(text); i++){
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,text[i]);
+	}
+    memset(text, 0, sizeof text);
+	
+	
+	
+	
+	
+	glPopMatrix();
+}
+
+void DrawWepon(){
+	glColor4f(1, 1, 1, 1);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	glPushMatrix();
+	glNormal3f(0, 0, 1);
+	glBindTexture(GL_TEXTURE_2D, textures[myPlayer->equiped_weapon->Name()]);
+	float animationScale = 0.25;
+	glScalef(animationScale*1.5,animationScale, 1);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0);
+	glVertex3f(-1, -1, 0);
+	glTexCoord2f(1, 0);
+	glVertex3f(1, -1, 0);
+	glTexCoord2f(1, 1);
+	glVertex3f(1, 1, 0);
+	glTexCoord2f(0, 1);
+	glVertex3f(-1, 1, 0);
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glPopMatrix();
+	glDisable(GL_BLEND);
+}
+
 void on_display_game(void)
 {
 	glViewport(0, 0, windowWidth, windowHeight);
@@ -342,6 +418,12 @@ void on_display_game(void)
 	itemPool.DrawItems();
 	particleSystem->Draw();
 
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	DrawHUDBar();
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
+	
 	//MiniMap
 	glViewport(-120 + windowWidth / 6 + windowWidth - windowWidth/3, 0, windowWidth / 3, windowHeight / 3);
 	glMatrixMode(GL_MODELVIEW);

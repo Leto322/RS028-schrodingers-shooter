@@ -20,6 +20,10 @@ void on_mouse_move_game(int x, int y);
 
 
 void on_timer_game();
+
+void DrawHUDBar();
+void DrawWepon();
+
 void DrawMap();
 
 void DrawPlayers();

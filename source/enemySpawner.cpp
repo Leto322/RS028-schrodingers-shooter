@@ -41,6 +41,16 @@ void EnemySpawner::Update() {
 
 }
 
+int EnemySpawner::GetEnemiesInWave() const{
+	return enemiesInWave;
+}
+int EnemySpawner::GetEnemiesSpawned() const{
+	return enemiesSpawned;
+}
+int EnemySpawner::GetCurrentWave() const{
+	return currentWave;
+}
+
 bool EnemySpawner::IsWaveCleared() {
 	int numberOfAliveBots = 0;
 	for (int i = 1; i < players.size(); i++) {

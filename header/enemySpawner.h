@@ -10,6 +10,9 @@ class EnemySpawner {
 public:
 	EnemySpawner(std::vector<Player*> &players, std::vector<b2Vec2> &spawnPositions);
 	void Update();
+	int GetEnemiesInWave() const;
+	int GetEnemiesSpawned() const;
+	int GetCurrentWave() const;
 	void Reset();
 
 private:

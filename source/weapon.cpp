@@ -99,6 +99,10 @@ int Weapon::GetAmmo() const{
     return ammo;
 }
 
+int Weapon::GetAmmoCap() const{
+	return ammo_cap;
+}
+
 void Weapon::UpdateTimers(){
     fire_timer -= phisycsUpdateInterval;
     reload_timer -= phisycsUpdateInterval;
