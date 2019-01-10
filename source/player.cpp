@@ -264,6 +264,8 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
 
 
     for(int k=1;k<players.size(); k++){
+		if (!players[k]->alive)
+			continue;
         i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
         j = floor((players[k]->body->GetPosition().x + 9.0)/18*map.size());
         if(i == ip && j == jp){
@@ -359,6 +361,8 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
 
 //BFS search of the map starting from player to all of the bots and calls BotAim function
 void BotMoves(){
+	if (!players[0]->alive)
+		return;
     BotAim();
     int i, j, ip, jp;
     num = 0;

@@ -77,7 +77,7 @@ void InitGame() {
 	myPlayer->Revive();
 	players.push_back(myPlayer);
 
-	for (int i = 1; i < 50; i++) {
+	for (int i = 1; i < 30; i++) {
 		players.push_back(new Player());
 		players[i]->body->SetTransform(b2Vec2(-100, 0), 0);
 		players[i]->SetBrain(new botBrain(*players[i]));
