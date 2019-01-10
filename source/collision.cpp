@@ -30,14 +30,14 @@ void MyContactListener::BeginContact(b2Contact* contact){
       Bullet* bullet = static_cast<Bullet*>(c2);
       bullet->toDelete = 1; // Mark bullet for deletion because it hit a player.
       int dmg = bullet->m_dmg;
-      static_cast<Player*>(c1)->takeDmg(dmg);
+      static_cast<Player*>(c1)->takeDmg(dmg, bullet->body->GetLinearVelocity());
     }
 
     if(c2->getClassID() == PLAYER && c1->getClassID() == BULLET){
       Bullet* bullet = static_cast<Bullet*>(c1);
       bullet->toDelete = 1; // Mark bullet for deletion because it hit a player.
       int dmg = bullet->m_dmg;
-      static_cast<Player*>(c2)->takeDmg(dmg);
+      static_cast<Player*>(c2)->takeDmg(dmg, bullet->body->GetLinearVelocity());
     }
 
     //DEBUGGING collision detection

@@ -1,6 +1,7 @@
 #include "../header/weapon.h"
 #include "../header/bullet.h"
 #include "../header/player.h"
+#include "../header/util.h"
 #include <iostream>
 #include <vector>
 #include <map>
@@ -14,10 +15,6 @@ const float RE_AMM_MAX = 1, RE_AMM_MIN = 0, RE_AMM_UP = 0.15, RE_AMM_DOWN = 0.00
 extern double phisycsUpdateInterval;
 extern std::vector<Bullet*> bullets;
 extern std::map<std::string, int> sounds;
-
-float randomNumber(float start, float end){
-	return ( float(rand())/float(RAND_MAX) )*(end - start) + start;
-}
 
 Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string icon) : Item(x, y, pickupDistance, icon){
 	std::cout << "Weapon created " << icon << std::endl;

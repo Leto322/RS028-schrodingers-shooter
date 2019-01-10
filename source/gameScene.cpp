@@ -9,6 +9,7 @@
 #include "../header/collision.h"
 #include "../header/basicItems.h"
 #include "../header/enemySpawner.h"
+#include "../header/particleSystem.h"
 #include <string>
 #include <vector>
 #include <map>
@@ -37,6 +38,7 @@ std::vector<Player*> players;
 std::vector<b2Vec2> spawnPositions;
 ItemPool itemPool;
 EnemySpawner* enemySpawner;
+ParticleSystem* particleSystem;
 ALuint ambientSource[1];
 
 
@@ -86,6 +88,9 @@ void InitGame() {
 	//spawnPositions.push_back(b2Vec2(0, 3));
 
 	enemySpawner = new EnemySpawner(players, spawnPositions);
+	particleSystem = new ParticleSystem();
+
+	//b2Vec2 pos, b2Vec2 force, int particleCount, float lifespan, std::string texture)
 	//players[1]->input.shoot = true;
 
 	//Test for the items
@@ -204,6 +209,8 @@ void on_timer_game()
 		}
 
 		enemySpawner->Update();
+		particleSystem->Update();
+
 		alSource3f(ambientSource[0], AL_POSITION, myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0);
 
 		if(!myPlayer->alive)
@@ -333,6 +340,7 @@ void on_display_game(void)
 	DrawPlayers();
 	DrawWalls();
 	itemPool.DrawItems();
+	particleSystem->Draw();
 
 	//MiniMap
 	glViewport(-120 + windowWidth / 6 + windowWidth - windowWidth/3, 0, windowWidth / 3, windowHeight / 3);

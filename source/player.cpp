@@ -1,6 +1,7 @@
 #include "../header/player.h"
 #include "../header/weapon.h"
 #include "../header/util.h"
+#include "../header/particleSystem.h"
 #include <GL/glut.h>
 #include <iostream>
 #include <vector>
@@ -191,7 +192,21 @@ void Player::die(){
 	std::cout << "Player is dead!" << std::endl;
 }
 
-void Player::takeDmg(int dmg){
+void StartBloodEffet(b2Vec2 pos, b2Vec2 bulletVel) {
+	bulletVel.Normalize();
+	//dir = 10 * dir;
+	Emitter* blood = new Emitter(pos, bulletVel, b2Vec2(0, 0), 3, 0.5, "blood");
+	blood->SetScale(0.07, 0.01);
+	blood->SetSpeed(0.1, 0.3);
+	blood->Start();
+}
+
+
+void Player::takeDmg(int dmg) {
+	takeDmg(dmg, b2Vec2(0, 0));
+}
+
+void Player::takeDmg(int dmg, b2Vec2 bulletVel){
 	float t = rand();
 	if(t > (RAND_MAX)/2.0)
 		alSourcePlay(soundSource[1]);
@@ -207,7 +222,11 @@ void Player::takeDmg(int dmg){
 		}
 
 	}
+
+	StartBloodEffet(body->GetPosition(), bulletVel);
 }
+
+
 void Player::IncreaseHealth(int amount) {
 	health += amount;
 	health = health > maxHealth ? maxHealth : health;

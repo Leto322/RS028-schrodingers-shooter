@@ -22,7 +22,8 @@ std::vector<std::string> textureNames = {
 	"healthPotion",
     "menu",
     "button",
-	"shotgun"
+	"shotgun",
+	"blood"
 };
 
 std::vector<std::string> soundNames = {

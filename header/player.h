@@ -19,12 +19,13 @@ public:
     Player();
     void Draw();
     void DrawShadow();
-		void SwapWeapon(Weapon* newWeapon);
-		void takeDmg(int dmg);
-		void IncreaseHealth(int amount);
-		void Revive();
-		void SetMaxHealth(int mh);
-		void moveSoundSource();
+	void SwapWeapon(Weapon* newWeapon);
+	void takeDmg(int dmg);
+	void takeDmg(int dmg, b2Vec2 dir);
+	void IncreaseHealth(int amount);
+	void Revive();
+	void SetMaxHealth(int mh);
+	void moveSoundSource();
 
     virtual ClassID getClassID();
     void SetBrain(Brain* brain);

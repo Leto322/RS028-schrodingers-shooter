@@ -11,16 +11,9 @@ all: $(appname)
 $(appname): $(objects)
 	$(CXX) $(LDFLAGS) -o $(appname) $(objects) $(CXXFLAGS)
 
-depend: .depend
-
-.depend: $(srcfiles)
-	rm -f ./.depend
-	$(CXX) $(CXXFLAGS) -MM $^>>./.depend;
 
 clean:
 	rm -f $(objects)
 
 dist-clean: clean
 	rm -f *~ .depend
-
-include .depend

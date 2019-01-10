@@ -22,3 +22,11 @@ bool IsOnScreen(b2Vec2 position) {
 	else
 		return false;
 }
+
+float randomNumber(float start, float end) {
+	return (float(rand()) / float(RAND_MAX))*(end - start) + start;
+}
+
+float lerp(float start, float end, float t) {
+	return t * end + (1 - t)*start;
+}

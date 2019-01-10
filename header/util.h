@@ -2,6 +2,7 @@
 #define UTIL_H
 
 #include <Box2D/Box2D.h>
+#include <time.h>
 
 enum ClassID{
   COLIDER,
@@ -30,5 +31,7 @@ public:
 };
 
 bool IsOnScreen(b2Vec2 position);
+float randomNumber(float start, float end);
+float lerp(float start, float end, float t);
 
 #endif
