@@ -74,6 +74,7 @@ Player::Player() {
 		alSourcei(soundSource[1], AL_BUFFER, sounds["bodyImpact1"]);
 		alSourcei(soundSource[2], AL_BUFFER, sounds["bodyImpact2"]);
 		alSourcei(soundSource[3], AL_BUFFER, sounds["grenadeThrow"]);
+		alSourcei(soundSource[4], AL_BUFFER, sounds["grenadePull"]);
 		for(int i = 0; i < NUM_OF_SOURCES_PLAYER; i++){
     	alSourcef(soundSource[i], AL_GAIN, 0.2);
   		alSourcef(soundSource[i], AL_PITCH, 1);
@@ -88,6 +89,7 @@ void Player::IncreaseGrenades(int amount){
 void Player::throwGrenade(){
 	if(grenades > 0){
 		std::cout << "Grenade!" <<std::endl;
+		alSourcePlay(soundSource[4]);
 
 		float n = 0.18;
 		float vx = n*cos(input.angle);
