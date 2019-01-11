@@ -11,6 +11,7 @@
 #include "../header/basicItems.h"
 #include "../header/enemySpawner.h"
 #include "../header/particleSystem.h"
+#include "../header/util.h"
 #include <string>
 #include <vector>
 #include <map>
@@ -36,8 +37,10 @@ std::chrono::high_resolution_clock::time_point lastFrameTime;
 double accumulator = 0;
 double phisycsUpdateInterval = 0.02;
 std::vector<Bullet*> bullets;
+std::vector<Grenade*> thrownGrenades;
 std::vector<Player*> players;
 std::vector<b2Vec2> spawnPositions;
+std::vector<AudioWrapper*> audioWrappers;
 ItemPool itemPool;
 EnemySpawner* enemySpawner;
 ParticleSystem* particleSystem;
@@ -219,6 +222,26 @@ void on_timer_game()
 		enemySpawner->Update();
 		particleSystem->Update();
 
+		for(int i = 0; i < thrownGrenades.size(); i++){
+			if(thrownGrenades[i]->toDelete){
+				Grenade* tmp = thrownGrenades[i];
+				thrownGrenades.erase(thrownGrenades.begin() + i);
+				i--;
+				delete tmp;
+				continue;
+			}
+			thrownGrenades[i]->Update();
+		}
+
+		for(int i = 0; i < audioWrappers.size(); i++){
+			if(!(audioWrappers[i]->isPlaying()) && audioWrappers[i]->toDelete){
+				AudioWrapper* tmp = audioWrappers[i];
+				audioWrappers.erase(audioWrappers.begin() + i);
+				i--;
+				delete tmp;
+			}
+		}
+
 		alSource3f(ambientSource[0], AL_POSITION, myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0);
 
 		if(!myPlayer->alive)
@@ -317,6 +340,12 @@ void DrawBullets() {
             continue;
         }
 		bullets[i]->Draw();
+	}
+}
+
+void DrawGrenades() {
+	for (int i = 0; i < thrownGrenades.size(); i++) {
+		thrownGrenades[i]->Draw();
 	}
 }
 
@@ -419,6 +448,7 @@ void on_display_game(void)
 	DrawMap();
 	DrawBullets();
 	DrawPlayers();
+	DrawGrenades();
 	DrawWalls();
 	itemPool.DrawItems();
 	particleSystem->Draw();

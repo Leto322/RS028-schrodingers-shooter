@@ -14,7 +14,10 @@ const float RE_AMM_MAX = 1, RE_AMM_MIN = 0, RE_AMM_UP = 0.15, RE_AMM_DOWN = 0.00
 
 extern double phisycsUpdateInterval;
 extern std::vector<Bullet*> bullets;
+extern std::vector<Player*> players;
 extern std::map<std::string, int> sounds;
+extern std::vector<AudioWrapper*> audioWrappers;
+extern b2World* world;
 
 Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string icon) : Item(x, y, pickupDistance, icon){
 	std::cout << "Weapon created " << icon << std::endl;
@@ -140,4 +143,105 @@ void Shotgun::fire() {
 		this->ammo--;
 		fire_timer = fire_delay;
 	}
+}
+
+Grenade::Grenade(float x, float y, float angle){
+	dmg = 200;
+	r = 0.04;
+	blastRadius = 1.6;
+	explodeTimer = 2;
+	toDelete = false;
+
+	b2BodyDef bodyDef;
+  bodyDef.type = b2_dynamicBody;
+	bodyDef.bullet = false;
+	bodyDef.linearDamping = 5;
+	bodyDef.position.Set(x, y);
+	body = world->CreateBody(&bodyDef);
+
+	b2CircleShape cShape;
+	cShape.m_p.Set(0, 0); //position, relative to body position
+	cShape.m_radius = r;
+
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = &cShape;
+
+	fixtureDef.density = 5.0f;
+
+	fixtureDef.friction = 1;
+
+	// Add the shape to the body.
+	body->CreateFixture(&fixtureDef);
+
+	float vx =  0.3*cos(angle);
+	float vy =  0.3*sin(angle);
+
+	body->ApplyLinearImpulse(b2Vec2(vx,vy), body->GetWorldCenter(), true);
+
+
+}
+
+Grenade::~Grenade(){
+	std::cout <<"deleting grenade" <<std::endl;
+	world->DestroyBody(this->body);
+}
+
+void Grenade::explode(){
+	auto gposX = body->GetPosition().x;
+	auto gposY = body->GetPosition().y;
+	//for each player calculate distance from grenade
+	for(int i = 0; i < players.size(); i++){
+		auto pposX = players[i]->body->GetPosition().x;
+		auto pposY = players[i]->body->GetPosition().y;
+
+		double dist = sqrt((gposX - pposX)*(gposX - pposX) + (gposY - pposY)*(gposY - pposY));
+
+		//If a player is in the blast radius
+		if (dist < blastRadius) {
+			//cast rays until you hit a wall or you reach the target player
+			RayCastCallback ray_callback;
+			b2Vec2 pposVector(pposX, pposY);
+			b2Vec2 gposVector(gposX, gposY);
+			bool doDmg = true;
+			do{
+				world->RayCast(&ray_callback, gposVector, pposVector);
+				if(ray_callback.m_fixture){
+					//if it is a wall break and dont apply the damage
+					if(false/*ray_callback.m_fixture->GetBody()->*/){
+						doDmg = false;
+						break;
+					}
+				}
+				gposVector.x = ray_callback.m_fixture->GetBody()->GetPosition().x;
+				gposVector.y = ray_callback.m_fixture->GetBody()->GetPosition().y;
+			}
+			while((gposVector.x != pposVector.x) && (gposVector.y != pposVector.y));
+			//if we didnt find a wall finaly apply the damage
+	    if(doDmg){
+				dist = (dist == 0 ? 1 : dist);
+				players[i]->takeDmg(dmg/(dist*1.3));
+			}
+		}
+	}
+	AudioWrapper* blastSounder = new AudioWrapper(gposX, gposY, std::string("grenade"));
+	blastSounder->playSound();
+	blastSounder->toDelete = true;
+	audioWrappers.push_back(blastSounder);
+	toDelete = true;
+}
+
+void Grenade::Update(){
+	if(explodeTimer <= 0)
+		explode();
+
+	explodeTimer -= phisycsUpdateInterval;
+}
+
+void Grenade::Draw(){
+	glColor3f(0, 0.4, 0.14);
+
+	glPushMatrix();
+	glTranslatef(body->GetPosition().x, body->GetPosition().y, r);
+	glutSolidSphere(r, 20, 20);
+	glPopMatrix();
 }

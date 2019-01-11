@@ -40,7 +40,9 @@ std::vector<std::string> soundNames = {
 	std::string("music"),
 	std::string("wallImpact1"),
 	std::string("bodyImpact1"),
-	std::string("bodyImpact2")
+	std::string("bodyImpact2"),
+	std::string("grenadeThrow"),
+	std::string("grenade")
 };
 
 std::vector<std::string> textureLocations;
@@ -50,7 +52,7 @@ std::map<std::string, int> textures;
 std::map<std::string, int> sounds;
 
 GLuint textureIDs[4];
-ALuint soundIDs[12];
+ALuint soundIDs[14];
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 15
@@ -211,7 +213,7 @@ static void on_keyboard(unsigned char key, int x, int y)
 	case GAME:
 		on_keyboard_game(key, x, y);
 		break;
-	
+
     case MENU:
         on_keyboard_menu(key,x,y);
         break;

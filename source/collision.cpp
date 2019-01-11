@@ -19,8 +19,8 @@ void MyContactListener::BeginContact(b2Contact* contact){
   void* o1 = b1->GetUserData();
   void* o2 = b2->GetUserData();
 
-  Colider* c1;
-  Colider* c2;
+  Colider* c1 = NULL;
+  Colider* c2 = NULL;
 
   if(o1 && o2){
     c1 = static_cast<Colider*>(o1);

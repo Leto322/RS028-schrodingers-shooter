@@ -23,7 +23,7 @@ Bullet::Bullet(float x, float y, float angle, int dmg, float bulletSize){
 		body->SetUserData(this);
 
     b2CircleShape cShape;
-    cShape.m_p.Set(0, 0);
+    cShape.m_p.Set(0, 0); //position, relative to body position
     cShape.m_radius = r;
 
     b2FixtureDef fixtureDef;
@@ -54,7 +54,7 @@ void Bullet::Draw(){
     glPopMatrix();
 };
 
-Bullet::~Bullet() {	
+Bullet::~Bullet() {
 	world->DestroyBody(this->body);
 }
 

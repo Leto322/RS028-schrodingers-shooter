@@ -20,7 +20,7 @@ struct Block : public Colider{
     b2Vec2 m_vertexes[4];
     b2Body* m_body;
 
-    //virtual ClassID getClassID();
+    virtual ClassID getClassID();
 };
 
 

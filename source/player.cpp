@@ -14,6 +14,7 @@
 extern b2World* world;
 extern std::vector< std::vector<char> > map;
 extern std::vector<Player*> players;
+extern std::vector<Grenade*> thrownGrenades;
 extern float windowWidth, windowHeight;
 extern std::map<std::string, int> sounds;
 
@@ -33,7 +34,7 @@ Player::Player() {
     speed = 0.03;
 	maxHealth = 100;
     health = maxHealth;
-		grenades = 2;
+		grenades = 20;
 	maxArmor = 100;
 	armor = 0;
     input.vertical = 0;
@@ -72,6 +73,7 @@ Player::Player() {
   	alSourcei(soundSource[0], AL_BUFFER, sounds["death"]);
 		alSourcei(soundSource[1], AL_BUFFER, sounds["bodyImpact1"]);
 		alSourcei(soundSource[2], AL_BUFFER, sounds["bodyImpact2"]);
+		alSourcei(soundSource[3], AL_BUFFER, sounds["grenadeThrow"]);
 		for(int i = 0; i < NUM_OF_SOURCES_PLAYER; i++){
     	alSourcef(soundSource[i], AL_GAIN, 0.2);
   		alSourcef(soundSource[i], AL_PITCH, 1);
@@ -86,6 +88,14 @@ void Player::IncreaseGrenades(int amount){
 void Player::throwGrenade(){
 	if(grenades > 0){
 		std::cout << "Grenade!" <<std::endl;
+		alSourcePlay(soundSource[3]);
+
+		float n = 0.18;
+		float vx = n*cos(input.angle);
+    float vy = n*sin(input.angle);
+
+		Grenade* thrown_grenade = new Grenade(body->GetPosition().x + vx, body->GetPosition().y + vy, input.angle);
+		thrownGrenades.push_back(thrown_grenade);
 		grenades--;
 	}
 }
@@ -124,7 +134,7 @@ void Player::Draw(){
 			glColor3f(0, 0, 0);
 			glutSolidSphere(r/4, 10, 2);
 		glPopMatrix();
-		
+
 		//Draw health bar
 		glTranslatef(0, 0.3, 0.4);
 
@@ -300,7 +310,7 @@ void Player::SwapWeapon(Weapon* newWeapon) {
 }
 
 void Player::moveSoundSource(){
-	for(int i = 0; i < 3; i++){
+	for(int i = 0; i < NUM_OF_SOURCES_PLAYER; i++){
 		alSource3f(soundSource[i], AL_POSITION, body->GetPosition().x, body->GetPosition().y, 0.2);
 	}
 }

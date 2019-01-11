@@ -76,4 +76,20 @@ public:
 	int palletNumber;
 	void fire() override;
 };
+
+class Grenade{
+public:
+	Grenade(float x, float y, float angle);
+	~Grenade();
+	void explode();
+	void Draw();
+	void Update();
+	b2Body* body;
+	bool toDelete;
+private:
+	int dmg;
+	float r;
+	float blastRadius;
+	float explodeTimer;
+};
 #endif

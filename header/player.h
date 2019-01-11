@@ -1,7 +1,7 @@
 #ifndef PLAYER_DEF
 #define PLAYER_DEF
 
-#define NUM_OF_SOURCES_PLAYER 3
+#define NUM_OF_SOURCES_PLAYER 4
 #include "weapon.h"
 #include "../header/util.h"
 #include <Box2D/Box2D.h>
