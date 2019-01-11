@@ -203,4 +203,4 @@ void DrawWalls(){
 //     groundBody->CreateFixture(&groundBox, 0.0f);
 // }
 
-ClassID Block::getClassID(){std::cout<<"im a block"<<std::endl;return BLOCK;}
+ClassID Block::getClassID(){return BLOCK;}

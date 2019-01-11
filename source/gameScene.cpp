@@ -133,9 +133,11 @@ void on_keyboard_game(unsigned char key, int x, int y)
 	case 'r':
 		myPlayer->equiped_weapon->reload();
 		break;
-	case 'g':
-		myPlayer->throwGrenade();
+	case 'g':{
+		if(myPlayer->alive)
+			myPlayer->throwGrenade();
 		break;
+	}
     case 'f':
         glutFullScreen();
         break;
@@ -158,7 +160,13 @@ void keyboard_up_game(unsigned char key, int x, int y) {
 	case 's':
 		myPlayer->input.vertical += 1;
 		break;
-
+	case 'g':{
+		if(myPlayer->alive){
+			thrownGrenades[thrownGrenades.size() - 1]->throwMe(myPlayer->input.angle, myPlayer->input.cursorDist);
+			alSourcePlay(myPlayer->soundSource[3]);
+		}
+		break;
+		}
 	}
 }
 
@@ -183,6 +191,8 @@ void on_mouse_move_active_game(int x, int y) {
 void on_mouse_move_game(int x, int y) {
 	float dx = x - windowWidth / 2;
 	float dy = y - windowHeight / 2;
+
+	myPlayer->input.cursorDist = sqrt(dx*dx + dy*dy)/windowWidth;
 
 	float angle = atan2(dy, dx);
 	myPlayer->input.angle = -angle;
@@ -230,7 +240,11 @@ void on_timer_game()
 				delete tmp;
 				continue;
 			}
-			thrownGrenades[i]->Update();
+
+			float Gn = 0.18;
+			float Gvx = Gn*cos(myPlayer->input.angle);
+	    float Gvy = Gn*sin(myPlayer->input.angle);
+			thrownGrenades[i]->Update(myPlayer->body->GetPosition().x+Gvx, myPlayer->body->GetPosition().y+Gvy);
 		}
 
 		for(int i = 0; i < audioWrappers.size(); i++){
@@ -345,7 +359,8 @@ void DrawBullets() {
 
 void DrawGrenades() {
 	for (int i = 0; i < thrownGrenades.size(); i++) {
-		thrownGrenades[i]->Draw();
+		if(thrownGrenades[i]->thrown)
+			thrownGrenades[i]->Draw();
 	}
 }
 

@@ -46,7 +46,8 @@ std::vector<std::string> soundNames = {
 	std::string("bodyImpact1"),
 	std::string("bodyImpact2"),
 	std::string("grenadeThrow"),
-	std::string("grenade")
+	std::string("grenade"),
+	std::string("grenadePull")
 };
 
 std::vector<std::string> textureLocations;
@@ -56,7 +57,7 @@ std::map<std::string, int> textures;
 std::map<std::string, int> sounds;
 
 GLuint textureIDs[4];
-ALuint soundIDs[14];
+ALuint soundIDs[15];
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 15

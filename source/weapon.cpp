@@ -146,17 +146,18 @@ void Shotgun::fire() {
 	}
 }
 
-Grenade::Grenade(float x, float y, float angle){
+Grenade::Grenade(float x, float y){
 	dmg = 200;
 	r = 0.04;
 	blastRadius = 1.6;
-	explodeTimer = 1;
+	explodeTimer = 2;
 	toDelete = false;
+	thrown = false;
 
 	b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
 	bodyDef.bullet = false;
-	bodyDef.linearDamping = 5;
+	bodyDef.linearDamping = 2.5;
 	bodyDef.position.Set(x, y);
 	body = world->CreateBody(&bodyDef);
 
@@ -173,13 +174,7 @@ Grenade::Grenade(float x, float y, float angle){
 
 	// Add the shape to the body.
 	body->CreateFixture(&fixtureDef);
-
-	float vx =  0.3*cos(angle);
-	float vy =  0.3*sin(angle);
-
-	body->ApplyLinearImpulse(b2Vec2(vx,vy), body->GetWorldCenter(), true);
-
-
+	body->SetActive(false);
 }
 
 Grenade::~Grenade(){
@@ -204,6 +199,15 @@ void StartGrenadeEffet(b2Vec2 pos) {
 	smoke->SetSpeed(0.2, 1);
 	smoke->SetRotation(1, 2);
 	smoke->Start();
+}
+
+void Grenade::throwMe(float angle, float strength){
+	thrown = true;
+	body->SetActive(true);
+	float vx = strength*cos(angle)*0.35;
+	float vy = strength*sin(angle)*0.35;
+	body->ApplyLinearImpulse(b2Vec2(vx,vy), body->GetWorldCenter(), true);
+
 }
 
 void Grenade::explode(){
@@ -258,9 +262,13 @@ void Grenade::explode(){
 	toDelete = true;
 }
 
-void Grenade::Update(){
+void Grenade::Update(float x, float y){
 	if(explodeTimer <= 0)
 		explode();
+
+	if(!thrown){
+		body->SetTransform(b2Vec2(x,y), 0);
+	}
 
 	explodeTimer -= phisycsUpdateInterval;
 }
