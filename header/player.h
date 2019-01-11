@@ -24,6 +24,8 @@ public:
 	void takeDmg(int dmg);
 	void takeDmg(int dmg, b2Vec2 dir);
 	void IncreaseHealth(int amount);
+	void IncreaseGrenades(int amount);
+	void throwGrenade();
 	void Revive();
 	void SetMaxHealth(int mh);
 	void moveSoundSource();

@@ -77,6 +77,17 @@ Player::Player() {
 
 };
 
+void Player::IncreaseGrenades(int amount){
+	grenades += amount;
+}
+
+void Player::throwGrenade(){
+	if(grenades > 0){
+		std::cout << "Grenade!" <<std::endl;
+		grenades--;
+	}
+}
+
 void Player::SetMaxHealth(int mh) {
 	maxHealth = mh;
 	health = maxHealth;

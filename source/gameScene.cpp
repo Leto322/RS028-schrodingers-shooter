@@ -128,6 +128,9 @@ void on_keyboard_game(unsigned char key, int x, int y)
 	case 'r':
 		myPlayer->equiped_weapon->reload();
 		break;
+	case 'g':
+		myPlayer->throwGrenade();
+		break;
     case 'f':
         glutFullScreen();
         break;
@@ -331,7 +334,7 @@ void DrawHUDMap() {
 void DrawHUDBar() {
     float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
-	
+
 	glPushMatrix();
 	glTranslatef(myPlayer->body->GetPosition().x,myPlayer->body->GetPosition().y-h+h/10,0);
 	glBindTexture(GL_TEXTURE_2D, textures["hudbar"]);
@@ -347,12 +350,12 @@ void DrawHUDBar() {
 		glVertex3f(-w, h/10, 0);
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
-	
-	
+
+
 	glTranslatef(-w+w/10,0,0);
 	DrawWepon();
-	
-	
+
+
 	int numberOfAliveBots = 0;
 	for (int i = 1; i < players.size(); i++) {
 		if (players[i]->alive)
@@ -367,11 +370,11 @@ void DrawHUDBar() {
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,text[i]);
 	}
     memset(text, 0, sizeof text);
-	
-	
-	
-	
-	
+
+
+
+
+
 	glPopMatrix();
 }
 
@@ -379,7 +382,7 @@ void DrawWepon(){
 	glColor4f(1, 1, 1, 1);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
+
 	glPushMatrix();
 	glNormal3f(0, 0, 1);
 	glBindTexture(GL_TEXTURE_2D, textures[myPlayer->equiped_weapon->Name()]);
@@ -423,7 +426,7 @@ void on_display_game(void)
 	DrawHUDBar();
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
-	
+
 	//MiniMap
 	glViewport(-120 + windowWidth / 6 + windowWidth - windowWidth/3, 0, windowWidth / 3, windowHeight / 3);
 	glMatrixMode(GL_MODELVIEW);
