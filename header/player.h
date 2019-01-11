@@ -25,6 +25,8 @@ public:
 	void IncreaseHealth(int amount);
 	void Revive();
 	void SetMaxHealth(int mh);
+	void SetMaxArmor(int ma);
+	void FillArmor();
 	void moveSoundSource();
 
     virtual ClassID getClassID();
@@ -44,7 +46,9 @@ public:
 private:
     float speed;
     int health;
-		int maxHealth;
+	int maxHealth;
+	int armor;
+	int maxArmor;
 
 protected:
   ALuint soundSource[2];

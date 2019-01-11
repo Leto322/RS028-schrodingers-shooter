@@ -31,9 +31,11 @@ int num;
 Player::Player() {
     r = 0.15;
     speed = 0.03;
-		maxHealth = 100;
+	maxHealth = 100;
     health = maxHealth;
 		grenades = 2;
+	maxArmor = 100;
+	armor = 0;
     input.vertical = 0;
     input.horizontal = 0;
 		input.shoot = false;
@@ -82,6 +84,14 @@ void Player::SetMaxHealth(int mh) {
 	health = maxHealth;
 }
 
+void Player::SetMaxArmor(int ma) {
+	maxArmor = ma;
+}
+
+void Player::FillArmor() {
+	armor = maxArmor;
+}
+
 void Player::SetBrain(Brain* brain){
     m_brain = brain;
 }
@@ -103,16 +113,36 @@ void Player::Draw(){
 			glColor3f(0, 0, 0);
 			glutSolidSphere(r/4, 10, 2);
 		glPopMatrix();
+		
 		//Draw health bar
-		glColor3f(0, 0, 0);
 		glTranslatef(0, 0.3, 0.4);
+
+		glScalef(1, 1, 0.1);
+		glColor3f(0, 0, 0);
 		glScalef(0.3, 0.1, 0.1);
 		glutWireCube(1);
 		float percentage = (float)health / maxHealth;
+		glPushMatrix();
 		glTranslatef(-0.5*(1-percentage), 0, 0);
 		glScalef(percentage, 1, 1);
 		glColor3f(1 - percentage, percentage, 0);
 		glutSolidCube(1);
+		glPopMatrix();
+
+		if (armor > 0) {
+			glTranslatef(0, -0.75, 0);
+			glScalef(1, 0.5, 1);
+			glPushMatrix();
+			percentage = (float)armor / maxArmor;
+			glTranslatef(-0.5*(1 - percentage), 0, 0);
+			glScalef(percentage, 1, 1);
+			glColor3f(.7, .7, .7);
+			glutSolidCube(1);
+			glColor3f(0, 0, 0);
+			glutWireCube(1);
+			glPopMatrix();
+
+		}
     glPopMatrix();
 };
 
@@ -217,7 +247,17 @@ void Player::takeDmg(int dmg, b2Vec2 bulletVel){
 		alSourcePlay(soundSource[2]);
 
 	int tmp = health;
-	health -= dmg;
+	if (armor > 0) {
+		armor -= dmg;
+	}
+	else {
+		health -= dmg;
+	}
+
+	if (armor < 0) {
+		health += armor;
+		armor = 0;
+	}
 	if (health <= 0) {
 		health = 0;
 		if (tmp > 0) {
