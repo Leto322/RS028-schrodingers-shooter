@@ -97,7 +97,6 @@ void Player::throwGrenade(){
 
 		Grenade* thrown_grenade = new Grenade(body->GetPosition().x + vx, body->GetPosition().y + vy);
 		thrownGrenades.push_back(thrown_grenade);
-		grenades--;
 	}
 }
 
@@ -357,12 +356,10 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
             else if(pathMap[i+1][j+1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0 && map[i+1][j] != '#' && map[i][j+1] != '#'){
                 players[k]->input.horizontal+=1;
                 players[k]->input.vertical-=1;
-//                 std::cout << "dr" << std::endl;
             }
             else if(pathMap[i-1][j+1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0 && map[i-1][j] != '#' && map[i][j+1] != '#'){
                 players[k]->input.horizontal+=1;
                 players[k]->input.vertical+=1;
-//                 std::cout << "ur" << std::endl;
             }
 
             //Backup in case block is up/down/right/left during diagonal moving

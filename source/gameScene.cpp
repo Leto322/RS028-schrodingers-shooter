@@ -161,9 +161,10 @@ void keyboard_up_game(unsigned char key, int x, int y) {
 		myPlayer->input.vertical += 1;
 		break;
 	case 'g':{
-		if(myPlayer->alive){
+		if(myPlayer->alive && myPlayer->grenades != 0){
 			thrownGrenades[thrownGrenades.size() - 1]->throwMe(myPlayer->input.angle, myPlayer->input.cursorDist);
 			alSourcePlay(myPlayer->soundSource[3]);
+			myPlayer->grenades--;
 		}
 		break;
 		}
