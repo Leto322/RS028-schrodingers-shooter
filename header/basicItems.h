@@ -30,4 +30,23 @@ private:
 	int m_amount;
 };
 
+class Armor : public Item {
+public:
+	ALuint soundSource[1];
+	Armor(float x, float y) :Item(x, y, 0.2, "armor"){
+			alGenSources(1, soundSource);
+			alSourcei(soundSource[0], AL_BUFFER, sounds["heal"]);
+			alSourcef(soundSource[0], AL_GAIN, 0.3);
+			alSourcef(soundSource[0], AL_PITCH, 1);
+			alSource3f(soundSource[0], AL_POSITION, x, y, 0.2);
+		}
+	void Pickup(Player *picker) override {
+		picker->FillArmor();
+		alSourcePlay(soundSource[0]);
+		delete this;
+	}
+private:
+	int m_amount;
+};
+
 #endif

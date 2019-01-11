@@ -76,6 +76,7 @@ void InitGame() {
 	myPlayer = new Player();
 	myPlayer->SetBrain(new playerBrain(*myPlayer));
 	myPlayer->SetMaxHealth(200);
+	myPlayer->SetMaxArmor(200);
 	myPlayer->body->SetTransform(b2Vec2(0, 0), 1);
 	myPlayer->Revive();
 	players.push_back(myPlayer);
@@ -100,6 +101,7 @@ void InitGame() {
 	itemPool.Add(new Rifle(-2, 0, 0));
 	itemPool.Add(new Shotgun(-3, 0, 0, 4));
 	itemPool.Add(new HealthPotion(-4, 0, 20));
+	itemPool.Add(new Armor(-4.5, 0));
 
 	alSourcePlay(ambientSource[0]);
 
