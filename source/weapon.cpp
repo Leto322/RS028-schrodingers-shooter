@@ -149,7 +149,7 @@ Grenade::Grenade(float x, float y, float angle){
 	dmg = 200;
 	r = 0.04;
 	blastRadius = 1.6;
-	explodeTimer = 2;
+	explodeTimer = 1;
 	toDelete = false;
 
 	b2BodyDef bodyDef;
@@ -207,9 +207,14 @@ void Grenade::explode(){
 				world->RayCast(&ray_callback, gposVector, pposVector);
 				if(ray_callback.m_fixture){
 					//if it is a wall break and dont apply the damage
-					if(false/*ray_callback.m_fixture->GetBody()->*/){
-						doDmg = false;
-						break;
+					void* object = ray_callback.m_fixture->GetBody()->GetUserData();
+					Colider* c;
+					if(object){
+						c = static_cast<Colider*>(object);
+						if(c->getClassID() == BLOCK){
+							doDmg = false;
+							break;
+						}
 					}
 				}
 				gposVector.x = ray_callback.m_fixture->GetBody()->GetPosition().x;

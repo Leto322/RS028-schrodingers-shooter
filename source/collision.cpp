@@ -40,20 +40,16 @@ void MyContactListener::BeginContact(b2Contact* contact){
       static_cast<Player*>(c2)->takeDmg(dmg, bullet->body->GetLinearVelocity());
     }
 
+		if(c1->getClassID() == BULLET && c2->getClassID() == BLOCK){
+			static_cast<Bullet*>(c1)->toDelete = 1;
+		}
+
+		if(c2->getClassID() == BULLET && c1->getClassID() == BLOCK){
+			static_cast<Bullet*>(c2)->toDelete = 1;
+		}
+
     //DEBUGGING collision detection
     std::cout<< c1->getClassID() << " :: " << c2->getClassID() << std::endl;
 
-  }
-
-  //if one contact has user data and the other doesnt, the other is a wall
-  if(o1 && !o2){
-    c1 = static_cast<Colider*>(o1);
-    if(c1->getClassID() == BULLET)
-      static_cast<Bullet*>(c1)->toDelete = 1;
-  }
-  if(!o1 && o2){
-    c1 = static_cast<Colider*>(o2);
-    if(c1->getClassID() == BULLET)
-      static_cast<Bullet*>(c1)->toDelete = 1;
   }
 }
