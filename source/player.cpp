@@ -88,13 +88,12 @@ void Player::IncreaseGrenades(int amount){
 void Player::throwGrenade(){
 	if(grenades > 0){
 		std::cout << "Grenade!" <<std::endl;
-		alSourcePlay(soundSource[3]);
 
 		float n = 0.18;
 		float vx = n*cos(input.angle);
     float vy = n*sin(input.angle);
 
-		Grenade* thrown_grenade = new Grenade(body->GetPosition().x + vx, body->GetPosition().y + vy, input.angle);
+		Grenade* thrown_grenade = new Grenade(body->GetPosition().x + vx, body->GetPosition().y + vy);
 		thrownGrenades.push_back(thrown_grenade);
 		grenades--;
 	}

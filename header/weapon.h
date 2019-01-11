@@ -79,17 +79,20 @@ public:
 
 class Grenade{
 public:
-	Grenade(float x, float y, float angle);
+	Grenade(float x, float y);
 	~Grenade();
 	void explode();
+	void throwMe(float angle, float strength);
 	void Draw();
-	void Update();
+	void Update(float x, float y);
 	b2Body* body;
 	bool toDelete;
+	bool thrown;
 private:
 	int dmg;
 	float r;
 	float blastRadius;
 	float explodeTimer;
+	float m_strength;
 };
 #endif

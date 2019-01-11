@@ -8,7 +8,7 @@
 #include <AL/alut.h>
 
 typedef struct _Input{
-    float horizontal, vertical, angle;
+    float horizontal, vertical, angle, cursorDist;
     bool shoot;
 } Input;
 
@@ -45,6 +45,7 @@ public:
 		int grenades;
     bool see_player;
     void die();
+		ALuint soundSource[NUM_OF_SOURCES_PLAYER];
 
 private:
     float speed;
@@ -54,7 +55,7 @@ private:
 	int maxArmor;
 
 protected:
-  ALuint soundSource[NUM_OF_SOURCES_PLAYER];
+
 };
 
 class Brain{
