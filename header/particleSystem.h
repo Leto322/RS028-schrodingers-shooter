@@ -6,11 +6,12 @@
 
 class Particle {
 public:
-	Particle(b2Vec2 pos, b2Vec2 vel, float scale, float rotation, float alpha);
+	Particle(b2Vec2 pos, b2Vec2 vel, float scale, float rotation, float rotationSpeed, float alpha);
 	b2Vec2 pos;
 	b2Vec2 vel;
 	float scale;
 	float rotation;
+	float rotationSpeed;
 	float alpha;
 
 	void Draw();
@@ -27,6 +28,7 @@ public:
 	void Start();
 	void SetSpeed(float minSpeed, float maxSpeed);
 	void SetScale(float startScale, float endScale);
+	void SetRotation(float minRotation, float maxRotation);
 	bool IsDone();
 
 private:
@@ -41,6 +43,9 @@ private:
 	
 	float minSpeed;
 	float maxSpeed;
+
+	float minRotationSpeed;
+	float maxRotationSpeed;
 
 	float startScale;
 	float endScale;

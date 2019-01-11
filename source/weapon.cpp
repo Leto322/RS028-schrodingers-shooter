@@ -2,6 +2,7 @@
 #include "../header/bullet.h"
 #include "../header/player.h"
 #include "../header/util.h"
+#include "../header/particleSystem.h"
 #include <iostream>
 #include <vector>
 #include <map>
@@ -186,9 +187,30 @@ Grenade::~Grenade(){
 	world->DestroyBody(this->body);
 }
 
+void StartGrenadeEffet(b2Vec2 pos) {
+	//dir = 10 * dir;
+	Emitter* shockwave = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 1, 0.4, "shockwave");
+	shockwave->SetScale(0, 2);
+	shockwave->SetSpeed(0, 0);
+	shockwave->Start();
+
+	Emitter* fireball = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 1, 0.2, "fireball");
+	fireball->SetScale(1, 0);
+	fireball->SetSpeed(0, 0);
+	fireball->Start();
+
+	Emitter* smoke = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 10, 1, "smoke");
+	smoke->SetScale(0.3, 0.6);
+	smoke->SetSpeed(0.2, 1);
+	smoke->SetRotation(1, 2);
+	smoke->Start();
+}
+
 void Grenade::explode(){
 	auto gposX = body->GetPosition().x;
 	auto gposY = body->GetPosition().y;
+
+	StartGrenadeEffet(body->GetPosition());
 	//for each player calculate distance from grenade
 	for(int i = 0; i < players.size(); i++){
 		auto pposX = players[i]->body->GetPosition().x;
@@ -224,7 +246,7 @@ void Grenade::explode(){
 			//if we didnt find a wall finaly apply the damage
 	    if(doDmg){
 				dist = (dist == 0 ? 1 : dist);
-				players[i]->takeDmg(dmg/(dist*1.3));
+				players[i]->takeDmg(dmg/(dist*1.3), players[i]->body->GetPosition()-body->GetPosition());
 			}
 		}
 	}
@@ -232,6 +254,7 @@ void Grenade::explode(){
 	blastSounder->playSound();
 	blastSounder->toDelete = true;
 	audioWrappers.push_back(blastSounder);
+	
 	toDelete = true;
 }
 

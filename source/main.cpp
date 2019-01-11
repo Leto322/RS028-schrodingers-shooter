@@ -25,7 +25,11 @@ std::vector<std::string> textureNames = {
 	std::string("shotgun"),
 	std::string("blood"),
 	std::string("hudbar"),
-	std::string("armor")
+	std::string("armor"),
+	std::string("shockwave"),
+	std::string("fireball"),
+	std::string("smoke")
+
 };
 
 std::vector<std::string> soundNames = {

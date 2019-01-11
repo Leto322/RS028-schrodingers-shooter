@@ -10,8 +10,8 @@ extern ParticleSystem* particleSystem;
 extern std::map<std::string, int> textures;
 extern double phisycsUpdateInterval;
 
-Particle::Particle(b2Vec2 pos, b2Vec2 vel, float scale, float rotation, float alpha) :
-	pos(pos), vel(vel), scale(scale), rotation(rotation), alpha(alpha) {}
+Particle::Particle(b2Vec2 pos, b2Vec2 vel, float scale, float rotation, float rotationSpeed, float alpha) :
+	pos(pos), vel(vel), scale(scale), rotation(rotation), rotationSpeed(rotationSpeed), alpha(alpha) {}
 
 void Particle::Draw() {
 	glColor4f(1, 1, 1, alpha);
@@ -26,8 +26,7 @@ void Particle::Draw() {
 
 	
 	glScalef(scale, scale, 1);
-	float angle = atan2(vel.y, vel.x);
-	glRotatef(angle/M_PI*180, 0, 0, 1);
+	glRotatef(rotation/M_PI*180, 0, 0, 1);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0, 0);
 	glVertex3f(-1, -1, 0);
@@ -46,6 +45,7 @@ void Particle::Draw() {
 
 void Particle::Update() {
 	pos += phisycsUpdateInterval*vel;
+	rotation += phisycsUpdateInterval * rotationSpeed;
 }
 
 void Particle::AddForce(b2Vec2 force) {
@@ -60,6 +60,8 @@ Emitter::Emitter(b2Vec2 pos, b2Vec2 initialVelocity, b2Vec2 force, int particleC
 	lifespanTimer = 0.0;
 	minSpeed = 0.1;
 	maxSpeed = 0.3;
+	minRotationSpeed = 0;
+	maxRotationSpeed = 0;
 	startScale = 0.1;
 	endScale = 0;
 }
@@ -98,9 +100,10 @@ void Emitter::Start() {
 	{
 		float angle = randomNumber(0, M_PI*2);
 		float speed = randomNumber(minSpeed, maxSpeed);
+		float rotationSpeed = randomNumber(minRotationSpeed, maxRotationSpeed);
 		b2Vec2 vel(cos(angle)*speed, sin(angle)*speed);
 		vel += initialVelocity;
-		particles.push_back(new Particle(pos, vel, startScale, angle, 1));
+		particles.push_back(new Particle(pos, vel, startScale, angle, rotationSpeed, 1));
 	}
 
 	particleSystem->AddEmitter(this);
@@ -116,6 +119,11 @@ void Emitter::SetSpeed(float mins, float maxs) {
 void Emitter::SetScale(float start, float end) {
 	startScale = start;
 	endScale = end;
+}
+
+void Emitter::SetRotation(float min, float max) {
+	minRotationSpeed = min;
+	maxRotationSpeed = max;
 }
 
 bool Emitter::IsDone() {
