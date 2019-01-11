@@ -1,6 +1,8 @@
 #ifndef WEAPON_DEF
 #define WEAPON_DEF
 
+#define NUM_OF_SOURCES_WEAP 3
+
 #include "item.h"
 #include <AL/alut.h>
 
@@ -31,7 +33,7 @@ protected:
 	float angle;
 	float recoilAmount;
 	float bulletSIze;
-	ALuint soundSource[3];
+	ALuint soundSource[NUM_OF_SOURCES_WEAP];
 };
 
 class Pistol : public Weapon {

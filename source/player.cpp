@@ -50,7 +50,7 @@ Player::Player() {
     bodyDef.position.Set(-100.0f, 0.0f);
     body = world->CreateBody(&bodyDef);
     body->SetUserData(this);
-	body->SetActive(false);
+		body->SetActive(false);
 
     // Define another box shape for our dynamic body.
     b2CircleShape circleShape;
@@ -66,11 +66,11 @@ Player::Player() {
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
 
-    alGenSources(3, soundSource);
+    alGenSources(NUM_OF_SOURCES_PLAYER, soundSource);
   	alSourcei(soundSource[0], AL_BUFFER, sounds["death"]);
 		alSourcei(soundSource[1], AL_BUFFER, sounds["bodyImpact1"]);
 		alSourcei(soundSource[2], AL_BUFFER, sounds["bodyImpact2"]);
-		for(int i = 0; i < 3; i++){
+		for(int i = 0; i < NUM_OF_SOURCES_PLAYER; i++){
     	alSourcef(soundSource[i], AL_GAIN, 0.2);
   		alSourcef(soundSource[i], AL_PITCH, 1);
 		}

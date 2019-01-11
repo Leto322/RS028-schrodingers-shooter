@@ -1,6 +1,7 @@
 #ifndef PLAYER_DEF
 #define PLAYER_DEF
 
+#define NUM_OF_SOURCES_PLAYER 3
 #include "weapon.h"
 #include "../header/util.h"
 #include <Box2D/Box2D.h>
@@ -47,7 +48,7 @@ private:
 		int maxHealth;
 
 protected:
-  ALuint soundSource[2];
+  ALuint soundSource[NUM_OF_SOURCES_PLAYER];
 };
 
 class Brain{
