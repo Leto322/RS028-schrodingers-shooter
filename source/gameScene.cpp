@@ -259,8 +259,11 @@ void on_timer_game()
 
 		alSource3f(ambientSource[0], AL_POSITION, myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0);
 
-		if(!myPlayer->alive)
+		if(!myPlayer->alive){
 			alSourceStop(ambientSource[0]);
+			Clean();
+			currentScene = MENU;
+		}
 
 		accumulator -= phisycsUpdateInterval;
 	}
@@ -409,20 +412,63 @@ void DrawHUDBar() {
 			numberOfAliveBots++;
 	}
 	int botsLeft = enemySpawner->GetEnemiesInWave() - (enemySpawner->GetEnemiesSpawned() - numberOfAliveBots);
-	sprintf(text, "Ammo: %d/%d\tWave: %d\tLeft: %d", myPlayer->equiped_weapon->GetAmmo(), myPlayer->equiped_weapon->GetAmmoCap(), enemySpawner->GetCurrentWave(), botsLeft);
+	sprintf(text, "Ammo: %d/%d", myPlayer->equiped_weapon->GetAmmo(), myPlayer->equiped_weapon->GetAmmoCap());
 	glTranslatef(w/10, -h/40, 0);
-	glColor3f(1,1,1);
-    glRasterPos3f(0, 0, 0);
-	for(int i = 0; i < strlen(text); i++){
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,text[i]);
-	}
+	WriteText();
     memset(text, 0, sizeof text);
+	float timer = myPlayer->equiped_weapon->GetReloadTimer();
+	
+	
+	if(timer > 0 && myPlayer->alive){
+		glPushMatrix();
+		glTranslatef(0,-h/20,0);
+		glBegin(GL_QUADS);
+			glVertex3f(0,-h/80,0);
+			glVertex3f(w/10*(timer)/2,-h/80,0);
+			glVertex3f(w/10*(timer)/2,h/80,0);
+			glVertex3f(0,h/80,0);
+		glEnd();
+		glPopMatrix();
+	}
+	
+	glTranslatef(w/4, 0, 0);
+	sprintf(text, "Grenades: %d", myPlayer->grenades);
+	WriteText();
+	memset(text, 0, sizeof text);
+	
+	
+	if(thrownGrenades.size() > 0){
+		timer = thrownGrenades[thrownGrenades.size() - 1]->GetExplodeTimer();
+		if(timer > 0 && !thrownGrenades[thrownGrenades.size() - 1]->thrown){
+			glPushMatrix();
+			glTranslatef(0,-h/20,0);
+			glBegin(GL_QUADS);
+				glVertex3f(0,-h/80,0);
+				glVertex3f(w/10*(timer)/2,-h/80,0);
+				glVertex3f(w/10*(timer)/2,h/80,0);
+				glVertex3f(0,h/80,0);
+			glEnd();
+			glPopMatrix();
+		}
+	}
+	
+	
+	sprintf(text, "Wave: %d\tLeft: %d", enemySpawner->GetCurrentWave(), botsLeft);
+	glTranslatef(w*0.9,0, 0);
+	WriteText();
 
-
-
-
+	
+	
 
 	glPopMatrix();
+}
+
+void WriteText(){
+	glColor3f(0,0,0);
+    glRasterPos3f(0, 0, 0);
+	for(int i = 0; i < strlen(text); i++){
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,text[i]);
+	}
 }
 
 void DrawWepon(){
@@ -434,7 +480,7 @@ void DrawWepon(){
 	glNormal3f(0, 0, 1);
 	glBindTexture(GL_TEXTURE_2D, textures[myPlayer->equiped_weapon->Name()]);
 	float animationScale = 0.25;
-	glScalef(animationScale*1.5,animationScale, 1);
+	glScalef(animationScale,animationScale, 1);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0, 0);
 	glVertex3f(-1, -1, 0);
@@ -489,4 +535,14 @@ void on_display_game(void)
 	DrawHUDPlayers();
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
+}
+
+
+void Clean(){
+	for (int i = 0; i < bullets.size(); i++) {
+		Bullet* tmp = bullets[i];
+		bullets.erase(bullets.begin() + i);
+		delete tmp;
+		i--;
+	}
 }

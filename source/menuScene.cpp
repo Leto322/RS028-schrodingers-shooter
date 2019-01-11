@@ -30,15 +30,10 @@ extern enum scene currentScene;
 void InitMenu() {
 	alSourcePlay(ambientSource[0]);
 		pressedButtons.insert( std::pair<std::string,bool>(std::string("play"),false) );
-    //pressedButtons[std::string("play")] = false;
 		pressedButtons.insert( std::pair<std::string,bool>(std::string("credits"),false) );
-    //pressedButtons[std::string("credits")] = false;
 		pressedButtons.insert( std::pair<std::string,bool>(std::string("controls"),false) );
-    //pressedButtons[std::string("controls")] = false;
 		pressedButtons.insert( std::pair<std::string,bool>(std::string("exit"),false) );
-    //pressedButtons[std::string("exit")] = false;
 		pressedButtons.insert( std::pair<std::string,bool>(std::string("back"),false) );
-    //pressedButtons[std::string("back")] = false;
     menuActive = true;
     creditsActive = false;
     controlsActive = false;

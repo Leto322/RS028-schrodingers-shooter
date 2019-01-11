@@ -15,6 +15,7 @@ public:
 	virtual void fire();
     int GetAmmo() const;
 	int GetAmmoCap() const;
+	float GetReloadTimer() const;
 	void reload();
 	void SetPositionAndAngle(float x, float y, float angle);
 	bool allowed_fire;
@@ -84,6 +85,7 @@ public:
 	void explode();
 	void throwMe(float angle, float strength);
 	void Draw();
+	float GetExplodeTimer() const;
 	void Update(float x, float y);
 	b2Body* body;
 	bool toDelete;

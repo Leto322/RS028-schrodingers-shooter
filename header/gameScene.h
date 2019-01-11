@@ -23,6 +23,7 @@ void on_timer_game();
 
 void DrawHUDBar();
 void DrawWepon();
+void WriteText();
 
 void DrawMap();
 
@@ -32,4 +33,5 @@ void DrawBullets();
 
 void on_display_game(void);
 
+void Clean();
 #endif

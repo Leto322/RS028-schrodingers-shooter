@@ -77,9 +77,10 @@ void Weapon::reload(){
 		std::cout << "Reloadin!" << std::endl;
 		alSourcePlay(soundSource[1]);
 		this->ammo = this->ammo_cap;
+		reload_timer = reload_delay;
 	}
 	if (reload_timer <= 0){
-        reload_timer = reload_delay;
+        reload_timer = 0;
     }
 }
 
@@ -105,6 +106,10 @@ int Weapon::GetAmmo() const{
 
 int Weapon::GetAmmoCap() const{
 	return ammo_cap;
+}
+
+float Weapon::GetReloadTimer() const{
+	return reload_timer;
 }
 
 void Weapon::UpdateTimers(){
@@ -180,6 +185,10 @@ Grenade::Grenade(float x, float y){
 Grenade::~Grenade(){
 	std::cout <<"deleting grenade" <<std::endl;
 	world->DestroyBody(this->body);
+}
+
+float Grenade::GetExplodeTimer() const{
+	return explodeTimer;
 }
 
 void StartGrenadeEffet(b2Vec2 pos) {
