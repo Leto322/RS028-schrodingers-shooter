@@ -26,7 +26,7 @@ extern GLuint textureIDs[];
 extern std::map<std::string, int> sounds;
 extern std::map<std::string, int> textures;
 extern std::vector< std::vector<char> > map;
-extern ALuint soundIDs[15];
+extern ALuint soundIDs[17];
 int updateCount;
 extern bool reset;
 Player* myPlayer;
@@ -548,6 +548,13 @@ void Clean(bool x){
 	for (unsigned i = 0; i < bullets.size(); i++) {
 		Bullet* tmp = bullets[i];
 		bullets.erase(bullets.begin() + i);
+		delete tmp;
+		i--;
+	}
+	
+	for (unsigned i = 0; i < thrownGrenades.size(); i++) {
+		Grenade* tmp = thrownGrenades[i];
+		thrownGrenades.erase(thrownGrenades.begin() + i);
 		delete tmp;
 		i--;
 	}
