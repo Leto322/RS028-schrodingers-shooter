@@ -14,6 +14,10 @@ Item::Item(float x, float y, float pickupDistance, std::string icon): icon(icon)
 	itemPosition.Set(x, y);
 }
 
+Item::~Item(){
+
+}
+
 bool Item::IsColliding(Player *picker){
 	b2Vec2 playerPos = picker->body->GetPosition();
 	if (fabs(playerPos.x - itemPosition.x) < pickupDistance && fabs(playerPos.y - itemPosition.y) < pickupDistance) {
@@ -24,11 +28,11 @@ bool Item::IsColliding(Player *picker){
 
 void Item::Draw() {
 	glColor4f(1, 1, 1, 1);
-	
+
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
+
 	glPushMatrix();
 	glNormal3f(0, 0, 1);
 	glTranslatef(itemPosition.x, itemPosition.y, 0.3);

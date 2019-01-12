@@ -330,7 +330,7 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
     float edge = 18.0/map.size();
 
 
-    for(int k=1;k<players.size(); k++){
+    for(unsigned k=1;k<players.size(); k++){
 		if (!players[k]->alive)
 			continue;
         i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
@@ -429,7 +429,7 @@ void BotMoves(){
 	if (!players[0]->alive)
 		return;
     BotAim();
-    int i, j, ip, jp;
+    unsigned i, j, ip, jp;
     num = 0;
 
     //Matrix that contains the number of fields on the shortest path from each field to the player
@@ -452,7 +452,7 @@ void BotMoves(){
 
 
     //Bot positions based on coordinates
-    for(int k=1;k<players.size();++k){
+    for(unsigned k=1;k<players.size();++k){
 		if (!players[k]->alive)
 			continue;
         i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
@@ -524,7 +524,7 @@ void BotAim(){
     x1 = players[0]->body->GetPosition().x;
     y1 = players[0]->body->GetPosition().y;
     float angle;
-    for(int k = 1; k < players.size(); ++k){
+    for(unsigned k = 1; k < players.size(); ++k){
 		if (!players[k]->alive) {
 			continue;
 		}

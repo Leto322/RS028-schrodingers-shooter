@@ -23,6 +23,7 @@ enum ClassID{
 class Colider{
 public:
   virtual ClassID getClassID() { return COLIDER; }
+	virtual ~Colider(){}
 };
 
 class RayCastCallback : public b2RayCastCallback{
@@ -70,9 +71,9 @@ public:
 	bool toDelete;
 private:
 	ALuint soundSource[NUM_OF_SOURCES_WRAP];
-	std::string m_sound;
 	float m_x;
 	float m_y;
+	std::string m_sound;
 };
 
 bool IsOnScreen(b2Vec2 position);

@@ -53,7 +53,7 @@ int EnemySpawner::GetCurrentWave() const{
 
 bool EnemySpawner::IsWaveCleared() {
 	int numberOfAliveBots = 0;
-	for (int i = 1; i < players.size(); i++) {
+	for (unsigned i = 1; i < players.size(); i++) {
 		if (players[i]->alive)
 			numberOfAliveBots++;
 	}
@@ -62,7 +62,7 @@ bool EnemySpawner::IsWaveCleared() {
 
 void EnemySpawner::Spawn() {
 	spawnTimer = 0;
-	for (int i = 1; i < players.size(); i++) {
+	for (unsigned i = 1; i < players.size(); i++) {
 		if (!players[i]->alive) {
 			players[i]->Revive();
 			b2Vec2 spawnPosition = GetNextSpawnPosition();

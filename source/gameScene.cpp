@@ -214,7 +214,7 @@ void on_timer_game()
 		updateCount++;
 		world->Step(phisycsUpdateInterval, 6, 2);
         BotMoves();
-		for (int i = 0; i < players.size(); i++) {
+		for (unsigned i = 0; i < players.size(); i++) {
 			if (players[i]->deathFlag) {
 				players[i]->deathFlag = false;
 				itemPool->SpawnRandom(players[i]->body->GetPosition());
@@ -235,7 +235,7 @@ void on_timer_game()
 		enemySpawner->Update();
 		particleSystem->Update();
 
-		for(int i = 0; i < thrownGrenades.size(); i++){
+		for(unsigned i = 0; i < thrownGrenades.size(); i++){
 			if(thrownGrenades[i]->toDelete){
 				Grenade* tmp = thrownGrenades[i];
 				thrownGrenades.erase(thrownGrenades.begin() + i);
@@ -250,7 +250,7 @@ void on_timer_game()
 			thrownGrenades[i]->Update(myPlayer->body->GetPosition().x+Gvx, myPlayer->body->GetPosition().y+Gvy);
 		}
 
-		for(int i = 0; i < audioWrappers.size(); i++){
+		for(unsigned i = 0; i < audioWrappers.size(); i++){
 			if(!(audioWrappers[i]->isPlaying()) && audioWrappers[i]->toDelete){
 				AudioWrapper* tmp = audioWrappers[i];
 				audioWrappers.erase(audioWrappers.begin() + i);
@@ -313,13 +313,13 @@ void DrawMap() {
 }
 
 void DrawPlayers() {
-	for (int i = 0; i < players.size(); i++) {
+	for (unsigned i = 0; i < players.size(); i++) {
 		if (!players[i]->alive)
 			continue;
 
 		players[i]->DrawShadow();
 	}
-	for (int i = 0; i < players.size(); i++) {
+	for (unsigned i = 0; i < players.size(); i++) {
 		if (!players[i]->alive)
 			continue;
 
@@ -328,7 +328,7 @@ void DrawPlayers() {
 }
 
 void DrawHUDPlayers() {
-	for (int i = 0; i < players.size(); i++) {
+	for (unsigned i = 0; i < players.size(); i++) {
 		if (!players[i]->alive)
 			continue;
 
@@ -352,7 +352,7 @@ void DrawHUDPlayers() {
 }
 
 void DrawBullets() {
-	for (int i = 0; i < bullets.size(); i++) {
+	for (unsigned i = 0; i < bullets.size(); i++) {
         if( (abs(bullets[i]->body->GetLinearVelocity().x) <= 0.1 && abs(bullets[i]->body->GetLinearVelocity().y) <= 0.1) || bullets[i]->toDelete == 1){
 			Bullet* tmp = bullets[i];
 			bullets.erase(bullets.begin() + i);
@@ -366,7 +366,7 @@ void DrawBullets() {
 }
 
 void DrawGrenades() {
-	for (int i = 0; i < thrownGrenades.size(); i++) {
+	for (unsigned i = 0; i < thrownGrenades.size(); i++) {
 		if(thrownGrenades[i]->thrown)
 			thrownGrenades[i]->Draw();
 	}
@@ -411,7 +411,7 @@ void DrawHUDBar() {
 
 
 	int numberOfAliveBots = 0;
-	for (int i = 1; i < players.size(); i++) {
+	for (unsigned i = 1; i < players.size(); i++) {
 		if (players[i]->alive)
 			numberOfAliveBots++;
 	}
@@ -470,7 +470,7 @@ void DrawHUDBar() {
 void WriteText(){
 	glColor3f(0,0,0);
     glRasterPos3f(0, 0, 0);
-	for(int i = 0; i < strlen(text); i++){
+	for(unsigned i = 0; i < strlen(text); i++){
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,text[i]);
 	}
 }
@@ -545,14 +545,14 @@ void on_display_game(void)
 
 
 void Clean(){
-	for (int i = 0; i < bullets.size(); i++) {
+	for (unsigned i = 0; i < bullets.size(); i++) {
 		Bullet* tmp = bullets[i];
 		bullets.erase(bullets.begin() + i);
 		delete tmp;
 		i--;
 	}
 
-	for (int i = 0; i < walls.size(); i++) {
+	for (unsigned i = 0; i < walls.size(); i++) {
 			Block* tmp = walls[i];
 			walls.erase(walls.begin() + i);
 			delete tmp;
@@ -567,7 +567,7 @@ void Clean(){
 	delete particleSystem;
 	delete contactListener;
 
-	for (int i = 0; i < players.size(); i++) {
+	for (unsigned i = 0; i < players.size(); i++) {
 		Player* tmp = players[i];
 		players.erase(players.begin() + i);
 		delete tmp->equiped_weapon;

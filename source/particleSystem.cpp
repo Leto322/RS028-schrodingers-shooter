@@ -24,7 +24,7 @@ void Particle::Draw() {
 	glNormal3f(0, 0, 1);
 	glTranslatef(pos.x, pos.y, 0.3);
 
-	
+
 	glScalef(scale, scale, 1);
 	glRotatef(rotation/M_PI*180, 0, 0, 1);
 	glBegin(GL_QUADS);
@@ -147,7 +147,7 @@ void ParticleSystem::Update() {
 }
 
 void ParticleSystem::Draw() {
-	for (int i = 0; i < emitters.size(); i++)
+	for (unsigned i = 0; i < emitters.size(); i++)
 	{
 		emitters[i]->Draw();
 	}

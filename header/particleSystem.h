@@ -34,13 +34,14 @@ public:
 private:
 	std::vector<Particle*> particles;
 	b2Vec2 pos;
-	b2Vec2 initialVelocity;
 	b2Vec2 force;
-	std::string texture;
 	int particleCount;
 	float lifespan;
-	float lifespanTimer;
+	std::string texture;
+	b2Vec2 initialVelocity;
 	
+	float lifespanTimer;
+
 	float minSpeed;
 	float maxSpeed;
 

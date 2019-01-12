@@ -225,7 +225,7 @@ void Grenade::explode(){
 
 	StartGrenadeEffet(body->GetPosition());
 	//for each player calculate distance from grenade
-	for(int i = 0; i < players.size(); i++){
+	for(unsigned i = 0; i < players.size(); i++){
 		auto pposX = players[i]->body->GetPosition().x;
 		auto pposY = players[i]->body->GetPosition().y;
 
@@ -267,7 +267,7 @@ void Grenade::explode(){
 	blastSounder->playSound();
 	blastSounder->toDelete = true;
 	audioWrappers.push_back(blastSounder);
-	
+
 	toDelete = true;
 }
 
