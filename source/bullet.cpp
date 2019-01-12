@@ -6,6 +6,7 @@
 #include <Box2D/Box2D.h>
 
 extern b2World* world;
+extern std::map<std::string, int> textures;
 
 /*Bullet constructor: takes a point from which a bullet is being fired and a trajectory angle*/
 Bullet::Bullet(float x, float y, float angle, int dmg, float bulletSize){
@@ -43,22 +44,66 @@ Bullet::Bullet(float x, float y, float angle, int dmg, float bulletSize){
     float vx = speed*cos(angle);
     float vy =  speed*sin(angle);
 
+	
+	for (int i = 0; i < TRAIL_LENGTH; i++) {
+		trail[i].x = x;
+		trail[i].y = y;
+	}
+	
+
     body->ApplyLinearImpulse(b2Vec2(vx,vy), body->GetWorldCenter(), true);
 
 };
 
 void Bullet::Draw(){
-
-    glColor3f(1, 1, 1);
+	glColor4f(1, 1, 1, 1);
 
     glPushMatrix();
     glTranslatef(body->GetPosition().x, body->GetPosition().y, r);
-    glutSolidSphere(r, 20, 20);
+	glScalef(r * 2, r * 2, 1);
+	b2Vec2 vel = body->GetLinearVelocity();
+	float angle = atan2(vel.y, vel.x);
+	glRotatef(angle/M_PI*180, 0, 0, 1);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glPushMatrix();
+	glNormal3f(0, 0, 1);
+	glBindTexture(GL_TEXTURE_2D, textures["bullet"]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0);
+	glVertex3f(-1, -1, 0);
+	glTexCoord2f(1, 0);
+	glVertex3f(1, -1, 0);
+	glTexCoord2f(1, 1);
+	glVertex3f(1, 1, 0);
+	glTexCoord2f(0, 1);
+	glVertex3f(-1, 1, 0);
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glPopMatrix();
+
+    //glutSolidSphere(r, 20, 20);
     glPopMatrix();
+	for (int i = TRAIL_LENGTH-1; i > 0 ; i--) {
+		trail[i] = trail[i - 1];
+	}
+	trail[0] = body->GetPosition();
+
+	glBegin(GL_LINES);
+	for (int i = 0; i < TRAIL_LENGTH; i++) {
+		float fade = 1 - (float)i / TRAIL_LENGTH;
+		glColor4f(0, 0, 0, fade);
+		glVertex3f(trail[i].x, trail[i].y, 0.3);
+	}
+	//         std::cout << i*18.0/40-9 << std::endl;
+	glEnd();
+	glDisable(GL_BLEND);
+	/*
+	*/
 };
 
 void Bullet::StartSparkEffect() {
-	std::cout << "stigao" << std::endl;
 	b2Vec2 vel = body->GetLinearVelocity();
 	vel.Normalize();
 	b2Vec2 pos = body->GetPosition();

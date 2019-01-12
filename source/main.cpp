@@ -34,7 +34,8 @@ std::vector<std::string> textureNames = {
 	std::string("grenade"),
 	std::string("bannerAlive"),
 	std::string("bannerDead"),
-	std::string("spark"),
+	std::string("spark"),	
+	std::string("bullet"),
 	
 
 };

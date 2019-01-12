@@ -1,6 +1,8 @@
 #ifndef BULLET_DEF
 #define BULLET_DEF
 
+#define TRAIL_LENGTH 10
+
 #include "../header/util.h"
 #include <Box2D/Box2D.h>
 
@@ -19,6 +21,7 @@ public:
 private:
 	float r;
 	float speed;
+	b2Vec2 trail[TRAIL_LENGTH];
 };
 
 #endif
