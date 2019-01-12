@@ -13,6 +13,7 @@ public:
 	virtual void Pickup(Player *picker) = 0;
 	void Draw();
 	std::string  Name();
+	std::string GetIcon() const;
 	bool IsColliding(Player *picker);
 	b2Vec2 itemPosition;
 private:

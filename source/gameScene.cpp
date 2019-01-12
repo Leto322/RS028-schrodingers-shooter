@@ -26,6 +26,7 @@ extern GLuint textureIDs[];
 extern std::map<std::string, int> sounds;
 extern std::map<std::string, int> textures;
 extern std::vector< std::vector<char> > map;
+extern ALuint soundIDs[15];
 int updateCount;
 extern bool reset;
 Player* myPlayer;
@@ -262,7 +263,6 @@ void on_timer_game()
 
 		if(!myPlayer->alive){
 			alSourceStop(ambientSource[0]);
-			Clean();
 			currentScene = MENU;
 			GameOver = true;
 			break;
@@ -543,7 +543,7 @@ void on_display_game(void)
 
 
 
-void Clean(){
+void Clean(bool x){
 	for (int i = 0; i < bullets.size(); i++) {
 		Bullet* tmp = bullets[i];
 		bullets.erase(bullets.begin() + i);
@@ -559,20 +559,41 @@ void Clean(){
 	}
 	
 	map.clear();
+
+	for(int i = 0; i < audioWrappers.size(); i++){
+		AudioWrapper* tmp = audioWrappers[i];
+		audioWrappers.erase(audioWrappers.begin() + i);
+		i--;
+		delete tmp;
+	}
 	
 	delete itemPool;
 
 	delete enemySpawner;
 	delete particleSystem;
 	delete contactListener;
+
 	
 	for (int i = 0; i < players.size(); i++) {
 		Player* tmp = players[i];
 		players.erase(players.begin() + i);
+		tmp->equiped_weapon->FreeSources();
+		tmp->FreeSources();
 		delete tmp->equiped_weapon;
 		delete tmp->m_brain;
 		delete tmp;
 		i--;
 	}
+	
+	 alDeleteSources(1, ambientSource);
+	 
+
+	if(x){
+		size_t size =  sizeof(soundIDs)/sizeof(soundIDs[0]);
+		alDeleteBuffers(size, soundIDs);
+		alutExit();
+	}
+	
+
 	delete world;
 }

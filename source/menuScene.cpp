@@ -104,11 +104,12 @@ void releaseButton(int x, int y){
         currentScene = GAME;
     }
     else if(GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= h/4+h/20+h/4 && y1 >= h/4-h/20+h/4  && pressedButtons["reset"]){
-       InitGame();
+	   Clean(false);
+       	   InitGame();
 	   resetGame = true;
     }
     else if(!resetGame && !GameOver  && x1>=-w/8 && x1 <= w/8 && y1 <= h/4+h/20  && y1 >= h/4-h/20  && pressedButtons["reset"]){
-	   Clean();
+	   Clean(false);
        InitGame();
 	   resetGame = true;
     }
@@ -128,11 +129,13 @@ void releaseButton(int x, int y){
        creditsActive = true;
        menuActive = false;
     }
-    else if((resetGame || GameOver) && x1>=-w/8 && x1 <= w/8 && y1 <= -h/4+h/20  && y1 >= -h/4-h/20 && pressedButtons["exit"]){
+    else if((resetGame ||(!resetGame && GameOver))&& x1>=-w/8 && x1 <= w/8 && y1 <= -h/4+h/20  && y1 >= -h/4-h/20 && pressedButtons["exit"]){
+		Clean(true);
 		glutLeaveMainLoop();
     }
+
     else if(!resetGame && !GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= -h/4+h/20-h/4  && y1 >= -h/4-h/20-h/4 && pressedButtons["exit"]){
-		Clean();
+		Clean(true);
 		glutLeaveMainLoop();
     }
     else if(x1>=-w/8 && x1 <= w/8 && y1 <= -h/1.8+h/20 && y1 >= -h/1.8-h/20 && pressedButtons["back"] && creditsActive ){

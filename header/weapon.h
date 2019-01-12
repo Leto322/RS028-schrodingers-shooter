@@ -12,6 +12,7 @@ public:
 	void Pickup(Player* picker) override;
 	void Update(bool shoot);
 	void UpdateTimers();
+	void FreeSources();
 	virtual void fire();
     int GetAmmo() const;
 	int GetAmmoCap() const;

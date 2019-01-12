@@ -87,6 +87,12 @@ Player::Player() {
 // // 	delete equiped_weapon;
 // // }
 
+
+void Player::FreeSources(){
+	 size_t size = sizeof(soundSource)/sizeof(soundSource[0]);
+	 alDeleteSources(size, soundSource);
+}
+
 void Player::IncreaseGrenades(int amount){
 	grenades += amount;
 }

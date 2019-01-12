@@ -33,5 +33,5 @@ void DrawBullets();
 
 void on_display_game(void);
 
-void Clean();
+void Clean(bool x);
 #endif

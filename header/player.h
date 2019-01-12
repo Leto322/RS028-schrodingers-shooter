@@ -31,6 +31,7 @@ public:
 	void SetMaxArmor(int ma);
 	void FillArmor();
 	void moveSoundSource();
+	void FreeSources();
 
     virtual ClassID getClassID();
     void SetBrain(Brain* brain);

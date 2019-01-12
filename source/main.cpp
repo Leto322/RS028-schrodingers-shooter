@@ -20,8 +20,8 @@ std::vector<std::string> textureNames = {
 	std::string("pistol"),
 	std::string("rifle"),
 	std::string("healthPotion"),
-    std::string("menu"),
-    std::string("button"),
+   	std::string("menu"),
+    	std::string("button"),
 	std::string("shotgun"),
 	std::string("blood"),
 	std::string("hudbar"),
@@ -192,8 +192,9 @@ int main(int argc, char **argv)
 
 	currentScene = MENU;
 	InitGame();
-    InitMenu();
+    	InitMenu();
 	glutMainLoop();
+	
 
 	
     return 0;
