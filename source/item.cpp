@@ -102,6 +102,7 @@ void ItemPool::Remove(Item *item) {
 	for (int i = 0; i < n; i++) {
 		if (m_items[i] == item) {
 			m_items.erase(m_items.begin() + i);
+			return;
 		}
 	}
 }

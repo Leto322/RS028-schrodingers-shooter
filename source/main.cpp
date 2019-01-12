@@ -47,7 +47,9 @@ std::vector<std::string> soundNames = {
 	std::string("bodyImpact2"),
 	std::string("grenadeThrow"),
 	std::string("grenade"),
-	std::string("grenadePull")
+	std::string("grenadePull"),
+	std::string("grenadePickup"),
+	std::string("armor")
 };
 
 std::vector<std::string> textureLocations;
@@ -57,7 +59,7 @@ std::map<std::string, int> textures;
 std::map<std::string, int> sounds;
 
 GLuint textureIDs[4];
-ALuint soundIDs[15];
+ALuint soundIDs[17];
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 15
@@ -196,7 +198,7 @@ int main(int argc, char **argv)
 	glutMainLoop();
 	
 
-	
+
     return 0;
 }
 
