@@ -20,7 +20,7 @@ extern std::map<std::string, int> sounds;
 extern std::vector<AudioWrapper*> audioWrappers;
 extern b2World* world;
 
-Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string icon) : Item(x, y, pickupDistance, std::move(icon)){
+Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string icon) : Item(x, y, pickupDistance, icon){
 	std::cout << "Weapon created " << icon << std::endl;
 	dmg = 10;
 	ammo = 30;
