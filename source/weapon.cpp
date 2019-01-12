@@ -54,7 +54,14 @@ Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string 
 	alSourcef(soundSource[0], AL_PITCH, 1);
 };
 
+
 //Activating effects when a gun is fired
+
+weaponType Weapon::getWeaponType(){return WEAPON;}
+weaponType Pistol::getWeaponType(){return PISTOL;}
+weaponType Rifle::getWeaponType(){return RIFLE;}
+weaponType Shotgun::getWeaponType(){return SHOTGUN;}
+
 void PlayGunShotEffect(float posx, float posy, float angle) {
 	float gunDistance = 0.05;
 	Emitter* casing = new Emitter(b2Vec2(posx - cos(angle)*0.1, posy - sin(angle)*0.1), b2Vec2(0, 0), b2Vec2(0, 0), 1, 0.3, "bulletCasing");
@@ -95,18 +102,27 @@ void Weapon::fire(){
 	}
 }
 
-
 //Handling weapon reload
-void Weapon::reload(){
+int Weapon::reload(int mag){
+
+	int left = 0;
 	if(ammo < ammo_cap){
 		std::cout << "Reloadin!" << std::endl;
 		alSourcePlay(soundSource[1]);
-		this->ammo = this->ammo_cap;
+
+		if((this->ammo + mag) <= this->ammo_cap)
+			this->ammo = this->ammo + mag;
+		else if((this->ammo + mag) > this->ammo_cap){
+			left = mag - (this->ammo_cap - this->ammo); 
+			this->ammo = this->ammo_cap;
+		}
+
 		reload_timer = reload_delay;
 	}
 	if (reload_timer <= 0){
         reload_timer = 0;
     }
+	return left;
 }
 
 //Updating weapon timers, recoil and sound location
@@ -335,7 +351,7 @@ void Grenade::Draw(){
 	float tmp = 2 - animationTimer;
 	tmp = tmp < 0 ? 0 : tmp;
 	float scaleAnimation = 1 + (cos(M_PI+animationTimer*animationTimer * 8)+1)/5*tmp;
-	
+
 	glScalef(scaleAnimation, scaleAnimation, scaleAnimation);
 	glutSolidSphere(r, 20, 20);
 	glPopMatrix();

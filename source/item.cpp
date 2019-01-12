@@ -31,7 +31,7 @@ bool Item::IsColliding(Player *picker){
 void Item::Draw() {
 	glColor4f(1, 1, 1, 1);
 
-	glDisable(GL_DEPTH_TEST);
+	//glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -44,18 +44,18 @@ void Item::Draw() {
 	glScalef(pickupDistance+animationScale, pickupDistance+animationScale, 1);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0, 0);
-	glVertex3f(-1, -1, 0);
+	glVertex3f(-1, -1, -0.1);
 	glTexCoord2f(1, 0);
-	glVertex3f(1, -1, 0);
+	glVertex3f(1, -1, -0.1);
 	glTexCoord2f(1, 1);
-	glVertex3f(1, 1, 0);
+	glVertex3f(1, 1, -0.1);
 	glTexCoord2f(0, 1);
-	glVertex3f(-1, 1, 0);
+	glVertex3f(-1, 1, -0.1);
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glPopMatrix();
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 
 };

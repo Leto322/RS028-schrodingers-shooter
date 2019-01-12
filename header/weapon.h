@@ -5,7 +5,16 @@
 
 #include "item.h"
 #include <AL/alut.h>
+
 //Different weapon classes
+
+enum weaponType{
+  PISTOL,
+	RIFLE,
+	SHOTGUN,
+	WEAPON
+};
+
 class Weapon : public Item{
 public:
 	Weapon(float x, float y, float angle, float pickupDistance, std::string icon);
@@ -13,11 +22,13 @@ public:
 	void Update(bool shoot);
 	void UpdateTimers();
 	void FreeSources();
+	virtual weaponType getWeaponType();
+
 	virtual void fire();
     int GetAmmo() const;
 	int GetAmmoCap() const;
 	float GetReloadTimer() const;
-	void reload();
+	int reload(int mag);
 	void SetPositionAndAngle(float x, float y, float angle);
 	bool allowed_fire;
 
@@ -40,6 +51,7 @@ protected:
 
 class Pistol : public Weapon {
 public:
+	weaponType getWeaponType();
 	Pistol(float x, float y, float angle) : Weapon(x, y, angle, 0.2, std::string("pistol")) {
 		dmg = 5;
 		ammo = 15;
@@ -53,6 +65,7 @@ public:
 
 class Rifle : public Weapon {
 public:
+	weaponType getWeaponType();
 	Rifle(float x, float y, float angle) : Weapon(x, y, angle, 0.4, std::string("rifle")) {
 		dmg = 10;
 		ammo = 30;
@@ -66,6 +79,7 @@ public:
 
 class Shotgun : public Weapon {
 public:
+	weaponType getWeaponType();
 	Shotgun(float x, float y, float angle, int palletNumber) : Weapon(x, y, angle, 0.4, std::string("shotgun")), palletNumber(palletNumber) {
 		dmg = 5;
 		ammo = 10;
