@@ -4,10 +4,8 @@
 std::vector< std::vector<char> > map;
 extern std::vector<Block*> walls;
 extern std::vector<b2Vec2> spawnPositions;
-extern GLuint textureIDs[2];
-// extern std::vector<Line> walls
-// m_x = m_x/855*18-9;
-// m_y = -m_y/855*18.4+9.2;
+extern std::map<std::string, int> textures;
+
 
 
 
@@ -27,7 +25,7 @@ extern GLuint textureIDs[2];
 
 
 
-//Definicije konstruktora i metoda za klasu Block
+//Constructor and method definitions for Block class
 Block::Block(b2Vec2 A, double edge)
 {
     m_A = A;
@@ -54,7 +52,7 @@ void ScaleVec(b2Vec2 * A){
     A->y = -A->y + 9;
 }
 
-
+//Loading map from file
 void LoadWalls()
 {
     std::string lineFile;
@@ -98,37 +96,13 @@ void LoadWalls()
 					map[i][j] = ' ';
 					spawnPositions.push_back(A);
 				}
-//                 else{
-//                     A.x = j*edge+edge/2;
-//                     A.y = i*edge+edge/2;
-//                     ScaleVec(&A);
-//                     ground.push_back(Block(A, edge));
-//                 }
+
             }
     }
 
     myfile.close();
-//     n=walls.size();
-//     for (i=0;i<n;i++){
-// //         AddWall(walls[i]->m_A.x, walls[i]->m_A.y, walls[i]->m_edge/2, walls[i]->m_edge/2);
-//         AddWall(walls[i]);
-//     }
 }
 
-
-
-/*            3'
- *             ######## 2'
- *           # #    # #
- *       0'######## 1'#
- *         #   #  #   #
- *         # 3 #  #   # 2
- *         # #    # #
- *         ########
- *        0       1
- *
- *
- */
 
 
 void DrawWalls(){
@@ -137,7 +111,7 @@ void DrawWalls(){
     for(i=0;i<n;i++){
         glPushMatrix();
             glColor3f(1,1,1);
-            glBindTexture(GL_TEXTURE_2D, textureIDs[1]);
+            glBindTexture(GL_TEXTURE_2D, textures["wall3"]);
             glBegin(GL_QUADS);
                 //front quad
                 glNormal3f(0, -1, 0);
@@ -195,13 +169,5 @@ void DrawWalls(){
     }
 }
 
-// void AddWall(float x, float y, float w, float h){
-//     b2BodyDef groundBodyDef;
-//     groundBodyDef.position.Set(x, y);
-//     b2Body* groundBody = world->CreateBody(&groundBodyDef);
-//     b2PolygonShape groundBox;
-//     groundBox.SetAsBox(w, h);
-//     groundBody->CreateFixture(&groundBox, 0.0f);
-// }
 
 ClassID Block::getClassID(){return BLOCK;}

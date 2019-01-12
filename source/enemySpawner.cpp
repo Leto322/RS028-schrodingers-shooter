@@ -41,6 +41,7 @@ void EnemySpawner::Update() {
 
 }
 
+//Getters
 int EnemySpawner::GetEnemiesInWave() const{
 	return enemiesInWave;
 }
@@ -75,6 +76,7 @@ void EnemySpawner::Spawn() {
 	}
 }
 
+//Randomizing bot spawn position
 b2Vec2 EnemySpawner::GetNextSpawnPosition() {
 	while (true) {
 		int index = rand() % spawnPositions.size();

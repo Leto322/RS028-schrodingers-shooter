@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include "../header/image.h"
 
+//Coppied and adjusted from Computer Graphics course
+
 Image *image_init(int width, int height) {
 
   Image *image;

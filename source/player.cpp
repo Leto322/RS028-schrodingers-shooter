@@ -22,12 +22,7 @@ extern std::map<std::string, int> sounds;
 //Number of players that we havent reached in the BFS search
 int num;
 
-/*Player::Player(float x, float y, float r)
-:   position({x, y}), r(r)
-{
-    Player();
 
-};*/
 
 Player::Player() {
     r = 0.15;
@@ -69,6 +64,8 @@ Player::Player() {
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
 
+	
+	//Setting up player sounds
     alGenSources(NUM_OF_SOURCES_PLAYER, soundSource);
   	alSourcei(soundSource[0], AL_BUFFER, sounds["death"]);
 		alSourcei(soundSource[1], AL_BUFFER, sounds["bodyImpact1"]);
@@ -82,12 +79,8 @@ Player::Player() {
 
 };
 
-// Player::~Player() {
-// // 	world->DestroyBody(this->body);
-// // 	delete equiped_weapon;
-// // }
 
-
+//Freeing sounds bound to player
 void Player::FreeSources(){
 	 size_t size = sizeof(soundSource)/sizeof(soundSource[0]);
 	 alDeleteSources(size, soundSource);
@@ -179,7 +172,7 @@ void Player::Draw(){
 };
 
 void Player::DrawShadow() {
-	//DRAWING PLAYER SHADOW
+	//Drawing player shadow
 	glPushMatrix();
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -194,12 +187,14 @@ void Player::DrawShadow() {
 	glPopMatrix();
 }
 
+//Brain and its children constructors and methods
 Brain::Brain(Player& player)
     : m_player(&player) {}
 
 
 playerBrain::playerBrain(Player& player)
     : Brain(player) {}
+
 
 void playerBrain::Update(){
     float vx = Brain::m_player->input.horizontal;
@@ -319,7 +314,7 @@ void Player::SwapWeapon(Weapon* newWeapon) {
 	equiped_weapon = newWeapon;
 	delete(old);
 }
-
+//Making sure sound is centered on the player
 void Player::moveSoundSource(){
 	for(int i = 0; i < NUM_OF_SOURCES_PLAYER; i++){
 		alSource3f(soundSource[i], AL_POSITION, body->GetPosition().x, body->GetPosition().y, 0.2);
@@ -328,7 +323,7 @@ void Player::moveSoundSource(){
 
 ClassID Player::getClassID() {return PLAYER;}
 
-//Function that finds the player we found in the search and adjusts his vertical/horizontal movement
+//Function that finds the player we found in the search and adjusts his movement
 void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
     int i,j;
     int minu,mind,minl,minr;
@@ -523,7 +518,7 @@ void BotMoves(){
         queue.pop();
 }
 
-//Adjusting bot aiming
+//Adjusting bot aiming and checking if he sees the player
 void BotAim(){
     float x1, x2;
     float y1, y2;

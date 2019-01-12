@@ -8,6 +8,7 @@
 
 MyContactListener::MyContactListener(){}
 
+//Detecting Collision when world objects begin contact and handling it
 void MyContactListener::BeginContact(b2Contact* contact){
 
   b2Fixture* f1 = contact->GetFixtureA();

@@ -19,6 +19,7 @@ Item::~Item(){
 
 }
 
+//Checking if item is colliding with a player
 bool Item::IsColliding(Player *picker){
 	b2Vec2 playerPos = picker->body->GetPosition();
 	if (fabs(playerPos.x - itemPosition.x) < pickupDistance && fabs(playerPos.y - itemPosition.y) < pickupDistance) {
@@ -58,7 +59,7 @@ void Item::Draw() {
 	glDisable(GL_BLEND);
 
 };
-
+//Getter
 std::string Item::Name() {
 	return icon;
 };
@@ -66,11 +67,11 @@ std::string Item::Name() {
 ItemPool::ItemPool() {
 	m_items = std::vector<Item*>();
 }
-
+//Getter
 std::string Item::GetIcon() const{
 	return icon;
 }
-
+//Activating item pickup and removing them from itempool
 void ItemPool::CheckPickups(Player *picker) {
 	int n = m_items.size();
 	for (int i = 0; i < n; i++) {
@@ -95,7 +96,7 @@ ItemPool::~ItemPool(){
 void ItemPool::Add(Item *item) {
 	m_items.push_back(item);
 }
-
+//Random item spawn
 void ItemPool::SpawnRandom(b2Vec2 pos) {
 	Item* item = NULL;
 	float r = float(rand())/float(RAND_MAX);
