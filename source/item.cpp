@@ -30,31 +30,31 @@ bool Item::IsColliding(Player *picker){
 void Item::Draw() {
 	glColor4f(1, 1, 1, 1);
 
-	//glDisable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glPushMatrix();
 	glNormal3f(0, 0, 1);
-	glTranslatef(itemPosition.x, itemPosition.y, 0.3);
+	glTranslatef(itemPosition.x, itemPosition.y, 0.2);
 
 	glBindTexture(GL_TEXTURE_2D, textures[icon]);
 	float animationScale = 0.05*sin(updateCount / 20.0);
 	glScalef(pickupDistance+animationScale, pickupDistance+animationScale, 1);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0, 0);
-	glVertex3f(-1, -1, -0.1);
+	glVertex3f(-1, -1, -0);
 	glTexCoord2f(1, 0);
-	glVertex3f(1, -1, -0.1);
+	glVertex3f(1, -1, -0);
 	glTexCoord2f(1, 1);
-	glVertex3f(1, 1, -0.1);
+	glVertex3f(1, 1, -0);
 	glTexCoord2f(0, 1);
-	glVertex3f(-1, 1, -0.1);
+	glVertex3f(-1, 1, -0);
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glPopMatrix();
-	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 
 };
@@ -72,11 +72,11 @@ std::string Item::GetIcon() const{
 }
 
 void ItemPool::CheckPickups(Player *picker) {
-	int n = m_items.size();
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < (int)m_items.size(); i++) {
 		if (m_items[i]->IsColliding(picker)) {
 			m_items[i]->Pickup(picker);
 			Remove(i);
+			return;
 		}
 	}
 }

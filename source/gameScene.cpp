@@ -529,10 +529,10 @@ void on_display_game(void)
 
 	DrawMap();
 	DrawBullets();
+	itemPool->DrawItems();
 	DrawPlayers();
 	DrawGrenades();
 	DrawWalls();
-	itemPool->DrawItems();
 	particleSystem->Draw();
 
 	glDisable(GL_DEPTH_TEST);
