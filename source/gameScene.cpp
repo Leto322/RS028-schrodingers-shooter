@@ -164,10 +164,7 @@ void on_keyboard_game(unsigned char key, int x, int y)
 		break;
 	}
 	case '2':{
-		float x = 0;//myPlayer->equiped_weapon->pos_x;
-		float y = 0;//myPlayer->equiped_weapon->pos_y;
-		std::cout << "Pulling sidearm " << std::endl;
-		myPlayer->SwapWeapon(new Pistol(x,y, myPlayer->input.angle));
+		myPlayer->SwitchToSecondary();
 		break;
 	}
 		break;
