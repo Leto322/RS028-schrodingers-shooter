@@ -117,7 +117,7 @@ void Bullet::StartSparkEffect() {
 	Emitter* smoke = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 10, 1, "smoke");
 	smoke->SetScale(0.03, 0.06);
 	smoke->SetSpeed(0.02, 0.04);
-	smoke->SetRotation(1, 2);
+	smoke->SetRotation(-1, 1);
 	smoke->SetAlphaTween(TW_CUBIC);
 	smoke->Start();
 };

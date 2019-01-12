@@ -126,11 +126,19 @@ void image_read(Image *image, char *filename) {
      * da oni (ta 4 bajta) predstavljaju R, G, B i A komponentu boje (1 bajt po
      * komponenti).
      */
+	  //shift fix
+	  for (i = 0; i < 5; i++) {
+		  fread(&b, sizeof(char), 1, file);
+		  fread(&g, sizeof(char), 1, file);
+		  fread(&r, sizeof(char), 1, file);
+		  fread(&a, sizeof(char), 1, file);
+	  }
     for (i = 0; i < bih.width * bih.height; i++) {
       fread(&b, sizeof(char), 1, file);
       fread(&g, sizeof(char), 1, file);
       fread(&r, sizeof(char), 1, file);
       fread(&a, sizeof(char), 1, file);
+	  
 
       image->pixels[4 * i] = r;
       image->pixels[4 * i + 1] = g;
