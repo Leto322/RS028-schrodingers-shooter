@@ -20,7 +20,7 @@ std::vector<std::string> textureNames = {
 	std::string("pistol"),
 	std::string("rifle"),
 	std::string("healthPotion"),
-    std::string("menu"),
+   	std::string("menu"),
     std::string("button"),
 	std::string("shotgun"),
 	std::string("blood"),
@@ -30,7 +30,8 @@ std::vector<std::string> textureNames = {
 	std::string("fireball"),
 	std::string("smoke"),
 	std::string("muzzleFlash"),
-	std::string("bulletCasing")
+	std::string("bulletCasing"),
+	std::string("grenade")
 
 };
 
@@ -49,7 +50,9 @@ std::vector<std::string> soundNames = {
 	std::string("bodyImpact2"),
 	std::string("grenadeThrow"),
 	std::string("grenade"),
-	std::string("grenadePull")
+	std::string("grenadePull"),
+	std::string("grenadePickup"),
+	std::string("armor")
 };
 
 std::vector<std::string> textureLocations;
@@ -59,15 +62,15 @@ std::map<std::string, int> textures;
 std::map<std::string, int> sounds;
 
 GLuint textureIDs[4];
-ALuint soundIDs[15];
+ALuint soundIDs[17];
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 15
 
 enum scene {
 	GAME,
-	MENU,
-	EASTER_EGG
+	MENU
+	//EASTER_EGG
 };
 enum scene currentScene;
 
@@ -75,7 +78,7 @@ enum scene currentScene;
 static int animation_ongoing;
 static void on_keyboard(unsigned char key, int x, int y);
 static void keyboard_up(unsigned char key, int x, int y);
-static void keyboard_down(unsigned char key, int x, int y);
+//static void keyboard_down(unsigned char key, int x, int y);
 static void on_mouse_move(int x, int y);
 static void on_mouse_move_active(int x, int y);
 static void on_mouse_pressed_released(int button, int state, int x, int y);
@@ -85,7 +88,7 @@ static void on_reshape(int width, int height);
 
 void LoadSounds(){
 	ALuint buffer;
-	for (int i = 0; i < soundNames.size(); i++) {
+	for (unsigned i = 0; i < soundNames.size(); i++) {
 		buffer = alutCreateBufferFromFile(("sound/"+soundNames[i]+".wav").c_str());
 
 		if ( alutGetError() != ALUT_ERROR_NO_ERROR ){
@@ -96,26 +99,26 @@ void LoadSounds(){
 		soundIDs[i] = buffer;
 	}
 
-	for (int i = 0; i < soundNames.size(); i++) {
+	for (unsigned i = 0; i < soundNames.size(); i++) {
 		sounds[soundNames[i]] = soundIDs[i];
 	}
 }
 
 void LoadTextures(){
 	textureLocations = std::vector<std::string>();
-	for (int i = 0; i < textureNames.size(); i++) {
+	for (unsigned i = 0; i < textureNames.size(); i++) {
 		textureLocations.push_back("textures/"+textureNames[i]+".bmp");
 	}
 
 	glGenTextures(textureLocations.size(), textureIDs);
-	for (int i = 0; i < textureNames.size(); i++) {
+	for (unsigned i = 0; i < textureNames.size(); i++) {
 		textures[textureNames[i]] = textureIDs[i];
 	}
 
 	Image* image;
 	image = image_init(0, 0);
 
-	for (int i=0; i<textureLocations.size(); i++){
+	for (unsigned i=0; i<textureLocations.size(); i++){
 		char *cstr = &textureLocations[i][0u];
 		image_read(image, cstr);
             glBindTexture(GL_TEXTURE_2D, textureIDs[i]);
@@ -194,8 +197,10 @@ int main(int argc, char **argv)
 
 	currentScene = MENU;
 	InitGame();
-    InitMenu();
+    	InitMenu();
 	glutMainLoop();
+	
+
 
     return 0;
 }
@@ -233,6 +238,8 @@ static void keyboard_up(unsigned char key, int x, int y){
 	case GAME:
 		keyboard_up_game(key, x, y);
 		break;
+	case MENU:
+		break;
 	}
 }
 
@@ -254,6 +261,8 @@ static void on_mouse_move_active(int x, int y) {
 	case GAME:
 		on_mouse_move_active_game(x, y);
 		break;
+	case MENU:
+		break;
 	}
 }
 
@@ -262,6 +271,8 @@ static void on_mouse_move(int x, int y){
 	switch (currentScene) {
 	case GAME:
 		on_mouse_move_game(x, y);
+		break;
+	case MENU:
 		break;
 	}
 }
@@ -280,6 +291,8 @@ static void on_timer(int value)
 	switch (currentScene) {
 	case GAME:
 		on_timer_game();
+		break;
+	case MENU:
 		break;
 	}
 

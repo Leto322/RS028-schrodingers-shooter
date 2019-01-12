@@ -97,9 +97,10 @@ void Weapon::reload(){
 		std::cout << "Reloadin!" << std::endl;
 		alSourcePlay(soundSource[1]);
 		this->ammo = this->ammo_cap;
+		reload_timer = reload_delay;
 	}
 	if (reload_timer <= 0){
-        reload_timer = reload_delay;
+        reload_timer = 0;
     }
 }
 
@@ -127,10 +128,20 @@ int Weapon::GetAmmoCap() const{
 	return ammo_cap;
 }
 
+float Weapon::GetReloadTimer() const{
+	return reload_timer;
+}
+
 void Weapon::UpdateTimers(){
     fire_timer -= phisycsUpdateInterval;
     reload_timer -= phisycsUpdateInterval;
 }
+
+void Weapon::FreeSources(){
+	 size_t size = sizeof(soundSource)/sizeof(soundSource[0]);
+	 alDeleteSources(size, soundSource);
+}
+
 
 //Function for updating position and angle at which weapon is being pointed, required for firing a bulet
 void Weapon::SetPositionAndAngle(float x, float y, float angle){
@@ -204,6 +215,10 @@ Grenade::~Grenade(){
 	world->DestroyBody(this->body);
 }
 
+float Grenade::GetExplodeTimer() const{
+	return explodeTimer;
+}
+
 void StartGrenadeEffet(b2Vec2 pos) {
 	//dir = 10 * dir;
 	Emitter* shockwave = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 1, 0.3, "shockwave");
@@ -240,7 +255,7 @@ void Grenade::explode(){
 
 	StartGrenadeEffet(body->GetPosition());
 	//for each player calculate distance from grenade
-	for(int i = 0; i < players.size(); i++){
+	for(unsigned i = 0; i < players.size(); i++){
 		auto pposX = players[i]->body->GetPosition().x;
 		auto pposY = players[i]->body->GetPosition().y;
 
@@ -282,7 +297,7 @@ void Grenade::explode(){
 	blastSounder->playSound();
 	blastSounder->toDelete = true;
 	audioWrappers.push_back(blastSounder);
-	
+
 	toDelete = true;
 }
 

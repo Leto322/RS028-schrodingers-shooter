@@ -25,14 +25,14 @@ extern float windowWidth, windowHeight, aspectRatio;
 extern GLuint textureIDs[];
 extern std::map<std::string, int> sounds;
 extern std::map<std::string, int> textures;
-
+extern std::vector< std::vector<char> > map;
+extern ALuint soundIDs[15];
 int updateCount;
-
+extern bool reset;
 Player* myPlayer;
 b2World* world;
 MyContactListener* contactListener;
-std::vector<Block> walls;
-std::vector<Block> ground;
+std::vector<Block*> walls;
 std::chrono::high_resolution_clock::time_point lastFrameTime;
 double accumulator = 0;
 double phisycsUpdateInterval = 0.02;
@@ -41,10 +41,11 @@ std::vector<Grenade*> thrownGrenades;
 std::vector<Player*> players;
 std::vector<b2Vec2> spawnPositions;
 std::vector<AudioWrapper*> audioWrappers;
-ItemPool itemPool;
+ItemPool* itemPool;
 EnemySpawner* enemySpawner;
 ParticleSystem* particleSystem;
 ALuint ambientSource[1];
+bool GameOver;
 char text[100];
 
 
@@ -65,6 +66,7 @@ void InitGame() {
 	alSourcef(ambientSource[0], AL_PITCH, 1);
 	alSourcei(ambientSource[0], AL_LOOPING, AL_TRUE);
 
+
 	srand(clock());
 
 	b2Vec2 gravity(0.0f, 0.0f);
@@ -75,7 +77,7 @@ void InitGame() {
 
 	LoadWalls();
 
-
+	GameOver = false;
 	myPlayer = new Player();
 	myPlayer->SetBrain(new playerBrain(*myPlayer));
 	myPlayer->SetMaxHealth(200);
@@ -96,15 +98,16 @@ void InitGame() {
 
 	enemySpawner = new EnemySpawner(players, spawnPositions);
 	particleSystem = new ParticleSystem();
-
+	itemPool = new ItemPool();
 	//b2Vec2 pos, b2Vec2 force, int particleCount, float lifespan, std::string texture)
 	//players[1]->input.shoot = true;
 
 	//Test for the items
-	itemPool.Add(new Rifle(-2, 0, 0));
-	itemPool.Add(new Shotgun(-3, 0, 0, 4));
-	itemPool.Add(new HealthPotion(-4, 0, 20));
-	itemPool.Add(new Armor(-4.5, 0));
+	itemPool->Add(new Rifle(-2, 0, 0));
+	itemPool->Add(new Shotgun(-3, 0, 0, 4));
+	itemPool->Add(new HealthPotion(-4, 0, 20));
+	itemPool->Add(new Armor(-4.5, 0));
+	itemPool->Add(new GrenadeItem(-4.5, -0.5));
 
 	alSourcePlay(ambientSource[0]);
 
@@ -161,9 +164,10 @@ void keyboard_up_game(unsigned char key, int x, int y) {
 		myPlayer->input.vertical += 1;
 		break;
 	case 'g':{
-		if(myPlayer->alive){
+		if(myPlayer->alive && myPlayer->grenades != 0){
 			thrownGrenades[thrownGrenades.size() - 1]->throwMe(myPlayer->input.angle, myPlayer->input.cursorDist);
 			alSourcePlay(myPlayer->soundSource[3]);
+			myPlayer->grenades--;
 		}
 		break;
 		}
@@ -211,16 +215,16 @@ void on_timer_game()
 		updateCount++;
 		world->Step(phisycsUpdateInterval, 6, 2);
         BotMoves();
-		for (int i = 0; i < players.size(); i++) {
+		for (unsigned i = 0; i < players.size(); i++) {
 			if (players[i]->deathFlag) {
 				players[i]->deathFlag = false;
-				itemPool.SpawnRandom(players[i]->body->GetPosition());
+				itemPool->SpawnRandom(players[i]->body->GetPosition());
 				players[i]->die();
 			}
 			if (!players[i]->alive) {
 				continue;
 			}
-			itemPool.CheckPickups(players[i]);
+			itemPool->CheckPickups(players[i]);
 			players[i]->m_brain->Update();
 			if(i == 0){
 				alListener3f(AL_POSITION, players[i]->body->GetPosition().x, players[i]->body->GetPosition().y, 0);
@@ -232,7 +236,7 @@ void on_timer_game()
 		enemySpawner->Update();
 		particleSystem->Update();
 
-		for(int i = 0; i < thrownGrenades.size(); i++){
+		for(unsigned i = 0; i < thrownGrenades.size(); i++){
 			if(thrownGrenades[i]->toDelete){
 				Grenade* tmp = thrownGrenades[i];
 				thrownGrenades.erase(thrownGrenades.begin() + i);
@@ -247,7 +251,7 @@ void on_timer_game()
 			thrownGrenades[i]->Update(myPlayer->body->GetPosition().x+Gvx, myPlayer->body->GetPosition().y+Gvy);
 		}
 
-		for(int i = 0; i < audioWrappers.size(); i++){
+		for(unsigned i = 0; i < audioWrappers.size(); i++){
 			if(!(audioWrappers[i]->isPlaying()) && audioWrappers[i]->toDelete){
 				AudioWrapper* tmp = audioWrappers[i];
 				audioWrappers.erase(audioWrappers.begin() + i);
@@ -258,8 +262,12 @@ void on_timer_game()
 
 		alSource3f(ambientSource[0], AL_POSITION, myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0);
 
-		if(!myPlayer->alive)
+		if(!myPlayer->alive){
 			alSourceStop(ambientSource[0]);
+			currentScene = MENU;
+			GameOver = true;
+			break;
+		}
 
 		accumulator -= phisycsUpdateInterval;
 	}
@@ -305,13 +313,13 @@ void DrawMap() {
 }
 
 void DrawPlayers() {
-	for (int i = 0; i < players.size(); i++) {
+	for (unsigned i = 0; i < players.size(); i++) {
 		if (!players[i]->alive)
 			continue;
 
 		players[i]->DrawShadow();
 	}
-	for (int i = 0; i < players.size(); i++) {
+	for (unsigned i = 0; i < players.size(); i++) {
 		if (!players[i]->alive)
 			continue;
 
@@ -320,7 +328,7 @@ void DrawPlayers() {
 }
 
 void DrawHUDPlayers() {
-	for (int i = 0; i < players.size(); i++) {
+	for (unsigned i = 0; i < players.size(); i++) {
 		if (!players[i]->alive)
 			continue;
 
@@ -344,7 +352,7 @@ void DrawHUDPlayers() {
 }
 
 void DrawBullets() {
-	for (int i = 0; i < bullets.size(); i++) {
+	for (unsigned i = 0; i < bullets.size(); i++) {
         if( (abs(bullets[i]->body->GetLinearVelocity().x) <= 0.1 && abs(bullets[i]->body->GetLinearVelocity().y) <= 0.1) || bullets[i]->toDelete == 1){
 			Bullet* tmp = bullets[i];
 			bullets.erase(bullets.begin() + i);
@@ -358,7 +366,7 @@ void DrawBullets() {
 }
 
 void DrawGrenades() {
-	for (int i = 0; i < thrownGrenades.size(); i++) {
+	for (unsigned i = 0; i < thrownGrenades.size(); i++) {
 		if(thrownGrenades[i]->thrown)
 			thrownGrenades[i]->Draw();
 	}
@@ -403,25 +411,68 @@ void DrawHUDBar() {
 
 
 	int numberOfAliveBots = 0;
-	for (int i = 1; i < players.size(); i++) {
+	for (unsigned i = 1; i < players.size(); i++) {
 		if (players[i]->alive)
 			numberOfAliveBots++;
 	}
 	int botsLeft = enemySpawner->GetEnemiesInWave() - (enemySpawner->GetEnemiesSpawned() - numberOfAliveBots);
-	sprintf(text, "Ammo: %d/%d\tWave: %d\tLeft: %d", myPlayer->equiped_weapon->GetAmmo(), myPlayer->equiped_weapon->GetAmmoCap(), enemySpawner->GetCurrentWave(), botsLeft);
+	sprintf(text, "Ammo: %d/%d", myPlayer->equiped_weapon->GetAmmo(), myPlayer->equiped_weapon->GetAmmoCap());
 	glTranslatef(w/10, -h/40, 0);
-	glColor3f(1,1,1);
-    glRasterPos3f(0, 0, 0);
-	for(int i = 0; i < strlen(text); i++){
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,text[i]);
-	}
+	WriteText();
     memset(text, 0, sizeof text);
+	float timer = myPlayer->equiped_weapon->GetReloadTimer();
 
+
+	if(timer > 0 && myPlayer->alive){
+		glPushMatrix();
+		glTranslatef(0,-h/20,0);
+		glBegin(GL_QUADS);
+			glVertex3f(0,-h/80,0);
+			glVertex3f(w/10*(timer)/2,-h/80,0);
+			glVertex3f(w/10*(timer)/2,h/80,0);
+			glVertex3f(0,h/80,0);
+		glEnd();
+		glPopMatrix();
+	}
+
+	glTranslatef(w/4, 0, 0);
+	sprintf(text, "Grenades: %d", myPlayer->grenades);
+	WriteText();
+	memset(text, 0, sizeof text);
+
+
+	if(thrownGrenades.size() > 0){
+		timer = thrownGrenades[thrownGrenades.size() - 1]->GetExplodeTimer();
+		if(timer > 0 && !thrownGrenades[thrownGrenades.size() - 1]->thrown){
+			glPushMatrix();
+			glTranslatef(0,-h/20,0);
+			glBegin(GL_QUADS);
+				glVertex3f(0,-h/80,0);
+				glVertex3f(w/10*(timer)/2,-h/80,0);
+				glVertex3f(w/10*(timer)/2,h/80,0);
+				glVertex3f(0,h/80,0);
+			glEnd();
+			glPopMatrix();
+		}
+	}
+
+
+	sprintf(text, "Wave: %d\tLeft: %d", enemySpawner->GetCurrentWave(), botsLeft);
+	glTranslatef(w*0.9,0, 0);
+	WriteText();
 
 
 
 
 	glPopMatrix();
+}
+
+void WriteText(){
+	glColor3f(0,0,0);
+    glRasterPos3f(0, 0, 0);
+	for(unsigned i = 0; i < strlen(text); i++){
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,text[i]);
+	}
 }
 
 void DrawWepon(){
@@ -433,7 +484,7 @@ void DrawWepon(){
 	glNormal3f(0, 0, 1);
 	glBindTexture(GL_TEXTURE_2D, textures[myPlayer->equiped_weapon->Name()]);
 	float animationScale = 0.25;
-	glScalef(animationScale*1.5,animationScale, 1);
+	glScalef(animationScale,animationScale, 1);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0, 0);
 	glVertex3f(-1, -1, 0);
@@ -465,7 +516,7 @@ void on_display_game(void)
 	DrawPlayers();
 	DrawGrenades();
 	DrawWalls();
-	itemPool.DrawItems();
+	itemPool->DrawItems();
 	particleSystem->Draw();
 
 	glDisable(GL_DEPTH_TEST);
@@ -488,4 +539,61 @@ void on_display_game(void)
 	DrawHUDPlayers();
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
+}
+
+
+
+
+void Clean(bool x){
+	for (unsigned i = 0; i < bullets.size(); i++) {
+		Bullet* tmp = bullets[i];
+		bullets.erase(bullets.begin() + i);
+		delete tmp;
+		i--;
+	}
+
+	for (unsigned i = 0; i < walls.size(); i++) {
+			Block* tmp = walls[i];
+			walls.erase(walls.begin() + i);
+			delete tmp;
+			i--;
+	}
+
+	map.clear();
+
+	for(unsigned i = 0; i < audioWrappers.size(); i++){
+		AudioWrapper* tmp = audioWrappers[i];
+		audioWrappers.erase(audioWrappers.begin() + i);
+		i--;
+		delete tmp;
+	}
+
+	delete itemPool;
+
+	delete enemySpawner;
+	delete particleSystem;
+	delete contactListener;
+
+	for (unsigned i = 0; i < players.size(); i++) {
+		Player* tmp = players[i];
+		players.erase(players.begin() + i);
+		tmp->equiped_weapon->FreeSources();
+		tmp->FreeSources();
+		delete tmp->equiped_weapon;
+		delete tmp->m_brain;
+		delete tmp;
+		i--;
+	}
+
+	 alDeleteSources(1, ambientSource);
+
+
+	if(x){
+		size_t size =  sizeof(soundIDs)/sizeof(soundIDs[0]);
+		alDeleteBuffers(size, soundIDs);
+		alutExit();
+	}
+
+
+	delete world;
 }

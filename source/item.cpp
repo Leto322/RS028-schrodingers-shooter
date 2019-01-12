@@ -14,6 +14,10 @@ Item::Item(float x, float y, float pickupDistance, std::string icon): icon(icon)
 	itemPosition.Set(x, y);
 }
 
+Item::~Item(){
+
+}
+
 bool Item::IsColliding(Player *picker){
 	b2Vec2 playerPos = picker->body->GetPosition();
 	if (fabs(playerPos.x - itemPosition.x) < pickupDistance && fabs(playerPos.y - itemPosition.y) < pickupDistance) {
@@ -24,11 +28,11 @@ bool Item::IsColliding(Player *picker){
 
 void Item::Draw() {
 	glColor4f(1, 1, 1, 1);
-	
+
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
+
 	glPushMatrix();
 	glNormal3f(0, 0, 1);
 	glTranslatef(itemPosition.x, itemPosition.y, 0.3);
@@ -62,6 +66,10 @@ ItemPool::ItemPool() {
 	m_items = std::vector<Item*>();
 }
 
+std::string Item::GetIcon() const{
+	return icon;
+}
+
 void ItemPool::CheckPickups(Player *picker) {
 	int n = m_items.size();
 	for (int i = 0; i < n; i++) {
@@ -70,6 +78,16 @@ void ItemPool::CheckPickups(Player *picker) {
 			Remove(i);
 		}
 	}
+}
+
+ItemPool::~ItemPool(){
+	for (std::vector<Item*>::iterator it = m_items.begin(); it != m_items.end(); ++it)
+	{
+		if((*it)->GetIcon() == "pistol" || (*it)->GetIcon() == "rifle" || (*it)->GetIcon() == "shotgun")
+			((Weapon*)(*it))->FreeSources();
+		delete (*it);
+	}
+	m_items.clear();
 }
 
 

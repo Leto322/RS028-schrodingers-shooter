@@ -82,6 +82,17 @@ Player::Player() {
 
 };
 
+// Player::~Player() {
+// // 	world->DestroyBody(this->body);
+// // 	delete equiped_weapon;
+// // }
+
+
+void Player::FreeSources(){
+	 size_t size = sizeof(soundSource)/sizeof(soundSource[0]);
+	 alDeleteSources(size, soundSource);
+}
+
 void Player::IncreaseGrenades(int amount){
 	grenades += amount;
 }
@@ -97,7 +108,6 @@ void Player::throwGrenade(){
 
 		Grenade* thrown_grenade = new Grenade(body->GetPosition().x + vx, body->GetPosition().y + vy);
 		thrownGrenades.push_back(thrown_grenade);
-		grenades--;
 	}
 }
 
@@ -251,7 +261,7 @@ void StartBloodEffet(b2Vec2 pos, b2Vec2 bulletVel) {
 	bulletVel.Normalize();
 	//dir = 10 * dir;
 	Emitter* blood = new Emitter(pos, bulletVel, b2Vec2(0, 0), 3, 0.5, "blood");
-	blood->SetScale(0.07, 0.01);
+	blood->SetScale(0.07, 0.1);
 	blood->SetSpeed(0.1, 0.3);
 	blood->Start();
 }
@@ -307,7 +317,7 @@ void Player::Revive() {
 void Player::SwapWeapon(Weapon* newWeapon) {
 	Weapon* old = equiped_weapon;
 	equiped_weapon = newWeapon;
-	//delete(old);
+	delete(old);
 }
 
 void Player::moveSoundSource(){
@@ -326,7 +336,7 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
     float edge = 18.0/map.size();
 
 
-    for(int k=1;k<players.size(); k++){
+    for(unsigned k=1;k<players.size(); k++){
 		if (!players[k]->alive)
 			continue;
         i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
@@ -357,12 +367,10 @@ void Move(int ip, int jp,std::vector<std::vector<int>>& pathMap){
             else if(pathMap[i+1][j+1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0 && map[i+1][j] != '#' && map[i][j+1] != '#'){
                 players[k]->input.horizontal+=1;
                 players[k]->input.vertical-=1;
-//                 std::cout << "dr" << std::endl;
             }
             else if(pathMap[i-1][j+1] == pathMap[ip][jp]-1&& pathMap[ip][jp]-1 != 0 && map[i-1][j] != '#' && map[i][j+1] != '#'){
                 players[k]->input.horizontal+=1;
                 players[k]->input.vertical+=1;
-//                 std::cout << "ur" << std::endl;
             }
 
             //Backup in case block is up/down/right/left during diagonal moving
@@ -427,7 +435,7 @@ void BotMoves(){
 	if (!players[0]->alive)
 		return;
     BotAim();
-    int i, j, ip, jp;
+    unsigned i, j, ip, jp;
     num = 0;
 
     //Matrix that contains the number of fields on the shortest path from each field to the player
@@ -450,7 +458,7 @@ void BotMoves(){
 
 
     //Bot positions based on coordinates
-    for(int k=1;k<players.size();++k){
+    for(unsigned k=1;k<players.size();++k){
 		if (!players[k]->alive)
 			continue;
         i = map.size()-1-(floor((players[k]->body->GetPosition().y + 9.0)/18*map.size()));
@@ -522,7 +530,7 @@ void BotAim(){
     x1 = players[0]->body->GetPosition().x;
     y1 = players[0]->body->GetPosition().y;
     float angle;
-    for(int k = 1; k < players.size(); ++k){
+    for(unsigned k = 1; k < players.size(); ++k){
 		if (!players[k]->alive) {
 			continue;
 		}

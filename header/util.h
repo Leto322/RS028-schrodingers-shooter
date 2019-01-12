@@ -23,6 +23,7 @@ enum ClassID{
 class Colider{
 public:
   virtual ClassID getClassID() { return COLIDER; }
+	virtual ~Colider(){}
 };
 
 class RayCastCallback : public b2RayCastCallback{
@@ -45,6 +46,8 @@ public:
 	alSourcei(soundSource[0], AL_BUFFER, sounds[sound]);
 	if(sound == std::string("grenade"))
 		alSourcef(soundSource[0], AL_GAIN, 0.8);
+	if(sound == std::string("heal"))
+		alSourcef(soundSource[0], AL_GAIN, 0.4);
 
 	alSource3f(soundSource[0], AL_POSITION, m_x, m_y, 0.2);
 	alSourcef(soundSource[0], AL_PITCH, 1);
@@ -59,7 +62,7 @@ public:
 		alSourcePlay(soundSource[0]);
 	}
 	bool isPlaying(){
-		ALenum state;
+		ALenum state = 0;
 
     alGetSourcei(soundSource[0], AL_SOURCE_STATE, &state);
 
@@ -68,9 +71,9 @@ public:
 	bool toDelete;
 private:
 	ALuint soundSource[NUM_OF_SOURCES_WRAP];
-	std::string m_sound;
 	float m_x;
 	float m_y;
+	std::string m_sound;
 };
 
 bool IsOnScreen(b2Vec2 position);

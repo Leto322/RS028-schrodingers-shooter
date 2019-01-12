@@ -3,7 +3,6 @@
 
 std::vector< std::vector<char> > map;
 extern std::vector<Block*> walls;
-extern std::vector<Block> ground;
 extern std::vector<b2Vec2> spawnPositions;
 extern GLuint textureIDs[2];
 // extern std::vector<Line> walls
@@ -49,6 +48,7 @@ Block::Block(b2Vec2 A, double edge)
 
 
 
+
 void ScaleVec(b2Vec2 * A){
     A->x = A->x - 9;
     A->y = -A->y + 9;
@@ -73,6 +73,7 @@ void LoadWalls()
             }
             map.push_back(line);
             line.clear();
+			line.shrink_to_fit();
 
         }
     }
