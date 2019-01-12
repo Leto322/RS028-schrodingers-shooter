@@ -49,9 +49,11 @@ void InitMenu() {
 
 
 void pressButton(int x, int y){
-	y += buttonOffset*windowHeight/4.5;
-    float h = tan(30 * M_PI / 180) * 4;
+	float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
+	float y2 = -(y- windowHeight / 2)/windowHeight*2*h;
+	y += buttonOffset*windowHeight/4.5;
+   
     float x1 = (x- windowWidth / 2)/windowWidth*2*w;
     float y1 = -(y- windowHeight / 2)/windowHeight*2*h;
     if(resetGame && x1>=-w/8 && x1 <= w/8 && y1 <= h/2+h/20 && y1 >= h/2-h/20 && menuActive){
@@ -84,16 +86,19 @@ void pressButton(int x, int y){
     else if(!resetGame && !GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= -h/4+h/20-h/4 && y1 >= -h/4-h/20-h/4 && menuActive){
         pressedButtons["exit"] = true;
     }
-    else if(x1>=-w/8 && x1 <= w/8 && y1 <= -h/1.8+h/20  && y1 >= -h/1.8-h/20  && (creditsActive || controlsActive)){
+    else if(x1>=-w/8 && x1 <= w/8 && y2 <= -h/1.8+h/20  && y2 >= -h/1.8-h/20 && (creditsActive || controlsActive)){
         pressedButtons["back"] = true;
     }
     
 }
 
 void releaseButton(int x, int y){
-	y += buttonOffset * windowHeight / 4.5;
-    float h = tan(30 * M_PI / 180) * 4;
+	float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
+	float y2 = -(y- windowHeight / 2)/windowHeight*2*h;
+	
+	y += buttonOffset * windowHeight / 4.5;
+    
     float x1 = (x- windowWidth / 2)/windowWidth*2*w;
     float y1 = -(y- windowHeight / 2)/windowHeight*2*h;
 
@@ -142,11 +147,11 @@ void releaseButton(int x, int y){
 		Clean(true);
 		glutLeaveMainLoop();
     }
-    else if(x1>=-w/8 && x1 <= w/8 && y1 <= -h/1.8+h/20 && y1 >= -h/1.8-h/20 && pressedButtons["back"] && creditsActive ){
+    else if(x1>=-w/8 && x1 <= w/8 && y2 <= -h/1.8+h/20 && y2 >= -h/1.8-h/20 && pressedButtons["back"] && creditsActive ){
        creditsActive = false;
        menuActive = true;
     }
-    else if(x1>=-w/8 && x1 <= w/8 && y1 <= -h/1.8+h/20 && y1 >= -h/1.8-h/20 && pressedButtons["back"] && controlsActive ){
+    else if(x1>=-w/8 && x1 <= w/8 && y2 <= -h/1.8+h/20 && y2 >= -h/1.8-h/20 && pressedButtons["back"] && controlsActive ){
        controlsActive = false;
        menuActive = true;
     }
@@ -437,10 +442,10 @@ void DrawControls(){
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 
-    unsigned char controls[] = "w - Move up\n\na - Move left\n\ns - Move down\n\nd - Move right\n\nMouse left - Shoot\n\nf - Fullscreen\n\nESC in menu - Windowed mode\n\nESC in game- Main menu";
+    unsigned char controls[] = "w - Move up\na - Move left\ns - Move down\nd - Move right\n\nShoot - Mouse Left\nGrenade - g\n\nf - Fullscreen\nESC in menu - Windowed mode\nESC in game- Main menu";
 
 
-    glTranslatef(-w/7, h/1.3, 0);
+    glTranslatef(-w/7, h/1.6, 0);
     glColor3f(1,1,1);
     glRasterPos3f(0, 0, 0);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,controls);
