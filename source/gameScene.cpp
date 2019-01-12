@@ -576,11 +576,7 @@ void Clean(bool x){
 	delete particleSystem;
 	delete contactListener;
 
-<<<<<<< HEAD
 	for (unsigned i = 0; i < players.size(); i++) {
-
-	for (int i = 0; i < players.size(); i++) {
->>>>>>> 6d7cc57bd8e1c9357227f50c036dadd6e0104e52
 		Player* tmp = players[i];
 		players.erase(players.begin() + i);
 		tmp->equiped_weapon->FreeSources();
