@@ -117,6 +117,12 @@ void Weapon::UpdateTimers(){
     reload_timer -= phisycsUpdateInterval;
 }
 
+void Weapon::FreeSources(){
+	 size_t size = sizeof(soundSource)/sizeof(soundSource[0]);
+	 alDeleteSources(size, soundSource);
+}
+
+
 //Function for updating position and angle at which weapon is being pointed, required for firing a bulet
 void Weapon::SetPositionAndAngle(float x, float y, float angle){
 	this->pos_x = x;

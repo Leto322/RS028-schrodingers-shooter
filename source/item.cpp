@@ -66,6 +66,10 @@ ItemPool::ItemPool() {
 	m_items = std::vector<Item*>();
 }
 
+std::string Item::GetIcon() const{
+	return icon;
+}
+
 void ItemPool::CheckPickups(Player *picker) {
 	int n = m_items.size();
 	for (int i = 0; i < n; i++) {
@@ -79,6 +83,8 @@ void ItemPool::CheckPickups(Player *picker) {
 ItemPool::~ItemPool(){
 	for (std::vector<Item*>::iterator it = m_items.begin(); it != m_items.end(); ++it)
 	{
+		if((*it)->GetIcon() == "pistol" || (*it)->GetIcon() == "rifle" || (*it)->GetIcon() == "shotgun")
+			((Weapon*)(*it))->FreeSources();
 		delete (*it);
 	}
 	m_items.clear();
