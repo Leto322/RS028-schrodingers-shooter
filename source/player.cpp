@@ -32,11 +32,11 @@ int num;
 Player::Player() {
     r = 0.15;
     speed = 0.03;
-	maxHealth = 100;
+		maxHealth = 100;
     health = maxHealth;
-		grenades = 20;
-	maxArmor = 100;
-	armor = 0;
+		grenades = 0;
+		maxArmor = 100;
+		armor = 0;
     input.vertical = 0;
     input.horizontal = 0;
 		input.shoot = false;
@@ -46,6 +46,7 @@ Player::Player() {
 		alive = false;
     team = false;
     see_player = false;
+		ammo = 0;
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
@@ -87,6 +88,12 @@ Player::Player() {
 // // 	delete equiped_weapon;
 // // }
 
+
+void Player::SetAmmo(int am){
+	ammo = am;
+}
+
+int Player::GetAmmo(){return ammo;}
 
 void Player::FreeSources(){
 	 size_t size = sizeof(soundSource)/sizeof(soundSource[0]);
@@ -310,7 +317,7 @@ void Player::IncreaseHealth(int amount) {
 void Player::Revive() {
 	health = maxHealth;
 	alive = true;
-	equiped_weapon->reload();
+	equiped_weapon->reload(equiped_weapon->GetAmmoCap());
 	body->SetActive(true);
 }
 
@@ -535,7 +542,7 @@ void BotAim(){
 			continue;
 		}
 		if (players[k]->equiped_weapon->GetAmmo() == 0) {
-            players[k]->equiped_weapon->reload();
+            players[k]->equiped_weapon->reload(players[k]->equiped_weapon->GetAmmoCap());
 			std::cout<<"Bot reload "<<std::endl;
 		}
 

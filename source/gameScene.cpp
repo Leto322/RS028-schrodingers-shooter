@@ -82,6 +82,7 @@ void InitGame() {
 	myPlayer->SetBrain(new playerBrain(*myPlayer));
 	myPlayer->SetMaxHealth(200);
 	myPlayer->SetMaxArmor(200);
+	myPlayer->SetAmmo(100);
 	myPlayer->body->SetTransform(b2Vec2(0, 0), 1);
 	myPlayer->Revive();
 	players.push_back(myPlayer);
@@ -133,8 +134,13 @@ void on_keyboard_game(unsigned char key, int x, int y)
 	case 's':
 		myPlayer->input.vertical -= 1;
 		break;
-	case 'r':
-		myPlayer->equiped_weapon->reload();
+	case 'r':{
+		if(myPlayer->GetAmmo() > 0){
+			std::cout << myPlayer->GetAmmo() << std::endl;
+			myPlayer->SetAmmo(myPlayer->equiped_weapon->reload(myPlayer->GetAmmo()));
+			std::cout << myPlayer->GetAmmo() << std::endl;
+		}
+	}
 		break;
 	case 'g':{
 		if(myPlayer->alive)
@@ -144,6 +150,11 @@ void on_keyboard_game(unsigned char key, int x, int y)
     case 'f':
         glutFullScreen();
         break;
+		case 'e':{
+			if(myPlayer->alive)
+				itemPool->CheckPickups(myPlayer);
+			break;
+		}
 
 	}
 	//std::cout << "vertical " << myPlayer.input.vertical  << "horizontal " << myPlayer.input.horizontal << std::endl;
@@ -224,7 +235,7 @@ void on_timer_game()
 			if (!players[i]->alive) {
 				continue;
 			}
-			itemPool->CheckPickups(players[i]);
+
 			players[i]->m_brain->Update();
 			if(i == 0){
 				alListener3f(AL_POSITION, players[i]->body->GetPosition().x, players[i]->body->GetPosition().y, 0);
@@ -560,7 +571,7 @@ void Clean(bool x){
 		delete tmp;
 		i--;
 	}
-	
+
 	for (unsigned i = 0; i < thrownGrenades.size(); i++) {
 		Grenade* tmp = thrownGrenades[i];
 		thrownGrenades.erase(thrownGrenades.begin() + i);

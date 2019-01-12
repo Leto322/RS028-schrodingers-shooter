@@ -29,6 +29,8 @@ public:
 	void Revive();
 	void SetMaxHealth(int mh);
 	void SetMaxArmor(int ma);
+	void SetAmmo(int am);
+	int GetAmmo();
 	void FillArmor();
 	void moveSoundSource();
 	void FreeSources();
@@ -53,6 +55,7 @@ private:
     int health;
 	int maxHealth;
 	int armor;
+	int ammo;
 	int maxArmor;
 
 protected:
