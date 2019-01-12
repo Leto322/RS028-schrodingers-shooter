@@ -63,7 +63,7 @@ extern enum scene currentScene;
 void InitGame() {
 	updateCount = 0;
 
-	
+
 	//Setting up background music
 	alGenSources(1, ambientSource);
 	//CREDITS:  www.bensound.com
@@ -86,7 +86,7 @@ void InitGame() {
 	//Loading the map
 	LoadWalls();
 
-	
+
 	//Adding players
 	GameOver = false;
 	myPlayer = new Player();
@@ -108,7 +108,7 @@ void InitGame() {
 
 	//spawnPositions.push_back(b2Vec2(0, 3));
 
-	
+
 	//Making a spawner that handles placing the bots in game
 	enemySpawner = new EnemySpawner(players, spawnPositions);
 	particleSystem = new ParticleSystem();
@@ -123,7 +123,7 @@ void InitGame() {
 	itemPool->Add(new Armor(-4.5, 0));
 	itemPool->Add(new GrenadeItem(-4.5, -0.5));
 
-	
+
 	//Starting background music
 	alSourcePlay(ambientSource[0]);
 
@@ -248,21 +248,21 @@ void on_mouse_move_game(int x, int y) {
 
 void on_timer_game()
 {
-	
+
 	//Clock to make sure that game doesnt depend on framerate
 	auto now = std::chrono::high_resolution_clock::now();;
 	std::chrono::duration<double>  deltaTime = now - lastFrameTime;
 	accumulator += deltaTime.count();
 	lastFrameTime = now;
-	
+
 	//Do as many updates of the physics as should have happend in normal conditions
 	while (accumulator > phisycsUpdateInterval) {
 		updateCount++;
 		world->Step(phisycsUpdateInterval, 6, 2);
-		
+
 		//Setting up bot movement velocity and aim
         BotMoves();
-		
+
 		//Updating players and sounds aswell as checking if they are dead
 		for (unsigned i = 0; i < players.size(); i++) {
 			if (players[i]->deathFlag) {
@@ -281,12 +281,12 @@ void on_timer_game()
 			players[i]->equiped_weapon->Update(players[i]->input.shoot);
 
 		}
-		
-		
+
+
 		enemySpawner->Update();
 		particleSystem->Update();
 
-		
+
 		//Updating granades and deleting ones that are flagged for deletion
 		for(unsigned i = 0; i < thrownGrenades.size(); i++){
 			if(thrownGrenades[i]->toDelete){
@@ -302,8 +302,8 @@ void on_timer_game()
 	    float Gvy = Gn*sin(myPlayer->input.angle);
 			thrownGrenades[i]->Update(myPlayer->body->GetPosition().x+Gvx, myPlayer->body->GetPosition().y+Gvy);
 		}
-		
-		
+
+
 		//Deleting AudioWrappers that finished playing
 		for(unsigned i = 0; i < audioWrappers.size(); i++){
 			if(!(audioWrappers[i]->isPlaying()) && audioWrappers[i]->toDelete){
@@ -315,8 +315,8 @@ void on_timer_game()
 		}
 
 		alSource3f(ambientSource[0], AL_POSITION, myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0);
-		
-		
+
+
 		//In case the human player is dead going back to Main menu
 		if(!myPlayer->alive){
 			alSourceStop(ambientSource[0]);
@@ -472,7 +472,7 @@ void DrawHUDBar() {
 			numberOfAliveBots++;
 	}
 	int botsLeft = enemySpawner->GetEnemiesInWave() - (enemySpawner->GetEnemiesSpawned() - numberOfAliveBots);
-	sprintf(text, "Ammo: %d/%d", myPlayer->equiped_weapon->GetAmmo(), myPlayer->equiped_weapon->GetAmmoCap());
+	sprintf(text, "Ammo: %d/%d", myPlayer->equiped_weapon->GetAmmo(), myPlayer->GetAmmo());
 	glTranslatef(w/10, -h/40, 0);
 	WriteText();
     memset(text, 0, sizeof text);
