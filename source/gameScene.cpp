@@ -544,12 +544,9 @@ void on_display_game(void)
 
 
 
-<<<<<<< HEAD
-void Clean(){
-	for (unsigned i = 0; i < bullets.size(); i++) {
 =======
 void Clean(bool x){
-	for (int i = 0; i < bullets.size(); i++) {
+	for (unsinged i = 0; i < bullets.size(); i++) {
 >>>>>>> 6d7cc57bd8e1c9357227f50c036dadd6e0104e52
 		Bullet* tmp = bullets[i];
 		bullets.erase(bullets.begin() + i);
@@ -581,7 +578,6 @@ void Clean(bool x){
 
 <<<<<<< HEAD
 	for (unsigned i = 0; i < players.size(); i++) {
-=======
 
 	for (int i = 0; i < players.size(); i++) {
 >>>>>>> 6d7cc57bd8e1c9357227f50c036dadd6e0104e52
@@ -594,16 +590,16 @@ void Clean(bool x){
 		delete tmp;
 		i--;
 	}
-	
+
 	 alDeleteSources(1, ambientSource);
-	 
+
 
 	if(x){
 		size_t size =  sizeof(soundIDs)/sizeof(soundIDs[0]);
 		alDeleteBuffers(size, soundIDs);
 		alutExit();
 	}
-	
+
 
 	delete world;
 }
