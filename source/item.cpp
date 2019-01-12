@@ -5,6 +5,7 @@
 #include <GL/glut.h>
 #include <Box2D/Box2D.h>
 #include <map>
+#include <cstdlib>
 
 extern std::map<std::string, int> textures;
 extern int updateCount;
@@ -96,8 +97,21 @@ void ItemPool::Add(Item *item) {
 }
 
 void ItemPool::SpawnRandom(b2Vec2 pos) {
-	Item* item = new HealthPotion(pos.x, pos.y, 20);
-	Add(item);
+	Item* item = NULL;
+	float r = float(rand())/float(RAND_MAX);
+	if(r >= 0.1 && r <= 0.5)
+		item = new HealthPotion(pos.x, pos.y, 20);
+	else if(r > 0.5 && r <= 0.7)
+		item = new Armor(pos.x, pos.y);
+	else if(r > 0.7 && r <= 0.9)
+		item = new GrenadeItem(pos.x, pos.y);
+	else if(r > 0.9 && r <= 0.95)
+		item = new Shotgun(pos.x, pos.y, 0, 4);
+	else if(r > 0.9 && r <= 0.95)
+		item = new Rifle(pos.x, pos.y, 0);
+
+	if(item)
+		Add(item);
 }
 
 

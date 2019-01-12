@@ -46,12 +46,13 @@ public:
 private:
 	std::vector<Particle*> particles;
 	b2Vec2 pos;
-	b2Vec2 initialVelocity;
 	b2Vec2 force;
-	b2Vec2* root;
-	std::string texture;
 	int particleCount;
 	float lifespan;
+	std::string texture;
+	b2Vec2 initialVelocity;
+	b2Vec2* root;
+
 	float lifespanTimer;
 
 	bool isLocal;
