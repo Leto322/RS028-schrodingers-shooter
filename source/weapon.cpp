@@ -98,7 +98,7 @@ void Weapon::fire(){
 
 int Weapon::reload(int mag){
 	//std::cout << ammo << std::endl;
-	int left = 0;
+	int left = mag;
 	if(ammo < ammo_cap){
 		std::cout << "Reloadin!" << std::endl;
 		alSourcePlay(soundSource[1]);
@@ -106,7 +106,7 @@ int Weapon::reload(int mag){
 		if((this->ammo + mag) <= this->ammo_cap)
 			this->ammo = this->ammo + mag;
 		else if((this->ammo + mag) > this->ammo_cap){
-			left = mag - (this->ammo_cap - this->ammo); 
+			left = mag - (this->ammo_cap - this->ammo);
 			this->ammo = this->ammo_cap;
 		}
 
@@ -165,9 +165,15 @@ void Weapon::SetPositionAndAngle(float x, float y, float angle){
 }
 
 void Weapon::Pickup(Player* picker) {
-	std::cout << "Weapon picked up " << this->Name() << std::endl;
-	picker->SwapWeapon(this);
-	alSourcePlay(soundSource[2]);
+	if(picker->equiped_weapon->getWeaponType() != this->getWeaponType()){
+		std::cout << "Weapon picked up " << this->Name() << std::endl;
+		picker->SwapWeapon(this);
+		alSourcePlay(soundSource[2]);
+	}
+	else{
+		picker->SetAmmo(picker->GetAmmo() + this->GetAmmoCap());
+		alSourcePlay(soundSource[2]);
+	}
 }
 
 void Shotgun::fire() {

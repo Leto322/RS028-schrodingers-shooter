@@ -135,11 +135,24 @@ void on_keyboard_game(unsigned char key, int x, int y)
 		myPlayer->input.vertical -= 1;
 		break;
 	case 'r':{
-		if(myPlayer->GetAmmo() > 0){
-			std::cout << myPlayer->GetAmmo() << std::endl;
-			myPlayer->SetAmmo(myPlayer->equiped_weapon->reload(myPlayer->GetAmmo()));
-			std::cout << myPlayer->GetAmmo() << std::endl;
+		std::cout << myPlayer->GetAmmo() << std::endl;
+		if(myPlayer->equiped_weapon->getWeaponType() == PISTOL){
+			myPlayer->equiped_weapon->reload(myPlayer->equiped_weapon->GetAmmoCap());
 		}
+		else{
+			if(myPlayer->GetAmmo() > 0){
+				myPlayer->SetAmmo(myPlayer->equiped_weapon->reload(myPlayer->GetAmmo()));
+			}
+		}
+		std::cout << myPlayer->GetAmmo() << std::endl;
+		break;
+	}
+	case '2':{
+		float x = 0;//myPlayer->equiped_weapon->pos_x;
+		float y = 0;//myPlayer->equiped_weapon->pos_y;
+		std::cout << "Pulling sidearm " << std::endl;
+		myPlayer->SwapWeapon(new Pistol(x,y, myPlayer->input.angle));
+		break;
 	}
 		break;
 	case 'g':{
