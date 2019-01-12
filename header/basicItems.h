@@ -6,47 +6,59 @@
 #include <vector>
 #include <map>
 #include "item.h"
-#include <AL/alut.h>
 
-extern std::map<std::string, int> sounds;
+extern std::vector<AudioWrapper*> audioWrappers;
 
 class HealthPotion : public Item {
 public:
-	ALuint soundSource[1];
 	HealthPotion(float x, float y, int amount) :
 		Item(x, y, 0.2, "healthPotion"), m_amount(amount) {
-			alGenSources(1, soundSource);
-			alSourcei(soundSource[0], AL_BUFFER, sounds["heal"]);
-			alSourcef(soundSource[0], AL_GAIN, 0.3);
-			alSourcef(soundSource[0], AL_PITCH, 1);
-			alSource3f(soundSource[0], AL_POSITION, x, y, 0.2);
+			itemSounder = new AudioWrapper(x, y, std::string("heal"));
+			audioWrappers.push_back(itemSounder);
 		}
 	void Pickup(Player *picker) override {
 		picker->IncreaseHealth(m_amount);
-		alSourcePlay(soundSource[0]);
+		itemSounder->playSound();
+		itemSounder->toDelete = true;
 		delete this;
 	}
 private:
 	int m_amount;
+	AudioWrapper* itemSounder;
 };
 
 class Armor : public Item {
 public:
-	ALuint soundSource[1];
 	Armor(float x, float y) :Item(x, y, 0.2, "armor"){
-			alGenSources(1, soundSource);
-			alSourcei(soundSource[0], AL_BUFFER, sounds["heal"]);
-			alSourcef(soundSource[0], AL_GAIN, 0.3);
-			alSourcef(soundSource[0], AL_PITCH, 1);
-			alSource3f(soundSource[0], AL_POSITION, x, y, 0.2);
+			itemSounder = new AudioWrapper(x, y, std::string("heal"));
+			audioWrappers.push_back(itemSounder);
 		}
 	void Pickup(Player *picker) override {
 		picker->FillArmor();
-		alSourcePlay(soundSource[0]);
+		itemSounder->playSound();
+		itemSounder->toDelete = true;
 		delete this;
 	}
 private:
 	int m_amount;
+	AudioWrapper* itemSounder;
+};
+
+class GrenadeItem : public Item {
+public:
+	//NEED TO PUT GRENADE SPRITE HERE!!
+	GrenadeItem(float x, float y) :Item(x, y, 0.2, "armor"){
+		itemSounder = new AudioWrapper(x, y, std::string("heal"));
+		audioWrappers.push_back(itemSounder);
+	}
+	void Pickup(Player *picker) override {
+		picker->IncreaseGrenades(1);
+		itemSounder->playSound();
+		itemSounder->toDelete = true;
+		delete this;
+	}
+private:
+	AudioWrapper* itemSounder;
 };
 
 #endif

@@ -45,6 +45,8 @@ public:
 	alSourcei(soundSource[0], AL_BUFFER, sounds[sound]);
 	if(sound == std::string("grenade"))
 		alSourcef(soundSource[0], AL_GAIN, 0.8);
+	if(sound == std::string("heal"))
+		alSourcef(soundSource[0], AL_GAIN, 0.4);
 
 	alSource3f(soundSource[0], AL_POSITION, m_x, m_y, 0.2);
 	alSourcef(soundSource[0], AL_PITCH, 1);
