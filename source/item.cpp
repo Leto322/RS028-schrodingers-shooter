@@ -19,6 +19,7 @@ Item::~Item(){
 
 }
 
+//Checking if item is colliding with a player
 bool Item::IsColliding(Player *picker){
 	b2Vec2 playerPos = picker->body->GetPosition();
 	if (fabs(playerPos.x - itemPosition.x) < pickupDistance && fabs(playerPos.y - itemPosition.y) < pickupDistance) {
@@ -58,7 +59,7 @@ void Item::Draw() {
 	glDisable(GL_BLEND);
 
 };
-
+//Getter
 std::string Item::Name() {
 	return icon;
 };
@@ -66,11 +67,11 @@ std::string Item::Name() {
 ItemPool::ItemPool() {
 	m_items = std::vector<Item*>();
 }
-
+//Getter
 std::string Item::GetIcon() const{
 	return icon;
 }
-
+//Activating item pickup and removing them from itempool
 void ItemPool::CheckPickups(Player *picker) {
 	for (int i = 0; i < (int)m_items.size(); i++) {
 		if (m_items[i]->IsColliding(picker)) {
@@ -95,21 +96,22 @@ ItemPool::~ItemPool(){
 void ItemPool::Add(Item *item) {
 	m_items.push_back(item);
 }
-
+//Random item spawn
 void ItemPool::SpawnRandom(b2Vec2 pos) {
 	Item* item = NULL;
 	float r = float(rand())/float(RAND_MAX);
-	if(r >= 0.1 && r <= 0.5)
+	if(r >= 0.05 && r <= 0.25) // 0.2 chance HP
 		item = new HealthPotion(pos.x, pos.y, 20);
-	else if(r > 0.5 && r <= 0.7)
+	else if(r > 0.25 && r <= 0.45) // 0.15 chance Armor
 		item = new Armor(pos.x, pos.y);
-	else if(r > 0.7 && r <= 0.9)
+	else if(r > 0.45 && r <= 0.60) // 0.15 chance Grenade
 		item = new GrenadeItem(pos.x, pos.y);
-	else if(r > 0.9 && r <= 0.95)
+	else if(r > 0.6 && r <= 0.8) // 0.2 chance Shoty
 		item = new Shotgun(pos.x, pos.y, 0, 4);
-	else if(r > 0.9 && r <= 0.95)
+	else if(r > 0.8 && r <= 1) // 0.2 chance Rifle
 		item = new Rifle(pos.x, pos.y, 0);
 
+	// 0.1 chance nothing
 	if(item)
 		Add(item);
 }

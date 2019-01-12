@@ -21,6 +21,8 @@
 #include <Box2D/Box2D.h>
 #include <AL/alut.h>
 
+
+//All necessary elements
 extern float windowWidth, windowHeight, aspectRatio;
 extern GLuint textureIDs[];
 extern std::map<std::string, int> sounds;
@@ -48,7 +50,7 @@ ALuint ambientSource[1];
 bool GameOver;
 char text[100];
 
-
+//Types of scene
 enum scene {
 	GAME,
 	MENU,
@@ -56,9 +58,13 @@ enum scene {
 };
 extern enum scene currentScene;
 
+
+//Initializing the game
 void InitGame() {
 	updateCount = 0;
 
+	
+	//Setting up background music
 	alGenSources(1, ambientSource);
 	//CREDITS:  www.bensound.com
 	alSourcei(ambientSource[0], AL_BUFFER, sounds["music"]);
@@ -69,14 +75,19 @@ void InitGame() {
 
 	srand(clock());
 
+	//Creating world and gravity for physics
 	b2Vec2 gravity(0.0f, 0.0f);
 	world = new b2World(gravity);
 
+	//Contact Listener for collisions
 	contactListener = new MyContactListener();
 	world->SetContactListener(contactListener);
 
+	//Loading the map
 	LoadWalls();
 
+	
+	//Adding players
 	GameOver = false;
 	myPlayer = new Player();
 	myPlayer->SetBrain(new playerBrain(*myPlayer));
@@ -97,6 +108,8 @@ void InitGame() {
 
 	//spawnPositions.push_back(b2Vec2(0, 3));
 
+	
+	//Making a spawner that handles placing the bots in game
 	enemySpawner = new EnemySpawner(players, spawnPositions);
 	particleSystem = new ParticleSystem();
 	itemPool = new ItemPool();
@@ -110,16 +123,19 @@ void InitGame() {
 	itemPool->Add(new Armor(-4.5, 0));
 	itemPool->Add(new GrenadeItem(-4.5, -0.5));
 
+	
+	//Starting background music
 	alSourcePlay(ambientSource[0]);
 
 	lastFrameTime = std::chrono::high_resolution_clock::now();
 }
 
+//When keyboard button is pressed
 void on_keyboard_game(unsigned char key, int x, int y)
 {
 	switch (key) {
 	case 27:
-		/* Zavrsava se program. */
+		/* Going back to thes Menu */
 		currentScene = MENU;
 		break;
 	case 'a':
@@ -135,11 +151,24 @@ void on_keyboard_game(unsigned char key, int x, int y)
 		myPlayer->input.vertical -= 1;
 		break;
 	case 'r':{
-		if(myPlayer->GetAmmo() > 0){
-			std::cout << myPlayer->GetAmmo() << std::endl;
-			myPlayer->SetAmmo(myPlayer->equiped_weapon->reload(myPlayer->GetAmmo()));
-			std::cout << myPlayer->GetAmmo() << std::endl;
+		std::cout << myPlayer->GetAmmo() << std::endl;
+		if(myPlayer->equiped_weapon->getWeaponType() == PISTOL){
+			myPlayer->equiped_weapon->reload(myPlayer->equiped_weapon->GetAmmoCap());
 		}
+		else{
+			if(myPlayer->GetAmmo() > 0){
+				myPlayer->SetAmmo(myPlayer->equiped_weapon->reload(myPlayer->GetAmmo()));
+			}
+		}
+		std::cout << myPlayer->GetAmmo() << std::endl;
+		break;
+	}
+	case '2':{
+		float x = 0;//myPlayer->equiped_weapon->pos_x;
+		float y = 0;//myPlayer->equiped_weapon->pos_y;
+		std::cout << "Pulling sidearm " << std::endl;
+		myPlayer->SwapWeapon(new Pistol(x,y, myPlayer->input.angle));
+		break;
 	}
 		break;
 	case 'g':{
@@ -157,9 +186,10 @@ void on_keyboard_game(unsigned char key, int x, int y)
 		}
 
 	}
-	//std::cout << "vertical " << myPlayer.input.vertical  << "horizontal " << myPlayer.input.horizontal << std::endl;
 }
 
+
+//When keyboard button is released
 void keyboard_up_game(unsigned char key, int x, int y) {
 	switch (key) {
 	case 'a':
@@ -185,7 +215,7 @@ void keyboard_up_game(unsigned char key, int x, int y) {
 	}
 }
 
-
+//Mouse click and release handler
 void on_mouse_pressed_released_game(int button, int state, int x, int y) {
 	switch (button) {
 	case GLUT_LEFT_BUTTON:
@@ -198,11 +228,12 @@ void on_mouse_pressed_released_game(int button, int state, int x, int y) {
 
 }
 
+
 void on_mouse_move_active_game(int x, int y) {
 	on_mouse_move_game(x, y);
 }
 
-
+//Following mouse position at all times to adjust the aim
 void on_mouse_move_game(int x, int y) {
 	float dx = x - windowWidth / 2;
 	float dy = y - windowHeight / 2;
@@ -217,15 +248,22 @@ void on_mouse_move_game(int x, int y) {
 
 void on_timer_game()
 {
+	
+	//Clock to make sure that game doesnt depend on framerate
 	auto now = std::chrono::high_resolution_clock::now();;
 	std::chrono::duration<double>  deltaTime = now - lastFrameTime;
 	accumulator += deltaTime.count();
 	lastFrameTime = now;
-	//std::cout << "dt " << deltaTime.count() << std::endl;
+	
+	//Do as many updates of the physics as should have happend in normal conditions
 	while (accumulator > phisycsUpdateInterval) {
 		updateCount++;
 		world->Step(phisycsUpdateInterval, 6, 2);
+		
+		//Setting up bot movement velocity and aim
         BotMoves();
+		
+		//Updating players and sounds aswell as checking if they are dead
 		for (unsigned i = 0; i < players.size(); i++) {
 			if (players[i]->deathFlag) {
 				players[i]->deathFlag = false;
@@ -243,10 +281,13 @@ void on_timer_game()
 			players[i]->equiped_weapon->Update(players[i]->input.shoot);
 
 		}
-
+		
+		
 		enemySpawner->Update();
 		particleSystem->Update();
 
+		
+		//Updating granades and deleting ones that are flagged for deletion
 		for(unsigned i = 0; i < thrownGrenades.size(); i++){
 			if(thrownGrenades[i]->toDelete){
 				Grenade* tmp = thrownGrenades[i];
@@ -261,7 +302,9 @@ void on_timer_game()
 	    float Gvy = Gn*sin(myPlayer->input.angle);
 			thrownGrenades[i]->Update(myPlayer->body->GetPosition().x+Gvx, myPlayer->body->GetPosition().y+Gvy);
 		}
-
+		
+		
+		//Deleting AudioWrappers that finished playing
 		for(unsigned i = 0; i < audioWrappers.size(); i++){
 			if(!(audioWrappers[i]->isPlaying()) && audioWrappers[i]->toDelete){
 				AudioWrapper* tmp = audioWrappers[i];
@@ -272,7 +315,9 @@ void on_timer_game()
 		}
 
 		alSource3f(ambientSource[0], AL_POSITION, myPlayer->body->GetPosition().x, myPlayer->body->GetPosition().y, 0);
-
+		
+		
+		//In case the human player is dead going back to Main menu
 		if(!myPlayer->alive){
 			alSourceStop(ambientSource[0]);
 			currentScene = MENU;
@@ -285,6 +330,8 @@ void on_timer_game()
 
 }
 
+
+//Drawing all elements
 void DrawMap() {
 	glPushMatrix();
 	glColor3f(1, 1, 1);
@@ -307,7 +354,6 @@ void DrawMap() {
 
     for(int i = 0; i < 40; ++i){
         glBegin(GL_LINES);
-//         std::cout << i*18.0/40-9 << std::endl;
         glVertex3f(-9,i*18.0/40-9,0.05);
         glVertex3f(9,i*18.0/40-9,0.05);
         glEnd();
@@ -315,7 +361,6 @@ void DrawMap() {
 
     for(int i = 0; i < 40; ++i){
         glBegin(GL_LINES);
-//         std::cout << i*18.0/40-9 << std::endl;
         glVertex3f(i*18.0/40-9,9,0.05);
         glVertex3f(i*18.0/40-9,-9,0.05);
         glEnd();
@@ -420,7 +465,7 @@ void DrawHUDBar() {
 	glTranslatef(-w+w/10,0,0);
 	DrawWepon();
 
-
+	//Writing player information needed for gameplay
 	int numberOfAliveBots = 0;
 	for (unsigned i = 1; i < players.size(); i++) {
 		if (players[i]->alive)
@@ -478,6 +523,7 @@ void DrawHUDBar() {
 	glPopMatrix();
 }
 
+//Function for writing text
 void WriteText(){
 	glColor3f(0,0,0);
     glRasterPos3f(0, 0, 0);
@@ -512,9 +558,9 @@ void DrawWepon(){
 	glDisable(GL_BLEND);
 }
 
+//Setting up view parameters and drawing the screen
 void on_display_game(void)
 {
-
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(60, (float)windowWidth / windowHeight, 0.01, 1000);
@@ -563,7 +609,7 @@ void on_display_game(void)
 
 
 
-
+//Cleaning the memory
 void Clean(bool x){
 	for (unsigned i = 0; i < bullets.size(); i++) {
 		Bullet* tmp = bullets[i];

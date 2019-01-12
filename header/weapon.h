@@ -6,6 +6,8 @@
 #include "item.h"
 #include <AL/alut.h>
 
+//Different weapon classes
+
 enum weaponType{
   PISTOL,
 	RIFLE,

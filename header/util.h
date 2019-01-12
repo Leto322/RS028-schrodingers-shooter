@@ -39,6 +39,7 @@ public:
   b2Fixture* m_fixture;
 };
 
+//Class that handles sounds from objects that get destroyed
 class AudioWrapper{
 public:
 	AudioWrapper(float x, float y, std::string sound): m_x(x), m_y(y), m_sound(sound) {

@@ -83,7 +83,6 @@ enum scene currentScene;
 static int animation_ongoing;
 static void on_keyboard(unsigned char key, int x, int y);
 static void keyboard_up(unsigned char key, int x, int y);
-//static void keyboard_down(unsigned char key, int x, int y);
 static void on_mouse_move(int x, int y);
 static void on_mouse_move_active(int x, int y);
 static void on_mouse_pressed_released(int button, int state, int x, int y);
@@ -149,18 +148,17 @@ int main(int argc, char **argv)
 
     B2_NOT_USED(argc);
     B2_NOT_USED(argv);
-	/* Inicijalizuje se GLUT. */
+	// Initialising glut
 	glutInit(&argc, argv);
 	alutInit(NULL,NULL);
 	alDistanceModel(AL_LINEAR_DISTANCE);
 
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE | GLUT_MULTISAMPLE);
-	/* Kreira se prozor. */
+	//Creating the window
 	glutInitWindowSize(1280, 720);
-	//glutInitWindowPosition(0, 0);
 	glutCreateWindow(argv[0]);
 
-	/* Registruju se funkcije za obradu dogadjaja. */
+	// Registering functions for event detection
 	glutKeyboardFunc(on_keyboard);
 	glutDisplayFunc(on_display);
 	glutMotionFunc(on_mouse_move_active);
@@ -172,7 +170,7 @@ int main(int argc, char **argv)
 
 
     glutReshapeFunc(on_reshape);
-	/* Obavlja se OpenGL inicijalizacija. */
+	// Opengl initialization
 	glClearColor(0, 0, 0, 0);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_NORMALIZE);
@@ -182,8 +180,6 @@ int main(int argc, char **argv)
 	glShadeModel (GL_SMOOTH);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	//glEnable(GL_LIGHT1);
-	//glEnable(GL_LIGHT2);
 	glEnable(GL_COLOR_MATERIAL);
 
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,
@@ -195,14 +191,16 @@ int main(int argc, char **argv)
 	GLfloat lightPos0[] = { -1, 1, 1, 0};
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 
-    /* Ulazi se u glavnu petlju. */
+    
 	glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
   	animation_ongoing = 1;
-	//glutSetCursor(GLUT_CURSOR_NONE);
 
+	//Setting current scene and initializing 
 	currentScene = MENU;
 	InitGame();
-    	InitMenu();
+	InitMenu();
+		
+	// Entering main glut Loop
 	glutMainLoop();
 	
 
@@ -235,7 +233,6 @@ static void on_keyboard(unsigned char key, int x, int y)
         on_keyboard_menu(key,x,y);
         break;
     }
-	//std::cout << "vertical " << myPlayer.input.vertical  << "horizontal " << myPlayer.input.horizontal << std::endl;
 }
 
 static void keyboard_up(unsigned char key, int x, int y){
@@ -286,9 +283,7 @@ static void on_mouse_move(int x, int y){
 
 static void on_timer(int value)
 {
-	/*
-	* Proverava se da li callback dolazi od odgovarajuceg tajmera.
-	*/
+	//Checking if the callback comes from the right timer
 	if (value != TIMER_ID){
 		return;
 	}
@@ -303,7 +298,7 @@ static void on_timer(int value)
 	}
 
 	glutPostRedisplay();
-	/* Po potrebi se ponovo postavlja tajmer. */
+	// Setting a new timer if needed
 
 	if (animation_ongoing) {
 		glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
@@ -313,7 +308,7 @@ static void on_timer(int value)
 
 
 static void on_display(void)
-{	/* Postavlja se boja svih piksela na zadatu boju pozadine. */
+{	// Setting all pixel colors for given backround
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	switch (currentScene) {
@@ -325,7 +320,7 @@ static void on_display(void)
         break;
 	}
 
-	/* Nova slika se salje na ekran. */
+	// Sending new image to the screen
 	glutSwapBuffers();
 
 }
