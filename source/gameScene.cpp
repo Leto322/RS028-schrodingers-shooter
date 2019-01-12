@@ -544,10 +544,8 @@ void on_display_game(void)
 
 
 
-=======
 void Clean(bool x){
-	for (unsinged i = 0; i < bullets.size(); i++) {
->>>>>>> 6d7cc57bd8e1c9357227f50c036dadd6e0104e52
+	for (unsigned i = 0; i < bullets.size(); i++) {
 		Bullet* tmp = bullets[i];
 		bullets.erase(bullets.begin() + i);
 		delete tmp;
@@ -563,7 +561,7 @@ void Clean(bool x){
 
 	map.clear();
 
-	for(int i = 0; i < audioWrappers.size(); i++){
+	for(unsigned i = 0; i < audioWrappers.size(); i++){
 		AudioWrapper* tmp = audioWrappers[i];
 		audioWrappers.erase(audioWrappers.begin() + i);
 		i--;
