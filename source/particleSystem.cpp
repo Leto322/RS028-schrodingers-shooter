@@ -52,7 +52,11 @@ void Particle::AddForce(b2Vec2 force) {
 	vel += phisycsUpdateInterval*force;
 }
 
-
+Emitter::Emitter(b2Vec2* pos, b2Vec2 initialVelocity, b2Vec2 force, int particleCount, float lifespan, std::string texture){
+	Emitter(b2Vec2(0, 0), initialVelocity, force, particleCount, lifespan, texture);
+	isLocal = true;
+	root = pos;
+}
 
 Emitter::Emitter(b2Vec2 pos, b2Vec2 initialVelocity, b2Vec2 force, int particleCount, float lifespan, std::string texture):
 	pos(pos), force(force), particleCount(particleCount), lifespan(lifespan), texture(texture), initialVelocity(initialVelocity)
@@ -62,8 +66,14 @@ Emitter::Emitter(b2Vec2 pos, b2Vec2 initialVelocity, b2Vec2 force, int particleC
 	maxSpeed = 0.3;
 	minRotationSpeed = 0;
 	maxRotationSpeed = 0;
+	startRotation = -10;
 	startScale = 0.1;
 	endScale = 0;
+	startAlpha = 1;
+	endAlpha = 0;
+
+	alphaTween = scaleTween = TW_LINEAR;
+	isLocal = false;
 }
 
 Emitter::~Emitter() {
@@ -74,12 +84,27 @@ Emitter::~Emitter() {
 	particles.clear();
 }
 
+float TweenValue(Tween tw, float t) {
+	switch (tw) {
+	case TW_LINEAR:
+		return t;
+	case TW_CUBIC:
+		return t * t;
+	case TW_INVERSE_CUBIC:
+		return sqrt(t);
+	case TW_SINUSOIDAL:
+		return sin(t*M_PI/4);
+	default:
+		return t;
+	}
+}
+
 void Emitter::Update() {
 	for (int i = 0; i < particleCount; i++)
 	{
 		particles[i]->AddForce(force);
-		particles[i]->scale = lerp(startScale, endScale, lifespanTimer/lifespan);
-		particles[i]->alpha = lerp(1, 0, lifespanTimer / lifespan);
+		particles[i]->scale = lerp(startScale, endScale, TweenValue(scaleTween, lifespanTimer / lifespan));
+		particles[i]->alpha = lerp(startAlpha, endAlpha, TweenValue(alphaTween, lifespanTimer / lifespan));
 		particles[i]->Update();
 	}
 	lifespanTimer += phisycsUpdateInterval;
@@ -103,7 +128,9 @@ void Emitter::Start() {
 		float rotationSpeed = randomNumber(minRotationSpeed, maxRotationSpeed);
 		b2Vec2 vel(cos(angle)*speed, sin(angle)*speed);
 		vel += initialVelocity;
-		particles.push_back(new Particle(pos, vel, startScale, angle, rotationSpeed, 1));
+		if (startRotation != -10)
+			angle = startRotation;
+		particles.push_back(new Particle(pos, vel, startScale, angle, rotationSpeed, startAlpha));
 	}
 
 	particleSystem->AddEmitter(this);
@@ -121,9 +148,25 @@ void Emitter::SetScale(float start, float end) {
 	endScale = end;
 }
 
+void Emitter::SetScaleTween(Tween tw) {
+	scaleTween = tw;
+}
+
+void Emitter::SetAlpha(float start, float end) {
+	startAlpha = start;
+	endAlpha = end;
+}
+void Emitter::SetAlphaTween(Tween tw) {
+	alphaTween = tw;
+}
+
 void Emitter::SetRotation(float min, float max) {
 	minRotationSpeed = min;
 	maxRotationSpeed = max;
+}
+
+void Emitter::SetStartRotation(float rot) {
+	startRotation = rot;
 }
 
 bool Emitter::IsDone() {

@@ -51,6 +51,24 @@ Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string 
 	alSourcef(soundSource[0], AL_PITCH, 1);
 };
 
+void PlayGunShotEffect(float posx, float posy, float angle) {
+	float gunDistance = 0.05;
+	Emitter* casing = new Emitter(b2Vec2(posx - cos(angle)*0.1, posy - sin(angle)*0.1), b2Vec2(0, 0), b2Vec2(0, 0), 1, 0.3, "bulletCasing");
+	casing->SetScale(0.04, 0.04);
+	casing->SetSpeed(0.5, 0.6);
+	casing->SetRotation(5, 10);
+	casing->SetAlpha(1, 0.5);
+	casing->Start();
+
+	Emitter* flash = new Emitter(b2Vec2(posx+cos(angle)*gunDistance, posy + sin(angle)*gunDistance), b2Vec2(0, 0), b2Vec2(0, 0), 1, 0.1, "muzzleFlash");
+	flash->SetScale(0.13, 0.15);
+	flash->SetSpeed(0, 0);
+	flash->SetStartRotation(angle);
+	flash->SetAlphaTween(TW_CUBIC);
+	flash->Start();
+
+}
+
 //Function for firing a bullet, it sends the bullet its position and angle
 void Weapon::fire(){
 	if(fire_timer <= 0 && reload_timer <= 0 && this->ammo != 0){
@@ -61,6 +79,8 @@ void Weapon::fire(){
 		bullets.push_back(firedBullet);
 
 		alSourcePlay(soundSource[0]);
+
+		PlayGunShotEffect(pos_x, pos_y, firing_angle);
 
 		this->ammo--;
 		fire_timer = fire_delay;
@@ -139,6 +159,8 @@ void Shotgun::fire() {
 			bullets.push_back(firedBullet);
 		}
 
+		PlayGunShotEffect(pos_x, pos_y, angle);
+
 		alSourcePlay(soundSource[0]);
 
 		this->ammo--;
@@ -184,14 +206,16 @@ Grenade::~Grenade(){
 
 void StartGrenadeEffet(b2Vec2 pos) {
 	//dir = 10 * dir;
-	Emitter* shockwave = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 1, 0.4, "shockwave");
+	Emitter* shockwave = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 1, 0.3, "shockwave");
 	shockwave->SetScale(0, 2);
 	shockwave->SetSpeed(0, 0);
+	shockwave->SetScaleTween(TW_INVERSE_CUBIC);
 	shockwave->Start();
 
-	Emitter* fireball = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 1, 0.2, "fireball");
+	Emitter* fireball = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 1, 0.3, "fireball");
 	fireball->SetScale(1, 0);
 	fireball->SetSpeed(0, 0);
+	fireball->SetAlphaTween(TW_LINEAR);
 	fireball->Start();
 
 	Emitter* smoke = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 10, 1, "smoke");
