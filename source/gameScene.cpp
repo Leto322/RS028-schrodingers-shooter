@@ -65,7 +65,7 @@ void InitGame() {
 	alSourcef(ambientSource[0], AL_PITCH, 1);
 	alSourcei(ambientSource[0], AL_LOOPING, AL_TRUE);
 
-	
+
 	srand(clock());
 
 	b2Vec2 gravity(0.0f, 0.0f);
@@ -106,6 +106,7 @@ void InitGame() {
 	itemPool->Add(new Shotgun(-3, 0, 0, 4));
 	itemPool->Add(new HealthPotion(-4, 0, 20));
 	itemPool->Add(new Armor(-4.5, 0));
+	itemPool->Add(new GrenadeItem(-4.5, -0.5));
 
 	alSourcePlay(ambientSource[0]);
 
@@ -420,8 +421,8 @@ void DrawHUDBar() {
 	WriteText();
     memset(text, 0, sizeof text);
 	float timer = myPlayer->equiped_weapon->GetReloadTimer();
-	
-	
+
+
 	if(timer > 0 && myPlayer->alive){
 		glPushMatrix();
 		glTranslatef(0,-h/20,0);
@@ -433,13 +434,13 @@ void DrawHUDBar() {
 		glEnd();
 		glPopMatrix();
 	}
-	
+
 	glTranslatef(w/4, 0, 0);
 	sprintf(text, "Grenades: %d", myPlayer->grenades);
 	WriteText();
 	memset(text, 0, sizeof text);
-	
-	
+
+
 	if(thrownGrenades.size() > 0){
 		timer = thrownGrenades[thrownGrenades.size() - 1]->GetExplodeTimer();
 		if(timer > 0 && !thrownGrenades[thrownGrenades.size() - 1]->thrown){
@@ -454,14 +455,14 @@ void DrawHUDBar() {
 			glPopMatrix();
 		}
 	}
-	
-	
+
+
 	sprintf(text, "Wave: %d\tLeft: %d", enemySpawner->GetCurrentWave(), botsLeft);
 	glTranslatef(w*0.9,0, 0);
 	WriteText();
 
-	
-	
+
+
 
 	glPopMatrix();
 }
@@ -550,22 +551,22 @@ void Clean(){
 		delete tmp;
 		i--;
 	}
-	
+
 	for (int i = 0; i < walls.size(); i++) {
 			Block* tmp = walls[i];
 			walls.erase(walls.begin() + i);
 			delete tmp;
 			i--;
 	}
-	
+
 	map.clear();
-	
+
 	delete itemPool;
 
 	delete enemySpawner;
 	delete particleSystem;
 	delete contactListener;
-	
+
 	for (int i = 0; i < players.size(); i++) {
 		Player* tmp = players[i];
 		players.erase(players.begin() + i);

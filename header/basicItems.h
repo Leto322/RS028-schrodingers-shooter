@@ -30,7 +30,7 @@ private:
 class Armor : public Item {
 public:
 	Armor(float x, float y) :Item(x, y, 0.2, "armor"){
-			itemSounder = new AudioWrapper(x, y, std::string("heal"));
+			itemSounder = new AudioWrapper(x, y, std::string("armor"));
 			audioWrappers.push_back(itemSounder);
 		}
 	void Pickup(Player *picker) override {
@@ -48,7 +48,7 @@ class GrenadeItem : public Item {
 public:
 	//NEED TO PUT GRENADE SPRITE HERE!!
 	GrenadeItem(float x, float y) :Item(x, y, 0.2, "armor"){
-		itemSounder = new AudioWrapper(x, y, std::string("heal"));
+		itemSounder = new AudioWrapper(x, y, std::string("grenadePickup"));
 		audioWrappers.push_back(itemSounder);
 	}
 	void Pickup(Player *picker) override {
