@@ -20,7 +20,7 @@ extern std::map<std::string, int> sounds;
 extern std::vector<AudioWrapper*> audioWrappers;
 extern b2World* world;
 
-Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string icon) : Item(x, y, pickupDistance, std::move(icon)){
+Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string icon) : Item(x, y, pickupDistance, icon){
 	std::cout << "Weapon created " << icon << std::endl;
 	dmg = 10;
 	ammo = 30;
@@ -116,6 +116,12 @@ void Weapon::UpdateTimers(){
     fire_timer -= phisycsUpdateInterval;
     reload_timer -= phisycsUpdateInterval;
 }
+
+void Weapon::FreeSources(){
+	 size_t size = sizeof(soundSource)/sizeof(soundSource[0]);
+	 alDeleteSources(size, soundSource);
+}
+
 
 //Function for updating position and angle at which weapon is being pointed, required for firing a bulet
 void Weapon::SetPositionAndAngle(float x, float y, float angle){
