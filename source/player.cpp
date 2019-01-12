@@ -327,7 +327,7 @@ void Player::SwitchToSecondary() {
 
 void Player::SwapWeapon(Weapon* newWeapon) {
 	Weapon* old = equiped_weapon;
-	if (old->Name() == "pistol") {
+	if (old->getWeaponType() == PISTOL) {
 		old = NULL;
 	}
 	equiped_weapon = newWeapon;

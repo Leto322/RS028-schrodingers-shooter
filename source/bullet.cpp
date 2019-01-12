@@ -9,9 +9,8 @@ extern b2World* world;
 extern std::map<std::string, int> textures;
 
 /*Bullet constructor: takes a point from which a bullet is being fired and a trajectory angle*/
-Bullet::Bullet(float x, float y, float angle, int dmg, float bulletSize){
+Bullet::Bullet(float x, float y, float angle, int dmg, float bulletSize, float speed){
 	r = bulletSize;
-	speed = 0.01;
 	m_dmg = dmg;
 	toDelete = 0;
 
@@ -54,6 +53,7 @@ Bullet::Bullet(float x, float y, float angle, int dmg, float bulletSize){
     body->ApplyLinearImpulse(b2Vec2(vx,vy), body->GetWorldCenter(), true);
 
 };
+
 
 void Bullet::Draw(){
 	glColor4f(1, 1, 1, 1);

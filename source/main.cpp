@@ -36,6 +36,7 @@ std::vector<std::string> textureNames = {
 	std::string("bannerDead"),
 	std::string("spark"),	
 	std::string("bullet"),
+	std::string("sniper")
 	
 
 };
@@ -57,7 +58,8 @@ std::vector<std::string> soundNames = {
 	std::string("grenade"),
 	std::string("grenadePull"),
 	std::string("grenadePickup"),
-	std::string("armor")
+	std::string("armor"),
+	std::string("sniper")
 };
 
 std::vector<std::string> textureLocations;

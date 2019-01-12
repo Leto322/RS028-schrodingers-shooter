@@ -26,6 +26,7 @@ Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string 
 	dmg = 10;
 	ammo = 30;
 	ammo_cap = 30;
+	speed = 0.01;
 	spread = 0.15;
 	fire_delay= 0.15;
 	reload_delay = 2;
@@ -41,6 +42,9 @@ Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string 
 
 
 	//Setting the correct sound
+	if (icon == "sniper") {
+		alSourcef(soundSource[0], AL_GAIN, 0.6);
+	}
 	if(icon == "shotgun"){
 		alSourcei(soundSource[1], AL_BUFFER, sounds[std::string("reloadShotgun")]);
 		alSourcef(soundSource[0], AL_GAIN, 0.6);
@@ -61,6 +65,7 @@ weaponType Weapon::getWeaponType(){return WEAPON;}
 weaponType Pistol::getWeaponType(){return PISTOL;}
 weaponType Rifle::getWeaponType(){return RIFLE;}
 weaponType Shotgun::getWeaponType(){return SHOTGUN;}
+weaponType Sniper::getWeaponType() { return SNIPER; }
 
 void PlayGunShotEffect(float posx, float posy, float angle) {
 	float gunDistance = 0.05;
@@ -85,7 +90,7 @@ void Weapon::fire(){
 	if(fire_timer <= 0 && reload_timer <= 0 && this->ammo != 0){
 		//Calculating new angle from random spread
 		float firing_angle = angle + spread*randomNumber(-1,1)*recoilAmount;
-		Bullet* firedBullet = new Bullet(pos_x, pos_y, firing_angle, dmg, bulletSIze);
+		Bullet* firedBullet = new Bullet(pos_x, pos_y, firing_angle, dmg, bulletSIze, speed);
 		//Adding bullet to the list of fired bullets
 		bullets.push_back(firedBullet);
 
@@ -106,12 +111,14 @@ void Weapon::fire(){
 int Weapon::reload(int mag){
 	//std::cout << ammo << std::endl;
 	int left = mag;
-	if(ammo < ammo_cap){
+	if(ammo < ammo_cap && mag > 0){
 		std::cout << "Reloadin!" << std::endl;
 		alSourcePlay(soundSource[1]);
 
-		if((this->ammo + mag) <= this->ammo_cap)
+		if ((this->ammo + mag) <= this->ammo_cap) {
 			this->ammo = this->ammo + mag;
+			left = 0;
+		}
 		else if((this->ammo + mag) > this->ammo_cap){
 			left = mag - (this->ammo_cap - this->ammo);
 			this->ammo = this->ammo_cap;
@@ -196,7 +203,7 @@ void Shotgun::fire() {
 			float rand = randomNumber(-1, 1);
 			std::cout << "rand " << rand << std::endl;
 			float firing_angle = angle + spread * rand * (i+1)/ (float)palletNumber;
-			Bullet* firedBullet = new Bullet(pos_x, pos_y, firing_angle, dmg, bulletSIze);
+			Bullet* firedBullet = new Bullet(pos_x, pos_y, firing_angle, dmg, bulletSIze, speed);
 			//Adding bullet to the list of fired bullets
 			bullets.push_back(firedBullet);
 		}

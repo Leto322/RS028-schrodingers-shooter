@@ -12,7 +12,8 @@ enum weaponType{
   PISTOL,
 	RIFLE,
 	SHOTGUN,
-	WEAPON
+	WEAPON,
+	SNIPER
 };
 
 class Weapon : public Item{
@@ -37,6 +38,7 @@ protected:
 	int ammo;
 	int ammo_cap;
 	float spread;
+	float speed;
 	double fire_delay;
 	double reload_delay;
 	double fire_timer;
@@ -74,6 +76,21 @@ public:
 		fire_delay = 0.15;
 		reload_delay = 2;
 		bulletSIze = 0.022;
+	};
+};
+
+class Sniper : public Weapon {
+public:
+	weaponType getWeaponType();
+	Sniper(float x, float y, float angle) : Weapon(x, y, angle, 0.4, std::string("sniper")) {
+		dmg = 50;
+		ammo = 5;
+		ammo_cap = 5;
+		spread = 0.2;
+		speed = 0.02;
+		fire_delay = 1.5;
+		reload_delay = 4;
+		bulletSIze = 0.026;
 	};
 };
 

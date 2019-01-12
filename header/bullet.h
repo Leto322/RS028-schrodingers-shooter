@@ -8,7 +8,7 @@
 
 class Bullet : public Colider {
 public:
-	Bullet(float x, float y, float angle, int dmg, float bulletSize);
+	Bullet(float x, float y, float angle, int dmg, float bulletSize, float speed);
 	~Bullet();
 	void Draw();
 	void StartSparkEffect();
