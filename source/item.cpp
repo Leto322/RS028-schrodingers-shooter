@@ -72,6 +72,14 @@ void ItemPool::CheckPickups(Player *picker) {
 	}
 }
 
+ItemPool::~ItemPool(){
+	for (std::vector<Item*>::iterator it = m_items.begin(); it != m_items.end(); ++it)
+	{
+		delete (*it);
+	}
+	m_items.clear();
+}
+
 
 void ItemPool::Add(Item *item) {
 	m_items.push_back(item);
@@ -88,7 +96,6 @@ void ItemPool::Remove(Item *item) {
 	for (int i = 0; i < n; i++) {
 		if (m_items[i] == item) {
 			m_items.erase(m_items.begin() + i);
-			return;
 		}
 	}
 }

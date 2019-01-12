@@ -82,6 +82,11 @@ Player::Player() {
 
 };
 
+// Player::~Player() {
+// // 	world->DestroyBody(this->body);
+// // 	delete equiped_weapon;
+// // }
+
 void Player::IncreaseGrenades(int amount){
 	grenades += amount;
 }
@@ -306,7 +311,7 @@ void Player::Revive() {
 void Player::SwapWeapon(Weapon* newWeapon) {
 	Weapon* old = equiped_weapon;
 	equiped_weapon = newWeapon;
-	//delete(old);
+	delete(old);
 }
 
 void Player::moveSoundSource(){

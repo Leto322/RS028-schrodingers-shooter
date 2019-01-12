@@ -25,14 +25,13 @@ extern float windowWidth, windowHeight, aspectRatio;
 extern GLuint textureIDs[];
 extern std::map<std::string, int> sounds;
 extern std::map<std::string, int> textures;
-
+extern std::vector< std::vector<char> > map;
 int updateCount;
-
+extern bool reset;
 Player* myPlayer;
 b2World* world;
 MyContactListener* contactListener;
-std::vector<Block> walls;
-std::vector<Block> ground;
+std::vector<Block*> walls;
 std::chrono::high_resolution_clock::time_point lastFrameTime;
 double accumulator = 0;
 double phisycsUpdateInterval = 0.02;
@@ -41,10 +40,11 @@ std::vector<Grenade*> thrownGrenades;
 std::vector<Player*> players;
 std::vector<b2Vec2> spawnPositions;
 std::vector<AudioWrapper*> audioWrappers;
-ItemPool itemPool;
+ItemPool* itemPool;
 EnemySpawner* enemySpawner;
 ParticleSystem* particleSystem;
 ALuint ambientSource[1];
+bool GameOver;
 char text[100];
 
 
@@ -65,6 +65,7 @@ void InitGame() {
 	alSourcef(ambientSource[0], AL_PITCH, 1);
 	alSourcei(ambientSource[0], AL_LOOPING, AL_TRUE);
 
+	
 	srand(clock());
 
 	b2Vec2 gravity(0.0f, 0.0f);
@@ -75,7 +76,7 @@ void InitGame() {
 
 	LoadWalls();
 
-
+	GameOver = false;
 	myPlayer = new Player();
 	myPlayer->SetBrain(new playerBrain(*myPlayer));
 	myPlayer->SetMaxHealth(200);
@@ -96,15 +97,15 @@ void InitGame() {
 
 	enemySpawner = new EnemySpawner(players, spawnPositions);
 	particleSystem = new ParticleSystem();
-
+	itemPool = new ItemPool();
 	//b2Vec2 pos, b2Vec2 force, int particleCount, float lifespan, std::string texture)
 	//players[1]->input.shoot = true;
 
 	//Test for the items
-	itemPool.Add(new Rifle(-2, 0, 0));
-	itemPool.Add(new Shotgun(-3, 0, 0, 4));
-	itemPool.Add(new HealthPotion(-4, 0, 20));
-	itemPool.Add(new Armor(-4.5, 0));
+	itemPool->Add(new Rifle(-2, 0, 0));
+	itemPool->Add(new Shotgun(-3, 0, 0, 4));
+	itemPool->Add(new HealthPotion(-4, 0, 20));
+	itemPool->Add(new Armor(-4.5, 0));
 
 	alSourcePlay(ambientSource[0]);
 
@@ -215,13 +216,13 @@ void on_timer_game()
 		for (int i = 0; i < players.size(); i++) {
 			if (players[i]->deathFlag) {
 				players[i]->deathFlag = false;
-				itemPool.SpawnRandom(players[i]->body->GetPosition());
+				itemPool->SpawnRandom(players[i]->body->GetPosition());
 				players[i]->die();
 			}
 			if (!players[i]->alive) {
 				continue;
 			}
-			itemPool.CheckPickups(players[i]);
+			itemPool->CheckPickups(players[i]);
 			players[i]->m_brain->Update();
 			if(i == 0){
 				alListener3f(AL_POSITION, players[i]->body->GetPosition().x, players[i]->body->GetPosition().y, 0);
@@ -263,6 +264,8 @@ void on_timer_game()
 			alSourceStop(ambientSource[0]);
 			Clean();
 			currentScene = MENU;
+			GameOver = true;
+			break;
 		}
 
 		accumulator -= phisycsUpdateInterval;
@@ -512,7 +515,7 @@ void on_display_game(void)
 	DrawPlayers();
 	DrawGrenades();
 	DrawWalls();
-	itemPool.DrawItems();
+	itemPool->DrawItems();
 	particleSystem->Draw();
 
 	glDisable(GL_DEPTH_TEST);
@@ -538,6 +541,8 @@ void on_display_game(void)
 }
 
 
+
+
 void Clean(){
 	for (int i = 0; i < bullets.size(); i++) {
 		Bullet* tmp = bullets[i];
@@ -545,4 +550,29 @@ void Clean(){
 		delete tmp;
 		i--;
 	}
+	
+	for (int i = 0; i < walls.size(); i++) {
+			Block* tmp = walls[i];
+			walls.erase(walls.begin() + i);
+			delete tmp;
+			i--;
+	}
+	
+	map.clear();
+	
+	delete itemPool;
+
+	delete enemySpawner;
+	delete particleSystem;
+	delete contactListener;
+	
+	for (int i = 0; i < players.size(); i++) {
+		Player* tmp = players[i];
+		players.erase(players.begin() + i);
+		delete tmp->equiped_weapon;
+		delete tmp->m_brain;
+		delete tmp;
+		i--;
+	}
+	delete world;
 }

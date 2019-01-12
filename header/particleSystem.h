@@ -53,6 +53,8 @@ private:
 
 class ParticleSystem {
 public:
+	ParticleSystem(){}
+	~ParticleSystem();
 	void AddEmitter(Emitter* emitter);
 	void Update();
 	void Draw();

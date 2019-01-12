@@ -1,5 +1,6 @@
 #include <iostream>
 #include "../header/menuScene.h"
+#include "../header/gameScene.h"
 #include <GL/glut.h>
 #include <GL/freeglut.h>
 #include <Box2D/Box2D.h>
@@ -15,9 +16,11 @@ extern std::map<std::string, int> textures;
 extern std::chrono::high_resolution_clock::time_point lastFrameTime;
 std::map<std::string, bool> pressedButtons;
 extern ALuint ambientSource[1];
+extern bool GameOver;
 bool menuActive;
 bool creditsActive;
 bool controlsActive;
+bool resetGame;
 
 enum scene {
 	GAME,
@@ -30,11 +33,13 @@ extern enum scene currentScene;
 void InitMenu() {
 	alSourcePlay(ambientSource[0]);
 		pressedButtons.insert( std::pair<std::string,bool>(std::string("play"),false) );
+		pressedButtons.insert( std::pair<std::string,bool>(std::string("reset"),false) );
 		pressedButtons.insert( std::pair<std::string,bool>(std::string("credits"),false) );
 		pressedButtons.insert( std::pair<std::string,bool>(std::string("controls"),false) );
 		pressedButtons.insert( std::pair<std::string,bool>(std::string("exit"),false) );
 		pressedButtons.insert( std::pair<std::string,bool>(std::string("back"),false) );
     menuActive = true;
+	resetGame = true;
     creditsActive = false;
     controlsActive = false;
 }
@@ -46,24 +51,40 @@ void pressButton(int x, int y){
 	float w = h * aspectRatio;
     float x1 = (x- windowWidth / 2)/windowWidth*2*w;
     float y1 = -(y- windowHeight / 2)/windowHeight*2*h;
-    if(x1>=-w/8 && x1 <= w/8 && y1 <= h/2+h/20 && y1 >= h/2-h/20){
+    if(resetGame && x1>=-w/8 && x1 <= w/8 && y1 <= h/2+h/20 && y1 >= h/2-h/20 && menuActive){
         pressedButtons["play"] = true;
     }
-    else if(x1>=-w/8 && x1 <= w/8 && y1 <= h/4+h/20 && y1 >= h/4-h/20){
+    else if(!resetGame && !GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= h/2+h/20 && y1 >= h/2-h/20 && menuActive){
+        pressedButtons["play"] = true;
+    }
+    else if(GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= h/4+h/20+h/4 && y1 >= h/4-h/20+h/4 && menuActive){
+        pressedButtons["reset"] = true;
+    }
+    else if(!resetGame && !GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= h/4+h/20 && y1 >= h/4-h/20 && menuActive){
+        pressedButtons["reset"] = true;
+    }
+    else if((GameOver||resetGame) && x1>=-w/8 && x1 <= w/8 && y1 <= h/4+h/20 && y1 >= h/4-h/20 && menuActive ){
         pressedButtons["controls"] = true;
     }
-    else if(x1>=-w/8 && x1 <= w/8 && y1 <= h/20 && y1 >= -h/20){
+    else if(!resetGame && !GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= h/4+h/20-h/4 && y1 >= h/4-h/20-h/4 && menuActive ){
+        pressedButtons["controls"] = true;
+    }
+    else if((GameOver||resetGame) && x1>=-w/8 && x1 <= w/8 && y1 <= h/20  && y1 >= -h/20 && menuActive ){
         pressedButtons["credits"] = true;
     }
-    else if(x1>=-w/8 && x1 <= w/8 && y1 <= -h/4+h/20 && y1 >= -h/4-h/20){
+    else if(!resetGame && !GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= h/20-h/4  && y1 >= -h/20-h/4 && menuActive ){
+        pressedButtons["credits"] = true;
+    }
+    else if((GameOver||resetGame) && x1>=-w/8 && x1 <= w/8 && y1 <= -h/4+h/20  && y1 >= -h/4-h/20 && menuActive){
         pressedButtons["exit"] = true;
     }
-    else if(x1>=-w/8 && x1 <= w/8 && y1 <= -h/1.8+h/20 && y1 >= -h/1.8-h/20 && creditsActive){
+    else if(!resetGame && !GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= -h/4+h/20-h/4 && y1 >= -h/4-h/20-h/4 && menuActive){
+        pressedButtons["exit"] = true;
+    }
+    else if(x1>=-w/8 && x1 <= w/8 && y1 <= -h/1.8+h/20  && y1 >= -h/1.8-h/20  && (creditsActive || controlsActive)){
         pressedButtons["back"] = true;
     }
-    else if(x1>=-w/8 && x1 <= w/8 && y1 <= -h/1.8+h/20 && y1 >= -h/1.8-h/20 && controlsActive){
-        pressedButtons["back"] = true;
-    }
+    
 }
 
 void releaseButton(int x, int y){
@@ -72,19 +93,46 @@ void releaseButton(int x, int y){
     float x1 = (x- windowWidth / 2)/windowWidth*2*w;
     float y1 = -(y- windowHeight / 2)/windowHeight*2*h;
 
-    if(x1>=-w/8 && x1 <= w/8 && y1 <= h/2+h/20 && y1 >= h/2-h/20 && pressedButtons["play"]){
+    if(resetGame && x1>=-w/8 && x1 <= w/8 && y1 <= h/2+h/20  && y1 >= h/2-h/20  && pressedButtons["play"] ){
         lastFrameTime = std::chrono::high_resolution_clock::now();
+		resetGame = false;
         currentScene = GAME;
     }
-    else if(x1>=-w/8 && x1 <= w/8 && y1 <= h/4+h/20 && y1 >= h/4-h/20 && pressedButtons["controls"]){
+    else if(!resetGame && !GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= h/2+h/20  && y1 >= h/2-h/20  && pressedButtons["play"] ){
+        lastFrameTime = std::chrono::high_resolution_clock::now();
+		resetGame = false;
+        currentScene = GAME;
+    }
+    else if(GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= h/4+h/20+h/4 && y1 >= h/4-h/20+h/4  && pressedButtons["reset"]){
+       InitGame();
+	   resetGame = true;
+    }
+    else if(!resetGame && !GameOver  && x1>=-w/8 && x1 <= w/8 && y1 <= h/4+h/20  && y1 >= h/4-h/20  && pressedButtons["reset"]){
+	   Clean();
+       InitGame();
+	   resetGame = true;
+    }
+    else if((resetGame || GameOver) && x1>=-w/8 && x1 <= w/8 && y1 <= h/4+h/20 && y1 >= h/4-h/20  && pressedButtons["controls"]){
        controlsActive = true;
        menuActive = false;
     }
-    else if(x1>=-w/8 && x1 <= w/8 && y1 <= h/20 && y1 >= -h/20&& pressedButtons["credits"]){
+    else if(!resetGame && !GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= h/4+h/20-h/4 && y1 >= h/4-h/20-h/4 && pressedButtons["controls"]){
+       controlsActive = true;
+       menuActive = false;
+    }
+    else if((resetGame || GameOver) && x1>=-w/8 && x1 <= w/8 && y1 <= h/20  && y1 >= -h/20 && pressedButtons["credits"]){
        creditsActive = true;
        menuActive = false;
     }
-    else if(x1>=-w/8 && x1 <= w/8 && y1 <= -h/4+h/20 && y1 >= -h/4-h/20&& pressedButtons["exit"]){
+    else if(!resetGame && !GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= h/20-h/4  && y1 >= -h/20-h/4 && pressedButtons["credits"]){
+       creditsActive = true;
+       menuActive = false;
+    }
+    else if((resetGame || GameOver) && x1>=-w/8 && x1 <= w/8 && y1 <= -h/4+h/20  && y1 >= -h/4-h/20 && pressedButtons["exit"]){
+		glutLeaveMainLoop();
+    }
+    else if(!resetGame && !GameOver && x1>=-w/8 && x1 <= w/8 && y1 <= -h/4+h/20-h/4  && y1 >= -h/4-h/20-h/4 && pressedButtons["exit"]){
+		Clean();
 		glutLeaveMainLoop();
     }
     else if(x1>=-w/8 && x1 <= w/8 && y1 <= -h/1.8+h/20 && y1 >= -h/1.8-h/20 && pressedButtons["back"] && creditsActive ){
@@ -97,6 +145,7 @@ void releaseButton(int x, int y){
     }
 
     pressedButtons["play"] = false;
+	pressedButtons["reset"] = false;
     pressedButtons["controls"] = false;
     pressedButtons["credits"] = false;
     pressedButtons["exit"] = false;
@@ -176,24 +225,49 @@ void DrawMenu() {
     glPushMatrix();
 
     //Play button
-    if(pressedButtons["play"])
-        glColor4f(0.3,0.3,0.3,0.8);
-    else
-        glColor3f(1,1,1);
-    glBindTexture(GL_TEXTURE_2D, textures["button"]);
-	glNormal3f(0, 0, 1);
-    glTranslatef(0, h/2, 0);
-	glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-		glVertex3f(-w/8,-h/20, 0);
-		glTexCoord2f(1, 0);
-		glVertex3f(w/8, -h/20, 0);
-		glTexCoord2f(1, 1);
-		glVertex3f(w/8, h/20, 0);
-		glTexCoord2f(0, 1);
+	
+	if(resetGame || !GameOver){
+		if(pressedButtons["play"])
+			glColor4f(0.3,0.3,0.3,0.8);
+		else
+			glColor3f(1,1,1);
+		glBindTexture(GL_TEXTURE_2D, textures["button"]);
+		glNormal3f(0, 0, 1);
+		glTranslatef(0, h/2, 0);
+		glBegin(GL_QUADS);
+			glTexCoord2f(0, 0);
+			glVertex3f(-w/8,-h/20, 0);
+			glTexCoord2f(1, 0);
+			glVertex3f(w/8, -h/20, 0);
+			glTexCoord2f(1, 1);
+			glVertex3f(w/8, h/20, 0);
+			glTexCoord2f(0, 1);
+			glVertex3f(-w/8, h/20, 0);
+		glEnd();
+	}
+	
+	//Reset button
+	if(GameOver || !resetGame){
+		if(GameOver)
+			glTranslatef(0, 3*h/4, 0);
+		if(pressedButtons["reset"])
+			glColor4f(0.3,0.3,0.3,0.8);
+		else
+			glColor3f(1,1,1);
+		glBindTexture(GL_TEXTURE_2D, textures["button"]);
+		glNormal3f(0, 0, 1);
+		glTranslatef(0, -h/4, 0);
+		glBegin(GL_QUADS);
+			glTexCoord2f(0, 0);
+			glVertex3f(-w/8,-h/20, 0);
+			glTexCoord2f(1, 0);
+			glVertex3f(w/8, -h/20, 0);
+			glTexCoord2f(1, 1);
+			glVertex3f(w/8, h/20, 0);
+			glTexCoord2f(0, 1);
 		glVertex3f(-w/8, h/20, 0);
-	glEnd();
-
+		glEnd();
+	}
 
 
     //Controls button
@@ -248,16 +322,33 @@ void DrawMenu() {
 	glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glPopMatrix();
+	
+
 
     unsigned char play[] = "Play";
+	unsigned char reset[] = "Reset";
     unsigned char credits[] = "Credits";
     unsigned char controls[] = "Controls";
     unsigned char exit[] = "Exit";
     glPushMatrix();
-    glTranslatef(-w/30, h/2-h/80, 0);
-    glColor3f(1,1,1);
-    glRasterPos3f(0, 0, 0);
-	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,play);
+	
+	
+	if(resetGame || !GameOver){
+		glTranslatef(-w/30, h/2-h/80, 0);
+		glColor3f(1,1,1);
+		glRasterPos3f(0, 0, 0);
+		glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,play);
+	}
+	
+	
+	if(GameOver || !resetGame){
+		if(GameOver)
+			glTranslatef(-w/30, 3*h/4-h/80, 0);
+		glTranslatef(-w/80, -h/4, 0);
+		glRasterPos3f(0, 0, 0);
+		glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,reset);
+		glTranslatef(w/80, 0, 0);
+	}
 
     glTranslatef(-w/30, -h/4, 0);
     glRasterPos3f(0, 0, 0);

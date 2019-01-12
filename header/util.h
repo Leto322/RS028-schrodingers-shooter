@@ -59,7 +59,7 @@ public:
 		alSourcePlay(soundSource[0]);
 	}
 	bool isPlaying(){
-		ALenum state;
+		ALenum state = 0;
 
     alGetSourcei(soundSource[0], AL_SOURCE_STATE, &state);
 

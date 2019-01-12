@@ -153,3 +153,11 @@ void ParticleSystem::Draw() {
 	}
 
 }
+
+ParticleSystem::~ParticleSystem(){
+	for (std::vector<Emitter*>::iterator it = emitters.begin(); it != emitters.end(); ++it)
+	{
+		delete (*it);
+	}
+	emitters.clear();
+}

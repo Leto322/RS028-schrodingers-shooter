@@ -23,6 +23,7 @@ private:
 class ItemPool {
 public:
 	ItemPool();
+	~ItemPool();
 	void CheckPickups(Player *picker);
 	void Add(Item *item);
 	void Remove(Item *item);
