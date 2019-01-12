@@ -245,6 +245,7 @@ void Grenade::throwMe(float angle, float strength){
 	body->SetActive(true);
 	float vx = strength*cos(angle)*0.35;
 	float vy = strength*sin(angle)*0.35;
+	animationTimer = 0.5;
 	body->ApplyLinearImpulse(b2Vec2(vx,vy), body->GetWorldCenter(), true);
 
 }
@@ -310,6 +311,7 @@ void Grenade::Update(float x, float y){
 	}
 
 	explodeTimer -= phisycsUpdateInterval;
+	animationTimer += phisycsUpdateInterval;
 }
 
 void Grenade::Draw(){
@@ -317,6 +319,12 @@ void Grenade::Draw(){
 
 	glPushMatrix();
 	glTranslatef(body->GetPosition().x, body->GetPosition().y, r);
+
+	float tmp = 2 - animationTimer;
+	tmp = tmp < 0 ? 0 : tmp;
+	float scaleAnimation = 1 + (cos(M_PI+animationTimer*animationTimer * 8)+1)/5*tmp;
+	
+	glScalef(scaleAnimation, scaleAnimation, scaleAnimation);
 	glutSolidSphere(r, 20, 20);
 	glPopMatrix();
 }

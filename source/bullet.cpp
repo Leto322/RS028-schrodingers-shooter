@@ -1,5 +1,6 @@
 #include "../header/bullet.h"
 #include "../header/util.h"
+#include "../header/particleSystem.h"
 #include <math.h>
 #include <GL/glut.h>
 #include <Box2D/Box2D.h>
@@ -33,6 +34,8 @@ Bullet::Bullet(float x, float y, float angle, int dmg, float bulletSize){
 
     fixtureDef.friction = 0;
 
+	fixtureDef.filter.groupIndex = -1;
+
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
 
@@ -52,6 +55,26 @@ void Bullet::Draw(){
     glTranslatef(body->GetPosition().x, body->GetPosition().y, r);
     glutSolidSphere(r, 20, 20);
     glPopMatrix();
+};
+
+void Bullet::StartSparkEffect() {
+	std::cout << "stigao" << std::endl;
+	b2Vec2 vel = body->GetLinearVelocity();
+	vel.Normalize();
+	b2Vec2 pos = body->GetPosition();
+	vel = 0.5 * vel;
+	Emitter* spark = new Emitter(pos, vel, b2Vec2(0, 0), 3, 0.2, "spark");
+	spark->SetScale(0.04, 0.07);
+	spark->SetSpeed(0.1, 0.3);
+	spark->SetStartRotation(atan2(vel.y, vel.x));
+	spark->Start();
+
+	Emitter* smoke = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 10, 1, "smoke");
+	smoke->SetScale(0.03, 0.06);
+	smoke->SetSpeed(0.02, 0.04);
+	smoke->SetRotation(1, 2);
+	smoke->SetAlphaTween(TW_CUBIC);
+	smoke->Start();
 };
 
 Bullet::~Bullet() {

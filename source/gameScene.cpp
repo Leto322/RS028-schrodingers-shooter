@@ -104,7 +104,7 @@ void InitGame() {
 
 	//Test for the items
 	itemPool->Add(new Rifle(-2, 0, 0));
-	itemPool->Add(new Shotgun(-3, 0, 0, 4));
+	itemPool->Add(new Shotgun(-3, 0, 0, 6));
 	itemPool->Add(new HealthPotion(-4, 0, 20));
 	itemPool->Add(new Armor(-4.5, 0));
 	itemPool->Add(new GrenadeItem(-4.5, -0.5));
@@ -503,6 +503,11 @@ void DrawWepon(){
 
 void on_display_game(void)
 {
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(60, (float)windowWidth / windowHeight, 0.01, 1000);
+
 	glViewport(0, 0, windowWidth, windowHeight);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -526,7 +531,11 @@ void on_display_game(void)
 	glEnable(GL_LIGHTING);
 
 	//MiniMap
-	glViewport(-120 + windowWidth / 6 + windowWidth - windowWidth/3, 0, windowWidth / 3, windowHeight / 3);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-9, 9, -9, 9, 0.1, 100);
+
+	glViewport(windowWidth - windowWidth/6, 0, windowWidth / 6, windowWidth / 6);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(0, 0, 18,

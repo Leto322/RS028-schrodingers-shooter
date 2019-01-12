@@ -67,13 +67,13 @@ public:
 class Shotgun : public Weapon {
 public:
 	Shotgun(float x, float y, float angle, int palletNumber) : Weapon(x, y, angle, 0.4, std::string("shotgun")), palletNumber(palletNumber) {
-		dmg = 8;
+		dmg = 5;
 		ammo = 10;
 		ammo_cap = 10;
 		spread = 0.3;
 		fire_delay = 0.6;
 		reload_delay = 3;
-		bulletSIze = 0.016;
+		bulletSIze = 0.012;
 	};
 	int palletNumber;
 	void fire() override;
@@ -97,5 +97,6 @@ private:
 	float blastRadius;
 	float explodeTimer;
 	float m_strength;
+	float animationTimer;
 };
 #endif

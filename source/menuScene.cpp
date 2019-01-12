@@ -21,6 +21,8 @@ bool menuActive;
 bool creditsActive;
 bool controlsActive;
 bool resetGame;
+float logoAnimation = 0;
+float buttonOffset = -1;
 
 enum scene {
 	GAME,
@@ -47,6 +49,7 @@ void InitMenu() {
 
 
 void pressButton(int x, int y){
+	y += buttonOffset*windowHeight/4.5;
     float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
     float x1 = (x- windowWidth / 2)/windowWidth*2*w;
@@ -88,6 +91,7 @@ void pressButton(int x, int y){
 }
 
 void releaseButton(int x, int y){
+	y += buttonOffset * windowHeight / 4.5;
     float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
     float x1 = (x- windowWidth / 2)/windowWidth*2*w;
@@ -184,10 +188,10 @@ void on_mouse_pressed_released_menu(int button, int state, int x, int y) {
 
 
 
-// void on_timer_menu()
-// {
-//
-// }
+void on_timer_menu()
+{
+	logoAnimation += 0.04;
+}
 
 
 void on_keyboard_menu(unsigned char key, int x, int y)
@@ -204,11 +208,56 @@ void on_keyboard_menu(unsigned char key, int x, int y)
 	}
 }
 
+void DrawQuad(std::string str) {
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glPushMatrix();
+	glNormal3f(0, 0, 1);
+
+	glBindTexture(GL_TEXTURE_2D, textures[str]);
+	glScalef(2, 2, 1);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0);
+	glVertex3f(-1, -1, 0);
+	glTexCoord2f(1, 0);
+	glVertex3f(1, -1, 0);
+	glTexCoord2f(1, 1);
+	glVertex3f(1, 1, 0);
+	glTexCoord2f(0, 1);
+	glVertex3f(-1, 1, 0);
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glPopMatrix();
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+}
+
+void DrawLogo() {
+	glPushMatrix();
+	glTranslatef(0.1, 1, 0);
+	glScalef(.7, .7, 1);
+	
+	float alpha = (cos(logoAnimation)+1)/2;
+	glColor4f(1, 1, 1, alpha);
+	DrawQuad("bannerAlive");
+	glColor4f(1, 1, 1, 1- alpha);
+	DrawQuad("bannerDead");
+	glPopMatrix();
+	
+}
+
 void DrawMenu() {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(60, (float)windowWidth / windowHeight, 0.01, 1000);
+
     float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
 	glPushMatrix();
-
+	
 	glColor3f(1, 1, 1);
 	glBindTexture(GL_TEXTURE_2D, textures["menu"]);
 	glNormal3f(0, 0, 1);
@@ -226,7 +275,7 @@ void DrawMenu() {
     glPopMatrix();
 
     glPushMatrix();
-
+	glTranslatef(0, buttonOffset, 0);
     //Play button
 	
 	if(resetGame || !GameOver){
@@ -335,7 +384,7 @@ void DrawMenu() {
     unsigned char exit[] = "Exit";
     glPushMatrix();
 	
-	
+	glTranslatef(0, buttonOffset, 0);
 	if(resetGame || !GameOver){
 		glTranslatef(-w/30, h/2-h/80, 0);
 		glColor3f(1,1,1);
@@ -494,8 +543,10 @@ void on_display_menu(void)
 
     glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
-    if(menuActive)
+	if (menuActive) {
         DrawMenu();
+		DrawLogo();
+	}
     else if(controlsActive)
         DrawControls();
     else

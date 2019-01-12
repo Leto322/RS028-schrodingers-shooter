@@ -31,7 +31,11 @@ std::vector<std::string> textureNames = {
 	std::string("smoke"),
 	std::string("muzzleFlash"),
 	std::string("bulletCasing"),
-	std::string("grenade")
+	std::string("grenade"),
+	std::string("bannerAlive"),
+	std::string("bannerDead"),
+	std::string("spark"),
+	
 
 };
 
@@ -293,6 +297,7 @@ static void on_timer(int value)
 		on_timer_game();
 		break;
 	case MENU:
+		on_timer_menu();
 		break;
 	}
 

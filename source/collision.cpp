@@ -42,10 +42,12 @@ void MyContactListener::BeginContact(b2Contact* contact){
 
 		if(c1->getClassID() == BULLET && c2->getClassID() == BLOCK){
 			static_cast<Bullet*>(c1)->toDelete = 1;
+			static_cast<Bullet*>(c1)->StartSparkEffect();
 		}
 
 		if(c2->getClassID() == BULLET && c1->getClassID() == BLOCK){
 			static_cast<Bullet*>(c2)->toDelete = 1;
+			static_cast<Bullet*>(c2)->StartSparkEffect();
 		}
 
     //DEBUGGING collision detection

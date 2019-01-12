@@ -10,23 +10,24 @@ TODO:
 Gameplay
 
 - [x] Basic player movement
-- [ ] Map design
+- [x] Map design
 - [x] Player/wall collisions
-- [ ] Basic shooting mechanics with random moving bots
+- [x] Basic shooting mechanics with random moving bots
 
 More advanced shooting mechanics
 
 - [x] Reload time
 - [x] Fire rate
-- [ ] Recoil
+- [x] Recoil
 
 AI
 
+- [x] Basic bots
 - [ ] Basic neural network implementation
 - [ ] Player sensors
 - [ ] Neural network training with reinforcement learning (genetic algorithm)
 
 Visuals
 
-- [ ] 3D
-- [ ] Particle effects
+- [x] 3D
+- [x] Particle effects

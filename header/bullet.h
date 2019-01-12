@@ -9,6 +9,7 @@ public:
 	Bullet(float x, float y, float angle, int dmg, float bulletSize);
 	~Bullet();
 	void Draw();
+	void StartSparkEffect();
 	virtual ClassID getClassID();
 
 	b2Body* body;
