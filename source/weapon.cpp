@@ -20,6 +20,7 @@ extern std::map<std::string, int> sounds;
 extern std::vector<AudioWrapper*> audioWrappers;
 extern b2World* world;
 
+//Weapon cclass constructor
 Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string icon) : Item(x, y, pickupDistance, icon){
 	std::cout << "Weapon created " << icon << std::endl;
 	dmg = 10;
@@ -38,6 +39,8 @@ Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string 
 	alGenSources(NUM_OF_SOURCES_WEAP, soundSource);
 	alSourcei(soundSource[0], AL_BUFFER, sounds[icon]);
 
+
+	//Setting the correct sound
 	if(icon == "shotgun"){
 		alSourcei(soundSource[1], AL_BUFFER, sounds[std::string("reloadShotgun")]);
 		alSourcef(soundSource[0], AL_GAIN, 0.6);
@@ -50,6 +53,9 @@ Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string 
 	alSourcei(soundSource[2], AL_BUFFER, sounds[std::string("pickup")]);
 	alSourcef(soundSource[0], AL_PITCH, 1);
 };
+
+
+//Activating effects when a gun is fired
 
 weaponType Weapon::getWeaponType(){return WEAPON;}
 weaponType Pistol::getWeaponType(){return PISTOL;}
@@ -96,6 +102,7 @@ void Weapon::fire(){
 	}
 }
 
+//Handling weapon reload
 int Weapon::reload(int mag){
 	//std::cout << ammo << std::endl;
 	int left = mag;
@@ -118,6 +125,7 @@ int Weapon::reload(int mag){
 	return left;
 }
 
+//Updating weapon timers, recoil and sound location
 void Weapon::Update(bool shoot){
     UpdateTimers();
 
@@ -134,6 +142,7 @@ void Weapon::Update(bool shoot){
 		recoilAmount = RE_AMM_MIN;
 }
 
+//Getters
 int Weapon::GetAmmo() const{
     return ammo;
 }
@@ -151,6 +160,7 @@ void Weapon::UpdateTimers(){
     reload_timer -= phisycsUpdateInterval;
 }
 
+//Freeing sounds bound to weapon
 void Weapon::FreeSources(){
 	 size_t size = sizeof(soundSource)/sizeof(soundSource[0]);
 	 alDeleteSources(size, soundSource);
@@ -176,6 +186,7 @@ void Weapon::Pickup(Player* picker) {
 	}
 }
 
+
 void Shotgun::fire() {
 	if (fire_timer <= 0 && reload_timer <= 0 && this->ammo != 0) {
 		//Calculating new angle from random spread
@@ -199,6 +210,7 @@ void Shotgun::fire() {
 	}
 }
 
+//Grenade constructor
 Grenade::Grenade(float x, float y){
 	dmg = 200;
 	r = 0.04;
@@ -234,11 +246,11 @@ Grenade::~Grenade(){
 	std::cout <<"deleting grenade" <<std::endl;
 	world->DestroyBody(this->body);
 }
-
+//Getter
 float Grenade::GetExplodeTimer() const{
 	return explodeTimer;
 }
-
+//Activating effects when a grenade explodes
 void StartGrenadeEffet(b2Vec2 pos) {
 	//dir = 10 * dir;
 	Emitter* shockwave = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 1, 0.3, "shockwave");
@@ -260,6 +272,7 @@ void StartGrenadeEffet(b2Vec2 pos) {
 	smoke->Start();
 }
 
+//Setting up grenade parameters when thrown
 void Grenade::throwMe(float angle, float strength){
 	thrown = true;
 	body->SetActive(true);
@@ -322,6 +335,7 @@ void Grenade::explode(){
 	toDelete = true;
 }
 
+//Updating grenade timers and transformation
 void Grenade::Update(float x, float y){
 	if(explodeTimer <= 0)
 		explode();

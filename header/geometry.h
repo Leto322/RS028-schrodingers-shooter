@@ -12,7 +12,7 @@
 
 
 
-// Struktura Block
+// Block structure
 struct Block : public Colider{
     Block(b2Vec2 A,double edge);
     b2Vec2 m_A;
@@ -28,11 +28,9 @@ struct Block : public Colider{
 
 extern b2World* world;
 
-//Funkcija koja ucitava zidove iz fajla
+//Loading map from file
 void LoadWalls();
 b2Vec2 ScaleVec(const b2Vec2 & A);
-// void AddWall(float x, float y, float w, float h);
-// void AddWall(Block& wall);
 void DrawWalls();
 
 

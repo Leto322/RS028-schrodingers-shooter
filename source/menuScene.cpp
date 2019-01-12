@@ -9,6 +9,7 @@
 #include <string>
 #include <map>
 
+//All necessary elementss
 extern float windowWidth, windowHeight, aspectRatio;
 extern std::map<std::string, int> textures;
 extern std::map<std::string, int> sounds;
@@ -31,8 +32,9 @@ enum scene {
 };
 extern enum scene currentScene;
 
-
+//Initializing the game
 void InitMenu() {
+	//Playing background music and adding buttons
 	alSourcePlay(ambientSource[0]);
 		pressedButtons.insert( std::pair<std::string,bool>(std::string("play"),false) );
 		pressedButtons.insert( std::pair<std::string,bool>(std::string("reset"),false) );
@@ -47,7 +49,7 @@ void InitMenu() {
 }
 
 
-
+//When button is pressed
 void pressButton(int x, int y){
 	float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
@@ -92,6 +94,7 @@ void pressButton(int x, int y){
     
 }
 
+//When button is released
 void releaseButton(int x, int y){
 	float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
@@ -165,6 +168,7 @@ void releaseButton(int x, int y){
 }
 
 
+//Handling mouse presses
 void on_mouse_pressed_released_menu(int button, int state, int x, int y) {
 	switch (button) {
 	case GLUT_LEFT_BUTTON:
@@ -178,19 +182,6 @@ void on_mouse_pressed_released_menu(int button, int state, int x, int y) {
 
 }
 
-// void on_mouse_move_active_game(int x, int y) {
-// 	on_mouse_move_game(x, y);
-// }
-
-
-// void on_mouse_move_game(int x, int y) {
-// 	float dx = x - windowWidth / 2;
-// 	float dy = y - windowHeight / 2;
-//
-// 	float angle = atan2(dy, dx);
-// 	myPlayer->input.angle = -angle;
-// }
-
 
 
 void on_timer_menu()
@@ -198,7 +189,7 @@ void on_timer_menu()
 	logoAnimation += 0.04;
 }
 
-
+//Toggling fullscreen and windowed mode
 void on_keyboard_menu(unsigned char key, int x, int y)
 {
 	switch (key) {
@@ -213,6 +204,7 @@ void on_keyboard_menu(unsigned char key, int x, int y)
 	}
 }
 
+//Drawing a quad for logo
 void DrawQuad(std::string str) {
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -240,6 +232,7 @@ void DrawQuad(std::string str) {
 	glDisable(GL_BLEND);
 }
 
+//Drawing the logo
 void DrawLogo() {
 	glPushMatrix();
 	glTranslatef(0.1, 1, 0);
@@ -254,53 +247,46 @@ void DrawLogo() {
 	
 }
 
-void DrawMenu() {
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(60, (float)windowWidth / windowHeight, 0.01, 1000);
+void DrawButton(float w, float h, std::string str) {
+	glNormal3f(0, 0, 1);
 
+	glBindTexture(GL_TEXTURE_2D, textures[str]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0);
+	glVertex3f(-w, -h, 0);
+	glTexCoord2f(1, 0);
+	glVertex3f(w, -h, 0);
+	glTexCoord2f(1, 1);
+	glVertex3f(w, h, 0);
+	glTexCoord2f(0, 1);
+	glVertex3f(-w, h, 0);
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+}
+
+//Drawing the Menu
+void DrawMenu() {
+	//Height and width of the quad we see at 0 z coordinate
     float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
 	glPushMatrix();
-	
 	glColor3f(1, 1, 1);
-	glBindTexture(GL_TEXTURE_2D, textures["menu"]);
-	glNormal3f(0, 0, 1);
-	glBegin(GL_QUADS);
-		glTexCoord2f(0, 0);
-		glVertex3f(-w,-h, 0);
-		glTexCoord2f(1, 0);
-		glVertex3f(w, -h, 0);
-		glTexCoord2f(1, 1);
-		glVertex3f(w, h, 0);
-		glTexCoord2f(0, 1);
-		glVertex3f(-w, h, 0);
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D, 0);
+	DrawButton(w,h,"menu");
     glPopMatrix();
 
     glPushMatrix();
 	glTranslatef(0, buttonOffset, 0);
-    //Play button
 	
+    //Play button
 	if(resetGame || !GameOver){
 		if(pressedButtons["play"])
 			glColor4f(0.3,0.3,0.3,0.8);
 		else
 			glColor3f(1,1,1);
-		glBindTexture(GL_TEXTURE_2D, textures["button"]);
-		glNormal3f(0, 0, 1);
 		glTranslatef(0, h/2, 0);
-		glBegin(GL_QUADS);
-			glTexCoord2f(0, 0);
-			glVertex3f(-w/8,-h/20, 0);
-			glTexCoord2f(1, 0);
-			glVertex3f(w/8, -h/20, 0);
-			glTexCoord2f(1, 1);
-			glVertex3f(w/8, h/20, 0);
-			glTexCoord2f(0, 1);
-			glVertex3f(-w/8, h/20, 0);
-		glEnd();
+		DrawButton(w/8, h/20, "button");
 	}
 	
 	//Reset button
@@ -311,19 +297,8 @@ void DrawMenu() {
 			glColor4f(0.3,0.3,0.3,0.8);
 		else
 			glColor3f(1,1,1);
-		glBindTexture(GL_TEXTURE_2D, textures["button"]);
-		glNormal3f(0, 0, 1);
 		glTranslatef(0, -h/4, 0);
-		glBegin(GL_QUADS);
-			glTexCoord2f(0, 0);
-			glVertex3f(-w/8,-h/20, 0);
-			glTexCoord2f(1, 0);
-			glVertex3f(w/8, -h/20, 0);
-			glTexCoord2f(1, 1);
-			glVertex3f(w/8, h/20, 0);
-			glTexCoord2f(0, 1);
-		glVertex3f(-w/8, h/20, 0);
-		glEnd();
+		DrawButton(w/8, h/20, "button");
 	}
 
 
@@ -333,16 +308,7 @@ void DrawMenu() {
     else
         glColor3f(1,1,1);
     glTranslatef(0, -h/4, 0);
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-		glVertex3f(-w/8,-h/20, 0);
-		glTexCoord2f(1, 0);
-		glVertex3f(w/8, -h/20, 0);
-		glTexCoord2f(1, 1);
-		glVertex3f(w/8, h/20, 0);
-		glTexCoord2f(0, 1);
-		glVertex3f(-w/8, h/20, 0);
-	glEnd();
+	DrawButton(w/8, h/20, "button");
 
     //Credits button
     if(pressedButtons["credits"])
@@ -350,16 +316,7 @@ void DrawMenu() {
     else
         glColor3f(1,1,1);
     glTranslatef(0, -h/4, 0);
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-		glVertex3f(-w/8,-h/20, 0);
-		glTexCoord2f(1, 0);
-		glVertex3f(w/8, -h/20, 0);
-		glTexCoord2f(1, 1);
-		glVertex3f(w/8, h/20, 0);
-		glTexCoord2f(0, 1);
-		glVertex3f(-w/8, h/20, 0);
-	glEnd();
+	DrawButton(w/8, h/20, "button");
 
     //Exit button
     if(pressedButtons["exit"])
@@ -367,21 +324,11 @@ void DrawMenu() {
     else
         glColor3f(1,1,1);
     glTranslatef(0, -h/4, 0);
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-		glVertex3f(-w/8,-h/20, 0);
-		glTexCoord2f(1, 0);
-		glVertex3f(w/8, -h/20, 0);
-		glTexCoord2f(1, 1);
-		glVertex3f(w/8, h/20, 0);
-		glTexCoord2f(0, 1);
-		glVertex3f(-w/8, h/20, 0);
-	glEnd();
-    glBindTexture(GL_TEXTURE_2D, 0);
+    DrawButton(w/8, h/20, "button");
     glPopMatrix();
 	
 
-
+	//Writing the Text for the buttons
     unsigned char play[] = "Play";
 	unsigned char reset[] = "Reset";
     unsigned char credits[] = "Credits";
@@ -389,6 +336,8 @@ void DrawMenu() {
     unsigned char exit[] = "Exit";
     glPushMatrix();
 	
+	
+	//Play button text
 	glTranslatef(0, buttonOffset, 0);
 	if(resetGame || !GameOver){
 		glTranslatef(-w/30, h/2-h/80, 0);
@@ -397,7 +346,7 @@ void DrawMenu() {
 		glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,play);
 	}
 	
-	
+	//Reset button text
 	if(GameOver || !resetGame){
 		if(GameOver)
 			glTranslatef(-w/30, 3*h/4-h/80, 0);
@@ -407,39 +356,34 @@ void DrawMenu() {
 		glTranslatef(w/80, 0, 0);
 	}
 
+	//Controls button text
     glTranslatef(-w/30, -h/4, 0);
     glRasterPos3f(0, 0, 0);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,controls);
 
+	
+	//Credits button text
     glTranslatef(w/60, -h/4, 0);
     glRasterPos3f(0, 0, 0);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,credits);
 
+	
+	//Exit button text
     glTranslatef(w/60, -h/4, 0);
     glRasterPos3f(0, 0, 0);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,exit);
     glPopMatrix();
 }
 
+//Drawing Controlls screen
 void DrawControls(){
+	//Height and width of the quad we see at 0 z coordinate
     float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
 	glPushMatrix();
 
 	glColor3f(1, 1, 1);
-	glBindTexture(GL_TEXTURE_2D, textures["menu"]);
-	glNormal3f(0, 0, 1);
-	glBegin(GL_QUADS);
-		glTexCoord2f(0, 0);
-		glVertex3f(-w,-h, 0);
-		glTexCoord2f(1, 0);
-		glVertex3f(w, -h, 0);
-		glTexCoord2f(1, 1);
-		glVertex3f(w, h, 0);
-		glTexCoord2f(0, 1);
-		glVertex3f(-w, h, 0);
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D, 0);
+	DrawButton(w,h,"menu");
 
 
     unsigned char controls[] = "w - Move up\na - Move left\ns - Move down\nd - Move right\n\nShoot - Mouse Left\nGrenade - g\n\nf - Fullscreen\nESC in menu - Windowed mode\nESC in game- Main menu";
@@ -458,18 +402,7 @@ void DrawControls(){
     else
         glColor3f(1,1,1);
     glTranslatef(0, -h/1.8, 0);
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-		glVertex3f(-w/8,-h/20, 0);
-		glTexCoord2f(1, 0);
-		glVertex3f(w/8, -h/20, 0);
-		glTexCoord2f(1, 1);
-		glVertex3f(w/8, h/20, 0);
-		glTexCoord2f(0, 1);
-		glVertex3f(-w/8, h/20, 0);
-	glEnd();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glPopMatrix();
+    DrawButton(w/8,h/20,"button");
 
     glPushMatrix();
     unsigned char back[] = "Back";
@@ -479,24 +412,16 @@ void DrawControls(){
     glPopMatrix();
 }
 
+
+//Drawing the Credits screen
 void DrawCredits(){
+	//Height and width of the quad we see at 0 z coordinate
     float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
 	glPushMatrix();
 
 	glColor3f(1, 1, 1);
-	glBindTexture(GL_TEXTURE_2D, textures["menu"]);
-	glNormal3f(0, 0, 1);
-	glBegin(GL_QUADS);
-		glTexCoord2f(0, 0);
-		glVertex3f(-w,-h, 0);
-		glTexCoord2f(1, 0);
-		glVertex3f(w, -h, 0);
-		glTexCoord2f(1, 1);
-		glVertex3f(w, h, 0);
-		glTexCoord2f(0, 1);
-		glVertex3f(-w, h, 0);
-	glEnd();
+	DrawButton(w,h,"menu");
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 
@@ -515,16 +440,7 @@ void DrawCredits(){
     else
         glColor3f(1,1,1);
     glTranslatef(0, -h/1.8, 0);
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-		glVertex3f(-w/8,-h/20, 0);
-		glTexCoord2f(1, 0);
-		glVertex3f(w/8, -h/20, 0);
-		glTexCoord2f(1, 1);
-		glVertex3f(w/8, h/20, 0);
-		glTexCoord2f(0, 1);
-		glVertex3f(-w/8, h/20, 0);
-	glEnd();
+	DrawButton(w/8, h/20, "button");
     glBindTexture(GL_TEXTURE_2D, 0);
     glPopMatrix();
 
@@ -538,6 +454,11 @@ void DrawCredits(){
 
 void on_display_menu(void)
 {
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(60, (float)windowWidth / windowHeight, 0.01, 1000);
+	
 	glViewport(0, 0, windowWidth, windowHeight);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

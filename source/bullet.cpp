@@ -83,7 +83,6 @@ void Bullet::Draw(){
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glPopMatrix();
 
-    //glutSolidSphere(r, 20, 20);
     glPopMatrix();
 	for (int i = TRAIL_LENGTH-1; i > 0 ; i--) {
 		trail[i] = trail[i - 1];
@@ -96,13 +95,11 @@ void Bullet::Draw(){
 		glColor4f(0, 0, 0, fade);
 		glVertex3f(trail[i].x, trail[i].y, 0.3);
 	}
-	//         std::cout << i*18.0/40-9 << std::endl;
 	glEnd();
 	glDisable(GL_BLEND);
-	/*
-	*/
 };
 
+//Effect when bullet is fired
 void Bullet::StartSparkEffect() {
 	b2Vec2 vel = body->GetLinearVelocity();
 	vel.Normalize();
@@ -117,7 +114,7 @@ void Bullet::StartSparkEffect() {
 	Emitter* smoke = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 10, 1, "smoke");
 	smoke->SetScale(0.03, 0.06);
 	smoke->SetSpeed(0.02, 0.04);
-	smoke->SetRotation(1, 2);
+	smoke->SetRotation(-1, 1);
 	smoke->SetAlphaTween(TW_CUBIC);
 	smoke->Start();
 };
