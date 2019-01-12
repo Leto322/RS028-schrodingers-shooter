@@ -32,6 +32,7 @@ public:
 	void SetAmmo(int am);
 	int GetAmmo();
 	void FillArmor();
+	void SwitchToSecondary();
 	void moveSoundSource();
 	void FreeSources();
 
@@ -39,16 +40,16 @@ public:
     void SetBrain(Brain* brain);
     Brain* m_brain;
     bool team;
-		bool alive;
-		bool deathFlag;
+	bool alive;
+	bool deathFlag;
     Input input;
     Weapon* equiped_weapon;
     b2Body* body;
     float r;
-		int grenades;
+	int grenades;
     bool see_player;
     void die();
-		ALuint soundSource[NUM_OF_SOURCES_PLAYER];
+	ALuint soundSource[NUM_OF_SOURCES_PLAYER];
 
 private:
     float speed;
@@ -57,6 +58,7 @@ private:
 	int armor;
 	int ammo;
 	int maxArmor;
+	Pistol* secondaryGun;
 
 protected:
 

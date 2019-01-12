@@ -25,31 +25,32 @@ int num;
 
 
 Player::Player() {
-    r = 0.15;
-    speed = 0.03;
-		maxHealth = 100;
-    health = maxHealth;
-		grenades = 0;
-		maxArmor = 100;
-		armor = 0;
-    input.vertical = 0;
-    input.horizontal = 0;
-		input.shoot = false;
-		input.angle= M_PI/2;
-		equiped_weapon = new Pistol(0.0f, 0.0f, input.angle);
-		deathFlag = false;
-		alive = false;
-    team = false;
-    see_player = false;
-		ammo = 0;
+	r = 0.15;
+	speed = 0.03;
+	maxHealth = 100;
+	health = maxHealth;
+	grenades = 0;
+	maxArmor = 100;
+	armor = 0;
+	input.vertical = 0;
+	input.horizontal = 0;
+	input.shoot = false;
+	input.angle= M_PI/2;
+	secondaryGun = new Pistol(0.0f, 0.0f, input.angle);
+	equiped_weapon = secondaryGun;
+	deathFlag = false;
+	alive = false;
+	team = false;
+	see_player = false;
+	ammo = 0;
 
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-		bodyDef.linearDamping = 2.0f;
-    bodyDef.position.Set(-100.0f, 0.0f);
-    body = world->CreateBody(&bodyDef);
-    body->SetUserData(this);
-		body->SetActive(false);
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_dynamicBody;
+	bodyDef.linearDamping = 2.0f;
+	bodyDef.position.Set(-100.0f, 0.0f);
+	body = world->CreateBody(&bodyDef);
+	body->SetUserData(this);
+	body->SetActive(false);
 
     // Define another box shape for our dynamic body.
     b2CircleShape circleShape;
@@ -69,14 +70,14 @@ Player::Player() {
 	//Setting up player sounds
     alGenSources(NUM_OF_SOURCES_PLAYER, soundSource);
   	alSourcei(soundSource[0], AL_BUFFER, sounds["death"]);
-		alSourcei(soundSource[1], AL_BUFFER, sounds["bodyImpact1"]);
-		alSourcei(soundSource[2], AL_BUFFER, sounds["bodyImpact2"]);
-		alSourcei(soundSource[3], AL_BUFFER, sounds["grenadeThrow"]);
-		alSourcei(soundSource[4], AL_BUFFER, sounds["grenadePull"]);
-		for(int i = 0; i < NUM_OF_SOURCES_PLAYER; i++){
-    	alSourcef(soundSource[i], AL_GAIN, 0.2);
-  		alSourcef(soundSource[i], AL_PITCH, 1);
-		}
+	alSourcei(soundSource[1], AL_BUFFER, sounds["bodyImpact1"]);
+	alSourcei(soundSource[2], AL_BUFFER, sounds["bodyImpact2"]);
+	alSourcei(soundSource[3], AL_BUFFER, sounds["grenadeThrow"]);
+	alSourcei(soundSource[4], AL_BUFFER, sounds["grenadePull"]);
+	for(int i = 0; i < NUM_OF_SOURCES_PLAYER; i++){
+		alSourcef(soundSource[i], AL_GAIN, 0.2);
+		alSourcef(soundSource[i], AL_PITCH, 1);
+	}
 
 };
 
@@ -320,8 +321,15 @@ void Player::Revive() {
 	body->SetActive(true);
 }
 
+void Player::SwitchToSecondary() {
+	SwapWeapon(secondaryGun);
+}
+
 void Player::SwapWeapon(Weapon* newWeapon) {
 	Weapon* old = equiped_weapon;
+	if (old->Name() == "pistol") {
+		old = NULL;
+	}
 	equiped_weapon = newWeapon;
 	delete(old);
 }
