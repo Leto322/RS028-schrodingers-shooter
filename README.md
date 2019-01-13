@@ -10,29 +10,14 @@ When you play the game, it collapses into a state of a semi-3D top down shooter.
 as much as you possibly can against a horde of swarming bots that come for you in waves. Bots may drop something upon
 thier deaths to make things easier for you.
 
-TODO:
+# CONTROLS:
 
-Gameplay
+WASD - Movement
+LEFT MOUSE BUTTON - Shoot
+Hold G to activate grenade
+Release G to throw the grenade (to cursor position determines how far you will throw)
+2 - swap to sidearm pistol
+F - Enter Fullscreen mode
+Esc - Menu
+Esc in menu - exit fullscreen mode
 
-- [x] Basic player movement
-- [x] Map design
-- [x] Player/wall collisions
-- [x] Basic shooting mechanics with random moving bots
-
-More advanced shooting mechanics
-
-- [x] Reload time
-- [x] Fire rate
-- [x] Recoil
-
-AI
-
-- [x] Basic bots
-- [ ] Basic neural network implementation
-- [ ] Player sensors
-- [ ] Neural network training with reinforcement learning (genetic algorithm)
-
-Visuals
-
-- [x] 3D
-- [x] Particle effects
