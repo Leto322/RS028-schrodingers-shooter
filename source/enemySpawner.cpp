@@ -1,6 +1,7 @@
 #include "../header/item.h"
 #include "../header/player.h"
 #include "../header/enemySpawner.h"
+#include "../header/particleSystem.h"
 #include <Box2D/Box2D.h>
 #include <vector>
 #include <map>
@@ -19,11 +20,21 @@ int enemyWaveIncrement = 2;
 
 void EnemySpawner::Reset() {
 	currentWave = 0;
-	enemiesInWave = 5;
+	enemiesInWave = 1;
 	enemiesSpawned = 0;
 	totalEnemiesSpawned = 0;
 	spawnRate = 5; //Seconds
 	spawnTimer = 0;
+}
+
+void WaweClearedEffect(b2Vec2 pos) {
+	Emitter* shockwave = new Emitter(pos, b2Vec2(0, 0), b2Vec2(0, 0), 1, 2, "waveCleared");
+	shockwave->SetScale(2, 1);
+	shockwave->SetSpeed(0, 0);
+	shockwave->SetStartRotation(0);
+	shockwave->SetScaleTween(TW_INVERSE_CUBIC);
+	shockwave->SetAlphaTween(TW_CUBIC);
+	shockwave->Start();
 }
 
 void EnemySpawner::Update() {
@@ -36,6 +47,7 @@ void EnemySpawner::Update() {
 
 	if (IsWaveCleared()) {
 		std::cout << "Wave " << currentWave << " cleared!" << std::endl;
+		WaweClearedEffect(players[0]->body->GetPosition());
 		StartNextWave();
 	}
 

@@ -237,6 +237,11 @@ void DrawLogo() {
 	glPushMatrix();
 	glTranslatef(0.1, 1, 0);
 	glScalef(.7, .7, 1);
+	if (GameOver) {
+		DrawQuad("youDied");
+		glPopMatrix();
+		return;
+	}
 	
 	float alpha = (cos(logoAnimation)+1)/2;
 	glColor4f(1, 1, 1, alpha);
