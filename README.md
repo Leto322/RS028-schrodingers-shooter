@@ -1,4 +1,7 @@
 # RS028-schrodingers-shooter
+
+![Alt text](./screenshot/logo.png?raw=true "logo")
+
 Schrodingers Shooter
 
 Schrodinger's shooter is a shooter game that has every and no feature all at once.
