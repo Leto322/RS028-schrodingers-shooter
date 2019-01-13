@@ -1,33 +1,51 @@
 # RS028-schrodingers-shooter
+
+![Alt text](./screenshot/logo.png?raw=true "logo")
+
 Schrodingers Shooter
 
 Schrodinger's shooter is a shooter game that has every and no feature all at once.
 2D/3D, good/bad graphics, bots/no bots. 
 No one will know until the project is presented when all the possible states collapse into one.
 
-TODO:
 
-Gameplay
+When you play the game, it collapses into a state of a semi-3D top down shooter. Your goal is to survive
+as much as you possibly can against a horde of swarming bots that come for you in waves. Bots may drop something upon
+their deaths to make things easier for you.
 
-- [x] Basic player movement
-- [x] Map design
-- [x] Player/wall collisions
-- [x] Basic shooting mechanics with random moving bots
 
-More advanced shooting mechanics
+# Installation
+* Clone this repository
+```sh
+    git clone https://github.com/MATF-RS19/RS028-schrodingers-shooter
+```
+* Install needed libraries
+```sh
+    sudo apt-get install freeglut3-dev
+    sudo apt-get install libbox2d-dev
+    sudo apt-get install libalut-dev
+```
+* Compile
+```sh
+    cd ./RS028-schrodingers-shooter
+    make
+```
+* Start
+```sh
+    ./SchShooter.out
+```
+# Controls:
 
-- [x] Reload time
-- [x] Fire rate
-- [x] Recoil
+* WASD - Movement
+* LEFT MOUSE BUTTON - Shoot
+* Hold G to activate grenade
+* Release G to throw the grenade (the cursor position determines how far you will throw)
+* 2 - swap to sidearm pistol
+* F - Enter Fullscreen mode
+* Esc - Menu
+* Esc in menu - exit fullscreen mode
 
-AI
-
-- [x] Basic bots
-- [ ] Basic neural network implementation
-- [ ] Player sensors
-- [ ] Neural network training with reinforcement learning (genetic algorithm)
-
-Visuals
-
-- [x] 3D
-- [x] Particle effects
+# Made by:
+* Branko Đaković
+* Mladen Krčmarević
+* Filip Kristić

@@ -55,7 +55,7 @@ void pressButton(int x, int y){
 	float w = h * aspectRatio;
 	float y2 = -(y- windowHeight / 2)/windowHeight*2*h;
 	y += buttonOffset*windowHeight/4.5;
-   
+
     float x1 = (x- windowWidth / 2)/windowWidth*2*w;
     float y1 = -(y- windowHeight / 2)/windowHeight*2*h;
     if(resetGame && x1>=-w/8 && x1 <= w/8 && y1 <= h/2+h/20 && y1 >= h/2-h/20 && menuActive){
@@ -91,7 +91,7 @@ void pressButton(int x, int y){
     else if(x1>=-w/8 && x1 <= w/8 && y2 <= -h/1.8+h/20  && y2 >= -h/1.8-h/20 && (creditsActive || controlsActive)){
         pressedButtons["back"] = true;
     }
-    
+
 }
 
 //When button is released
@@ -99,9 +99,9 @@ void releaseButton(int x, int y){
 	float h = tan(30 * M_PI / 180) * 4;
 	float w = h * aspectRatio;
 	float y2 = -(y- windowHeight / 2)/windowHeight*2*h;
-	
+
 	y += buttonOffset * windowHeight / 4.5;
-    
+
     float x1 = (x- windowWidth / 2)/windowWidth*2*w;
     float y1 = -(y- windowHeight / 2)/windowHeight*2*h;
 
@@ -242,14 +242,14 @@ void DrawLogo() {
 		glPopMatrix();
 		return;
 	}
-	
+
 	float alpha = (cos(logoAnimation)+1)/2;
 	glColor4f(1, 1, 1, alpha);
 	DrawQuad("bannerAlive");
 	glColor4f(1, 1, 1, 1- alpha);
 	DrawQuad("bannerDead");
 	glPopMatrix();
-	
+
 }
 
 void DrawButton(float w, float h, std::string str) {
@@ -283,7 +283,7 @@ void DrawMenu() {
 
     glPushMatrix();
 	glTranslatef(0, buttonOffset, 0);
-	
+
     //Play button
 	if(resetGame || !GameOver){
 		if(pressedButtons["play"])
@@ -293,7 +293,7 @@ void DrawMenu() {
 		glTranslatef(0, h/2, 0);
 		DrawButton(w/8, h/20, "button");
 	}
-	
+
 	//Reset button
 	if(GameOver || !resetGame){
 		if(GameOver)
@@ -331,7 +331,7 @@ void DrawMenu() {
     glTranslatef(0, -h/4, 0);
     DrawButton(w/8, h/20, "button");
     glPopMatrix();
-	
+
 
 	//Writing the Text for the buttons
     unsigned char play[] = "Play";
@@ -340,8 +340,8 @@ void DrawMenu() {
     unsigned char controls[] = "Controls";
     unsigned char exit[] = "Exit";
     glPushMatrix();
-	
-	
+
+
 	//Play button text
 	glTranslatef(0, buttonOffset, 0);
 	if(resetGame || !GameOver){
@@ -350,7 +350,7 @@ void DrawMenu() {
 		glRasterPos3f(0, 0, 0);
 		glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,play);
 	}
-	
+
 	//Reset button text
 	if(GameOver || !resetGame){
 		if(GameOver)
@@ -366,13 +366,13 @@ void DrawMenu() {
     glRasterPos3f(0, 0, 0);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,controls);
 
-	
+
 	//Credits button text
     glTranslatef(w/60, -h/4, 0);
     glRasterPos3f(0, 0, 0);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24,credits);
 
-	
+
 	//Exit button text
     glTranslatef(w/60, -h/4, 0);
     glRasterPos3f(0, 0, 0);
@@ -391,7 +391,7 @@ void DrawControls(){
 	DrawButton(w,h,"menu");
 
 
-    unsigned char controls[] = "w - Move up\na - Move left\ns - Move down\nd - Move right\n\nShoot - Mouse Left\nGrenade - g\n\nf - Fullscreen\nESC in menu - Windowed mode\nESC in game- Main menu";
+    unsigned char controls[] = "w - Move up\na - Move left\ns - Move down\nd - Move right\n\nShoot - Mouse Left\nGrenade - g\nSidearm - 2\n\n f - Fullscreen\nESC in menu - Windowed mode\nESC in game- Main menu";
 
 
     glTranslatef(-w/7, h/1.6, 0);
@@ -459,11 +459,11 @@ void DrawCredits(){
 
 void on_display_menu(void)
 {
-	
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(60, (float)windowWidth / windowHeight, 0.01, 1000);
-	
+
 	glViewport(0, 0, windowWidth, windowHeight);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
