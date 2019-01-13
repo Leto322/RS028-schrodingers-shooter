@@ -46,7 +46,6 @@ void EnemySpawner::Update() {
 	}
 
 	if (IsWaveCleared()) {
-		std::cout << "Wave " << currentWave << " cleared!" << std::endl;
 		WaweClearedEffect(players[0]->body->GetPosition());
 		StartNextWave();
 	}

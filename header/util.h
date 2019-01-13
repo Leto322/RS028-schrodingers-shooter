@@ -56,7 +56,6 @@ public:
 	toDelete = false;
 	}
 	~AudioWrapper(){
-		std::cout << "Deleting Audio Wrapper" << std::endl;
 		alDeleteSources(NUM_OF_SOURCES_WRAP, soundSource);
 	}
 	void playSound(){

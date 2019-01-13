@@ -22,7 +22,6 @@ extern b2World* world;
 
 //Weapon cclass constructor
 Weapon::Weapon(float x, float y, float angle, float pickupDistance, std::string icon) : Item(x, y, pickupDistance, icon){
-	std::cout << "Weapon created " << icon << std::endl;
 	dmg = 10;
 	ammo = 30;
 	ammo_cap = 30;
@@ -110,10 +109,8 @@ void Weapon::fire(){
 
 //Handling weapon reload
 int Weapon::reload(int mag){
-	//std::cout << ammo << std::endl;
 	int left = mag;
 	if(ammo < ammo_cap && mag > 0){
-		std::cout << "Reloadin!" << std::endl;
 		alSourcePlay(soundSource[1]);
 
 		if ((this->ammo + mag) <= this->ammo_cap) {
@@ -184,7 +181,6 @@ void Weapon::SetPositionAndAngle(float x, float y, float angle){
 
 void Weapon::Pickup(Player* picker) {
 	if(picker->equiped_weapon->getWeaponType() != this->getWeaponType()){
-		std::cout << "Weapon picked up " << this->Name() << std::endl;
 		picker->SwapWeapon(this);
 		alSourcePlay(soundSource[2]);
 	}
@@ -198,11 +194,9 @@ void Weapon::Pickup(Player* picker) {
 void Shotgun::fire() {
 	if (fire_timer <= 0 && reload_timer <= 0 && this->ammo != 0) {
 		//Calculating new angle from random spread
-			std::cout << "PalletNum " << palletNumber << std::endl;
 		for (int i = 0; i < palletNumber; i++)
 		{
 			float rand = randomNumber(-1, 1);
-			std::cout << "rand " << rand << std::endl;
 			float firing_angle = angle + spread * rand * (i+1)/ (float)palletNumber;
 			Bullet* firedBullet = new Bullet(pos_x, pos_y, firing_angle, dmg, bulletSIze, speed);
 			//Adding bullet to the list of fired bullets
@@ -252,7 +246,6 @@ Grenade::Grenade(float x, float y){
 }
 
 Grenade::~Grenade(){
-	std::cout <<"deleting grenade" <<std::endl;
 	world->DestroyBody(this->body);
 }
 //Getter

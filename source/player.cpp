@@ -104,7 +104,6 @@ void Player::IncreaseGrenades(int amount){
 
 void Player::throwGrenade(){
 	if(grenades > 0){
-		std::cout << "Grenade!" <<std::endl;
 		alSourcePlay(soundSource[4]);
 
 		float n = 0.18;
@@ -246,7 +245,6 @@ void botBrain::Update(){
     b2Vec2 bot_pos(Brain::m_player->body->GetPosition().x, Brain::m_player->body->GetPosition().y);
     b2Vec2 player_pos(players[0]->body->GetPosition().x, players[0]->body->GetPosition().y);
 
-    //std::cout<<bot_pos.y << " ;; " << player_pos.y <<std::endl;
 
     m_player->see_player = false;
     world->RayCast(&ray_callback, bot_pos, player_pos);
@@ -261,7 +259,6 @@ void Player::die(){
 	alive = false;
 	body->SetTransform(b2Vec2(-100, 0), 0);
 	body->SetActive(false);
-	std::cout << "Player is dead!" << std::endl;
 }
 
 void StartBloodEffet(b2Vec2 pos, b2Vec2 bulletVel) {
@@ -552,7 +549,6 @@ void BotAim(){
 		}
 		if (players[k]->equiped_weapon->GetAmmo() == 0) {
             players[k]->equiped_weapon->reload(players[k]->equiped_weapon->GetAmmoCap());
-			std::cout<<"Bot reload "<<std::endl;
 		}
 
 		x2 = players[k]->body->GetPosition().x;

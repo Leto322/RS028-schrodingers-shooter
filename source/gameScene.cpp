@@ -149,7 +149,6 @@ void on_keyboard_game(unsigned char key, int x, int y)
 		myPlayer->input.vertical -= 1;
 		break;
 	case 'r':{
-		std::cout << myPlayer->GetAmmo() << std::endl;
 		if(myPlayer->equiped_weapon->getWeaponType() == PISTOL){
 			myPlayer->equiped_weapon->reload(myPlayer->equiped_weapon->GetAmmoCap());
 		}
@@ -158,7 +157,6 @@ void on_keyboard_game(unsigned char key, int x, int y)
 				myPlayer->SetAmmo(myPlayer->equiped_weapon->reload(myPlayer->GetAmmo()));
 			}
 		}
-		std::cout << myPlayer->GetAmmo() << std::endl;
 		break;
 	}
 	case '2':{

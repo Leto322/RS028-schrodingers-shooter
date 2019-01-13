@@ -51,8 +51,6 @@ void MyContactListener::BeginContact(b2Contact* contact){
 			static_cast<Bullet*>(c2)->StartSparkEffect();
 		}
 
-    //DEBUGGING collision detection
-    std::cout<< c1->getClassID() << " :: " << c2->getClassID() << std::endl;
 
   }
 }

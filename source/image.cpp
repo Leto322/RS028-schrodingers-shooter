@@ -89,12 +89,10 @@ void image_read(Image *image, char *filename) {
    * odgovarajuce duzine.
    */
   if (bih.bitcount == 24) {
-	  printf("24 bita\n");
     image->pixels = (char *)malloc(3 * bih.width * bih.height * sizeof(char));
   }
   else if (bih.bitcount == 32) {
     image->pixels = (char *)malloc(4 * bih.width * bih.height * sizeof(char));
-	printf("32 bita\n");
   }
   else {
     fprintf(stderr, "image_read(): Podrzane su samo slike koje po pikselu cuvaju 24 ili 32 bita podataka.\n");

@@ -77,12 +77,6 @@ void LoadWalls()
     }
     edge = 18.0/n;
 
-    for(i=0;i<n;i++){
-            for(j=0;j<n;j++){
-                std::cout << map[i][j];
-            }
-            std::cout << std::endl;
-    }
 
      for(i=0;i<n;i++){
             for(j=0;j<n;j++){
