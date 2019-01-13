@@ -12,12 +12,12 @@ thier deaths to make things easier for you.
 
 # CONTROLS:
 
-WASD - Movement
-LEFT MOUSE BUTTON - Shoot
-Hold G to activate grenade
-Release G to throw the grenade (to cursor position determines how far you will throw)
-2 - swap to sidearm pistol
-F - Enter Fullscreen mode
-Esc - Menu
-Esc in menu - exit fullscreen mode
+* WASD - Movement
+* LEFT MOUSE BUTTON - Shoot
+* Hold G to activate grenade
+* Release G to throw the grenade (to cursor position determines how far you will throw)
+* 2 - swap to sidearm pistol
+* F - Enter Fullscreen mode
+* Esc - Menu
+* Esc in menu - exit fullscreen mode
 
