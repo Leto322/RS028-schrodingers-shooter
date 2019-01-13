@@ -50,6 +50,7 @@ public:
     bool see_player;
     void die();
 	ALuint soundSource[NUM_OF_SOURCES_PLAYER];
+	Pistol* secondaryGun;
 
 private:
     float speed;
@@ -58,7 +59,7 @@ private:
 	int armor;
 	int ammo;
 	int maxArmor;
-	Pistol* secondaryGun;
+	
 
 protected:
 

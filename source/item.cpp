@@ -85,7 +85,7 @@ void ItemPool::CheckPickups(Player *picker) {
 ItemPool::~ItemPool(){
 	for (std::vector<Item*>::iterator it = m_items.begin(); it != m_items.end(); ++it)
 	{
-		if((*it)->GetIcon() == "pistol" || (*it)->GetIcon() == "rifle" || (*it)->GetIcon() == "shotgun")
+		if((*it)->GetIcon() == "pistol" || (*it)->GetIcon() == "rifle" || (*it)->GetIcon() == "shotgun" || (*it)->GetIcon() == "sniper")
 			((Weapon*)(*it))->FreeSources();
 		delete (*it);
 	}

@@ -69,7 +69,7 @@ std::map<std::string, int> textures;
 std::map<std::string, int> sounds;
 
 GLuint textureIDs[4];
-ALuint soundIDs[17];
+ALuint soundIDs[18];
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 15

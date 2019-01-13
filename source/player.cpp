@@ -329,6 +329,8 @@ void Player::SwapWeapon(Weapon* newWeapon) {
 	Weapon* old = equiped_weapon;
 	if (old->getWeaponType() == PISTOL) {
 		old = NULL;
+	}else {
+		old->FreeSources();
 	}
 	equiped_weapon = newWeapon;
 	delete(old);
