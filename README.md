@@ -11,7 +11,7 @@ No one will know until the project is presented when all the possible states col
 
 When you play the game, it collapses into a state of a semi-3D top down shooter. Your goal is to survive
 as much as you possibly can against a horde of swarming bots that come for you in waves. Bots may drop something upon
-thier deaths to make things easier for you.
+their deaths to make things easier for you.
 
 
 # Installation
