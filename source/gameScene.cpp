@@ -118,11 +118,8 @@ void InitGame() {
 
 	//Test for the items
 	itemPool->Add(new Rifle(-2, 0, 0));
-	itemPool->Add(new Shotgun(-3, 0, 0, 6));
-	itemPool->Add(new Sniper(-3, 0.5, 0));
-	itemPool->Add(new HealthPotion(-4, 0, 20));
-	itemPool->Add(new Armor(-4.5, 0));
-	itemPool->Add(new GrenadeItem(-4.5, -0.5));
+	itemPool->Add(new Armor(-3, 0));
+	itemPool->Add(new GrenadeItem(-4, 0));
 
 
 	//Starting background music

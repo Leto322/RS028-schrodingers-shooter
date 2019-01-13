@@ -94,6 +94,7 @@ void Weapon::fire(){
 		//Adding bullet to the list of fired bullets
 		bullets.push_back(firedBullet);
 
+		alSourcef(soundSource[0], AL_PITCH, 1+randomNumber(-0.3, 0.3));
 		alSourcePlay(soundSource[0]);
 
 		PlayGunShotEffect(pos_x, pos_y, firing_angle);
@@ -210,6 +211,7 @@ void Shotgun::fire() {
 
 		PlayGunShotEffect(pos_x, pos_y, angle);
 
+		alSourcef(soundSource[0], AL_PITCH, 1 + randomNumber(-0.3, 0.3));
 		alSourcePlay(soundSource[0]);
 
 		this->ammo--;

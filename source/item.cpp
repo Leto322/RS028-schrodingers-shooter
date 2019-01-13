@@ -100,16 +100,18 @@ void ItemPool::Add(Item *item) {
 void ItemPool::SpawnRandom(b2Vec2 pos) {
 	Item* item = NULL;
 	float r = float(rand())/float(RAND_MAX);
-	if(r >= 0.05 && r <= 0.25) // 0.2 chance HP
+	if(r <= 0.3) // 0.2 chance HP
 		item = new HealthPotion(pos.x, pos.y, 20);
-	else if(r > 0.25 && r <= 0.45) // 0.15 chance Armor
+	else if(r <= 0.4) // 0.1 chance Armor
 		item = new Armor(pos.x, pos.y);
-	else if(r > 0.45 && r <= 0.60) // 0.15 chance Grenade
+	else if(r <= 0.55) // 0.15 chance Grenade
 		item = new GrenadeItem(pos.x, pos.y);
-	else if(r > 0.6 && r <= 0.8) // 0.2 chance Shoty
+	else if(r <= 0.7) // 0.2 chance Shoty
 		item = new Shotgun(pos.x, pos.y, 0, 4);
-	else if(r > 0.8 && r <= 1) // 0.2 chance Rifle
+	else if(r <= 0.85) // 0.2 chance Rifle
 		item = new Rifle(pos.x, pos.y, 0);
+	else if (r <= 0.9) // 0.05 chance Sniper
+		item = new Sniper(pos.x, pos.y, 0);
 
 	// 0.1 chance nothing
 	if(item)
