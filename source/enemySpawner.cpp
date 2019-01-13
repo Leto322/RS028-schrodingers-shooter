@@ -20,7 +20,7 @@ int enemyWaveIncrement = 2;
 
 void EnemySpawner::Reset() {
 	currentWave = 0;
-	enemiesInWave = 1;
+	enemiesInWave = 4;
 	enemiesSpawned = 0;
 	totalEnemiesSpawned = 0;
 	spawnRate = 5; //Seconds
