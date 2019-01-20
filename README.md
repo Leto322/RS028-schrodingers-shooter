@@ -46,6 +46,6 @@ their deaths to make things easier for you.
 * Esc in menu - exit fullscreen mode
 
 # Made by:
-* Branko Đaković
-* Mladen Krčmarević
-* Filip Kristić
+* [Branko Đaković](https://github.com/Leto322)
+* [Mladen Krčmarević](https://github.com/krcma96)
+* [Filip Kristić](https://github.com/Vulkin996)
